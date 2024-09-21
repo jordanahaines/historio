@@ -7,4 +7,6 @@ I hate having to think about where to put a new file, so here are the convention
 - As specified in `drizzle.config.ts`:
   - DB models/schema are all in ./models/schema/
   - Migrations are in ./models/migrations/
-- DB queries are in ...
+- DB queries are in `db/queries` (separated by the models they affect)
+- Non-UI business logic goes in `/lib`
+- UI business logic - server actions - go in `/actions` if they're re-used, otherwise they should be in the server component that is using them

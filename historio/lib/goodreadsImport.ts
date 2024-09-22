@@ -29,7 +29,7 @@ export default async function goodreadsImport(
     return {
       title: d.Title,
       author: d.Author,
-      isbn,
+      isbn: isbn || null,
       amazon_id: d["Book Id"] ? Number(d["Book Id"]) : null,
       last_import: new Date(),
     }
@@ -37,7 +37,11 @@ export default async function goodreadsImport(
 
   console.log(mappedData.map((d) => d.isbn))
   // Insert the books and then return them
-  const result = await db.insert(books).values(mappedData).returning()
+  const result = await db
+    .insert(books)
+    .values(mappedData)
+    .onConflictDoNothing()
+    .returning()
 
   return result
 }

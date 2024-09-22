@@ -13,7 +13,8 @@ const main = async () => {
   console.log(`Reading file ${pth}`)
   const goodreadsFile = await fs.readFile(pth, "utf-8")
   const books = await goodreadsImport(goodreadsFile)
-  console.log(`Books: ${books.length}`)
+  console.log(`Books: ${books.length} imported!`)
+  return true
 }
 
 main()

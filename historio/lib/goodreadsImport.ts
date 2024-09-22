@@ -9,10 +9,9 @@ import { db } from "@/db"
  * @returns
  */
 export default async function goodreadsImport(
-  goodreadsFile: File,
+  goodreadsFile: Buffer | string,
 ): Promise<SelectBook[]> {
-  const buffer = Buffer.from(await goodreadsFile.arrayBuffer())
-  const goodreadsFileData = await parse(buffer, {
+  const goodreadsFileData = await parse(goodreadsFile, {
     columns: true,
     skip_empty_lines: true,
     trim: true,
@@ -24,7 +23,7 @@ export default async function goodreadsImport(
   }
 
   // Clean up the data a bit so that we can do inserts
-  const mappedData: InsertBook[] = goodreadsFileData.map((d) => {
+  const mappedData: InsertBook[] = goodreadsFileData.map((d: any) => {
     const isbn = cleanISBN(d.ISBN13 || d.ISBN)
 
     return {
@@ -36,6 +35,7 @@ export default async function goodreadsImport(
     }
   })
 
+  console.log(mappedData.map((d) => d.isbn))
   // Insert the books and then return them
   const result = await db.insert(books).values(mappedData).returning()
 

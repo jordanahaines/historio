@@ -10,11 +10,12 @@ import goodreadsImport from "@/lib/goodreadsImport"
 const main = async () => {
   // Read file passed as prop
   const pth = `${cwd()}/${process.argv[2]}`
-  console.log(`Reading file ${pth}`)
+  console.log(`Start: Goodreads import script.Reading file ${pth}`)
   const goodreadsFile = await fs.readFile(pth, "utf-8")
   const books = await goodreadsImport(goodreadsFile)
-  console.log(`Books: ${books.length} imported!`)
-  return true
+  console.log(`End: Goodreads import script. ${books.length} books imported!`)
+
+  process.exit()
 }
 
 main()

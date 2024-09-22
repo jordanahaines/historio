@@ -1,4 +1,4 @@
-import { tv } from "tailwind-variants";
+import { tv } from "tailwind-variants"
 
 export const title = tv({
   base: "tracking-tight inline font-semibold",
@@ -38,7 +38,7 @@ export const title = tv({
       class: "bg-clip-text text-transparent bg-gradient-to-b",
     },
   ],
-});
+})
 
 export const subtitle = tv({
   base: "w-full md:w-1/2 my-2 text-lg lg:text-xl text-default-600 block max-w-full",
@@ -50,4 +50,4 @@ export const subtitle = tv({
   defaultVariants: {
     fullWidth: true,
   },
-});
+})

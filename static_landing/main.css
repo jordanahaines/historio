@@ -1,0 +1,171 @@
+body {
+  background-color: black;
+  background-repeat: repeat;
+  color: white;
+  font-family: "Outfit", sans-serif;
+}
+
+.itim {
+  font-family: "Rosarivo", cursive;
+}
+
+.flex {
+  display: flex;
+}
+
+.header {
+  margin-bottom: 64px;
+  font-size: 20pt;
+  padding-top: 8px;
+  padding-left: 10px;
+  padding-right: 10px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.green {
+  color: #80BE1B;
+}
+
+.blue {
+  color: #46A2E8;
+}
+
+.logo {
+  width: 40vw;
+  max-width: 400px;
+}
+
+h3 {
+  font-size: 40pt;
+  margin: 0;
+}
+
+h1 {
+  font-size: 120pt;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  line-height: 96pt;
+  letter-spacing: 4px;
+}
+
+.gray {
+  color: white;
+  opacity: 0.5;
+}
+
+.content-container {
+  justify-content: center;
+}
+
+.mast-copy {
+  padding-top: 64px;
+  padding-left: 24px;
+}
+
+.learn-more-container {
+  text-align: right;
+  width: 100%;
+  margin-top: 32px;
+  font-size: 20pt;
+}
+.learn-more-container:hover a {
+  color: #80BE1B;
+}
+.learn-more-container a {
+  padding-right: 8px;
+  text-decoration: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+.learn-more-container a span {
+  display: inline-block;
+}
+.learn-more-container img {
+  width: 24px;
+  margin-left: 12px;
+}
+
+.favorite-books {
+  align-items: center;
+}
+.favorite-books img {
+  width: 40px;
+  margin-right: 8px;
+}
+
+.jordan-li a {
+  text-decoration: none;
+}
+.jordan-li:hover .gray {
+  color: white;
+  opacity: 1;
+}
+.jordan-li:hover .blue {
+  background: #46A2E8;
+  color: white;
+}
+
+@media (max-width: 1100px) {
+  .header {
+    margin-bottom: 32px;
+  }
+
+  .mast-copy {
+    padding-top: 32px;
+  }
+
+  .content-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .logo {
+    width: 75vw;
+    max-width: 400px;
+  }
+
+  h1 {
+    font-size: 90pt;
+  }
+
+  h3 {
+    font-size: 30pt;
+  }
+}
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .header .timelines-books {
+    margin-bottom: 32px;
+  }
+
+  .logo {
+    width: 60vw;
+    max-width: 400px;
+  }
+
+  h1 {
+    font-size: 60pt;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    line-height: 60pt;
+  }
+
+  h3 {
+    font-size: 20pt;
+  }
+
+  .mast-copy {
+    padding-top: 16px;
+  }
+}
+
+/*# sourceMappingURL=main.css.map */

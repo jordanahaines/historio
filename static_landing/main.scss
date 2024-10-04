@@ -16,7 +16,7 @@ body {
     background-repeat: repeat;
     color: white;
     font-family: "Outfit", sans-serif;
-    width: 100vw;
+    width: calc(100vw - 8px);
 }
 .itim {
     font-family: "Rosarivo", cursive;
@@ -185,5 +185,12 @@ h1 {
             height: 80px;
             margin: 0 !important;
         }
+    }
+}
+@media(min-height: 900px) {
+    .images-footer {
+        position: fixed;
+        bottom: $padding;
+        width: 100vw;
     }
 }

@@ -3,6 +3,7 @@ body {
   background-repeat: repeat;
   color: white;
   font-family: "Outfit", sans-serif;
+  width: 100vw;
 }
 
 .itim {
@@ -108,13 +109,25 @@ h1 {
   color: white;
 }
 
+.images-footer {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 96px;
+}
+.images-footer img {
+  height: 200px;
+  border-radius: 20%;
+  opacity: 0.76;
+}
+
 @media (max-width: 1100px) {
   .header {
-    margin-bottom: 32px;
+    margin-bottom: 21.3333333333px;
+    padding-right: 21.3333333333px;
   }
 
   .mast-copy {
-    padding-top: 32px;
+    padding-top: 21.3333333333px;
   }
 
   .content-container {
@@ -124,8 +137,8 @@ h1 {
   }
 
   .logo {
-    width: 75vw;
-    max-width: 400px;
+    width: 65vw;
+    max-width: 300px;
   }
 
   h1 {
@@ -137,11 +150,17 @@ h1 {
   }
 }
 @media (max-width: 600px) {
+  body {
+    padding: 0;
+    margin: 0;
+  }
+
   .header {
     flex-direction: column;
     justify-content: center;
     align-items: center;
     margin-bottom: 16px;
+    padding: 21.3333333333px 0px;
   }
   .header .timelines-books {
     margin-bottom: 32px;
@@ -165,6 +184,14 @@ h1 {
 
   .mast-copy {
     padding-top: 16px;
+  }
+
+  .images-footer {
+    margin-top: 64px;
+  }
+  .images-footer img {
+    height: 80px;
+    margin: 0 !important;
   }
 }
 

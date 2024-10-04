@@ -16,6 +16,7 @@ body {
     background-repeat: repeat;
     color: white;
     font-family: "Outfit", sans-serif;
+    width: 100vw;
 }
 .itim {
     font-family: "Rosarivo", cursive;
@@ -112,13 +113,24 @@ h1 {
         }
     }
 }
+.images-footer {
+    display: flex;
+    justify-content: space-around;
+    margin-top: $padding * 1.5;
+    img {
+        height: 200px;
+        border-radius: 20%;
+        opacity: 0.76;
+    }
+}
 
 @media(max-width: $breakpointmd) {
     .header {
-        margin-bottom: $padding/2;
+        margin-bottom: $padding/3;
+        padding-right: $padding/3;
     }
     .mast-copy {
-        padding-top: $padding/2;
+        padding-top: $padding/3;
     }
     .content-container {
         flex-direction: column;
@@ -126,8 +138,8 @@ h1 {
         align-items: center;
     }
     .logo {
-        width: 75vw;
-        max-width: 400px;
+        width: 65vw;
+        max-width: 300px;
     }
     h1 {
         font-size: $font-lg * .75;
@@ -137,11 +149,16 @@ h1 {
     }
 }
 @media(max-width: $breakpointsm) {
+    body {
+        padding: 0;
+        margin: 0;
+    }
     .header {
         flex-direction: column;
         justify-content: center;
         align-items: center;
         margin-bottom: $padding/4;
+        padding: $padding/3 0px;
         .timelines-books {
             margin-bottom: $margin-lg;
         }
@@ -161,5 +178,12 @@ h1 {
     }
     .mast-copy {
         padding-top: $padding/4;
+    }
+    .images-footer {
+        margin-top: $padding;
+        img {
+            height: 80px;
+            margin: 0 !important;
+        }
     }
 }

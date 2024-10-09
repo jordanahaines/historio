@@ -5,6 +5,7 @@ import { InsertResearcherRun } from "@/db/schema/research"
 // Signature of our researcher function. Most of these are implemented in lib/researchers
 type Researcher = (
   book: SelectBook,
+  debug?: boolean,
 ) => Promise<[InsertResearcherRun, SelectInsight[]]>
 
 export type SignificantEventsReturn = {

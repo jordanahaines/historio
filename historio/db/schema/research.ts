@@ -11,6 +11,7 @@ export const researcherRuns = pgTable("researcher_runs", {
   error: varchar("error"),
   new_insights: numeric("new_insights"),
   duration_ms: numeric("duration_ms"),
+  result_log: varchar("result_log"),
 })
 
 export type SelectResearcherRun = typeof researcherRuns.$inferSelect

@@ -49,10 +49,11 @@ async function processSingleBook() {
   booksWithLeastInsights.map((b, idx) => {
     console.log(`${idx}: ${b.book.title}. ${b.insightCount} insights`)
   })
+  // And provide an option to do all books
   const bookIdx = await promptForInput("Which book?")
   const book = booksWithLeastInsights[parseInt(bookIdx)].book
 
-  const result = await researcher(book)
+  const result = await researcher(book, true)
   console.log("-------------- restarting script")
   processSingleBook()
 }

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { books, SelectBook } from "@/db/schema/book"
 import { SelectInsight, InsertInsight, insights } from "@/db/schema/insight"
-import { researcherRuns } from "@/db/schema/research"
+import { InsertResearcherRun, researcherRuns } from "@/db/schema/research"
 import Researcher, { SignificantEventsReturn } from "@/types/researcher"
 import OpenAI from "openai"
 import { parse } from "date-fns"
@@ -51,7 +51,10 @@ export function parseDate(
   return { date: null, year: null }
 }
 
-const significantEventResearcher: Researcher = async (book: SelectBook) => {
+const significantEventResearcher: Researcher = async (
+  book: SelectBook,
+  debug = false,
+) => {
   const startTime = new Date()
   console.debug(`Start Significant Researcher for ${book.title}`)
   // Start by creating our researcher run
@@ -83,8 +86,10 @@ const significantEventResearcher: Researcher = async (book: SelectBook) => {
     existingEventNames.forEach((e) => (message += `\n- ${e}`))
   }
 
-  console.debug("Prompt: ----")
-  console.debug(message)
+  if (debug) {
+    console.debug("Prompt: ----")
+    console.debug(message)
+  }
 
   if (!OPENAI_ASSISTANT_ID)
     throw new Error(
@@ -118,6 +123,7 @@ const significantEventResearcher: Researcher = async (book: SelectBook) => {
         description: i.description,
         wikipedia_link: i.wikipedia_link,
         book_id: book.id,
+        researcher_run: run.id,
       }
       let eventDate = parseDate(i.date)
       insight.year = eventDate.year?.toString()
@@ -158,12 +164,16 @@ const significantEventResearcher: Researcher = async (book: SelectBook) => {
 
   // The run worked! We get to update the run object
   const duration = new Date().getTime() - startTime.getTime() // Miliseconds
+  const runUpdate: InsertResearcherRun = {
+    new_insights: insertInsights.length.toString(),
+    duration_ms: duration.toString(),
+  }
+  if (debug) {
+    runUpdate.result_log = data
+  }
   await db
     .update(researcherRuns)
-    .set({
-      new_insights: insertInsights.length.toString(),
-      duration_ms: duration.toString(),
-    })
+    .set(runUpdate)
     .where(eq(researcherRuns.id, run.id))
 
   console.debug(

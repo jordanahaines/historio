@@ -1,11 +1,21 @@
 import { SelectBook } from "@/db/schema/book"
 import { SelectInsight } from "@/db/schema/insight"
+import { InsertResearcherRun } from "@/db/schema/research"
 
-type Researcher = {
-  key: string
-  doResearch: (
-    book: SelectBook,
-    excludeExistingInsights: boolean,
-  ) => Promise<SelectInsight[]>
+// Signature of our researcher function. Most of these are implemented in lib/researchers
+type Researcher = (
+  book: SelectBook,
+) => Promise<[InsertResearcherRun, SelectInsight[]]>
+
+export type SignificantEventsReturn = {
+  start_date: string
+  end_date: string
+  insights: {
+    date: string
+    name: string
+    description: string
+    wikipedia_link: string
+  }[]
 }
+
 export default Researcher

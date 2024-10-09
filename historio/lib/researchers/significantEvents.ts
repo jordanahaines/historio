@@ -67,16 +67,31 @@ const significantEventResearcher: Researcher = async (book: SelectBook) => {
   console.debug(`ResearcherRun ID: ${run.id}`)
 
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
-  const message = `Title: ${book.title}\nAuthor: ${book.author}`
+  let message = `Title: ${book.title}\nAuthor: ${book.author}`
 
-  // Todo: Run in parallel, except then we lose types. HOw to type that??
-  const existingWikiLinks: string[] = _.map(
-    await db
-      .select({ link: insights.wikipedia_link })
-      .from(insights)
-      .where(eq(insights.book_id, book.id)),
-    "link",
-  )
+  const existingInsights = await db
+    .select({ link: insights.wikipedia_link, title: insights.name })
+    .from(insights)
+    .where(eq(insights.book_id, book.id))
+
+  const existingWikiLinks = _.map(existingInsights, "link")
+  const existingEventNames = _.map(existingInsights, "title")
+
+  // We try to exclude existing events
+  if (existingEventNames.length) {
+    message += "\n\n Do not include these events in your results:"
+    existingEventNames.forEach((e) => (message += `\n- ${e}`))
+  }
+
+  console.debug("Prompt: ----")
+  console.debug(message)
+
+  if (!OPENAI_ASSISTANT_ID)
+    throw new Error(
+      `Invalid OpenAI assistant ID for: ${SIGNIFICANT_EVENTS_RESEARCHER_KEY}`,
+    )
+
+  // Todo: Run in parallel, except then we lose types. How to type that
   const openAIRun = await openai.beta.threads.createAndRunPoll({
     assistant_id: OPENAI_ASSISTANT_ID,
     thread: {

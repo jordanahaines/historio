@@ -8,6 +8,13 @@
       "when": 1726944236443,
       "tag": "0000_slimy_rictor",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1728479787038,
+      "tag": "0001_wise_wiccan",
+      "breakpoints": true
     }
   ]
 }

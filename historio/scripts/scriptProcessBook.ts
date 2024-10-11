@@ -84,6 +84,3 @@ async function processSingleBook() {
   processSingleBook()
 }
 processSingleBook()
-
-// Andrew Jackson book
-// 7e91b55a-bd10-4d88-9676-c54898142aa4

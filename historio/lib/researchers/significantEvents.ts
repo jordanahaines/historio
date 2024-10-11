@@ -84,8 +84,6 @@ const significantEventResearcher: Researcher = async (
   console.debug(`Found ${existingInsights.length} existing insights`)
 
   const existingWikiLinks = _.map(existingInsights, "link")
-  console.debug("Existing Links:")
-  console.debug(existingWikiLinks)
   const existingEventNames = _.map(existingInsights, "title")
 
   // We try to exclude existing events

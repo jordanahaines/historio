@@ -199,7 +199,7 @@ const significantEventResearcher: Researcher = async (
     `Finished Significant Researcher for ${book.title}. Duration: ${duration}ms`,
   )
 
-  return [run, newInsights]
+  return [run, newInsights, book]
 }
 
 export default significantEventResearcher

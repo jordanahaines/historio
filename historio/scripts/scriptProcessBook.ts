@@ -7,7 +7,7 @@ import significantEventResearcher, {
 } from "@/lib/researchers/significantEvents"
 import { config } from "dotenv"
 import { arrayContains, asc, count, eq, not } from "drizzle-orm"
-import _ from "lodash"
+import _, { update } from "lodash"
 
 config({ path: "local.env" })
 
@@ -80,7 +80,12 @@ async function processSingleBook() {
   }
   // Instead of forEach, use a for...of loop for sequential async/await
   for (let i = 0; i < iterations; i++) {
-    await researcher(book, true) // Wait for researcher to finish
+    const [run, insights, updatedBook] = await researcher(book, true) // Wait for researcher to finish
+    if (updatedBook) book = updatedBook
+    if (updatedBook?.completed_researchers.includes(researcherName)) {
+      // Yay we're done early. No need to waste OpenAI $$!
+      break
+    }
   }
 
   console.log("-------------- restarting script")

@@ -6,7 +6,7 @@ import { InsertResearcherRun } from "@/db/schema/research"
 type Researcher = (
   book: SelectBook,
   debug?: boolean,
-) => Promise<[InsertResearcherRun, SelectInsight[]]>
+) => Promise<[InsertResearcherRun, SelectInsight[], book?: SelectBook]>
 
 export type SignificantEventsReturn = {
   start_date: string

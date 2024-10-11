@@ -1,0 +1,1 @@
+ALTER TABLE "insights" ALTER COLUMN "views" SET DEFAULT '0';

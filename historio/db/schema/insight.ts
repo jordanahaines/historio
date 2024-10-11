@@ -12,7 +12,7 @@ export const insights = pgTable("insights", {
   description: varchar("description"),
   book_id: uuid("book_id").references(() => books.id),
   wikipedia_link: varchar("wikipedia_link"),
-  views: numeric("views"),
+  views: numeric("views").default("0"),
   researcher_run: uuid("researcher_run").references(() => researcherRuns.id),
 })
 

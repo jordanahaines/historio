@@ -51,6 +51,10 @@ export function parseDate(
   return { date: null, year: null }
 }
 
+export type SignificantEventResearcherProps = {
+  iterations: number
+}
+
 const significantEventResearcher: Researcher = async (
   book: SelectBook,
   debug = false,
@@ -77,7 +81,11 @@ const significantEventResearcher: Researcher = async (
     .from(insights)
     .where(eq(insights.book_id, book.id))
 
+  console.debug(`Found ${existingInsights.length} existing insights`)
+
   const existingWikiLinks = _.map(existingInsights, "link")
+  console.debug("Existing Links:")
+  console.debug(existingWikiLinks)
   const existingEventNames = _.map(existingInsights, "title")
 
   // We try to exclude existing events
@@ -128,9 +136,10 @@ const significantEventResearcher: Researcher = async (
       let eventDate = parseDate(i.date)
       insight.year = eventDate.year?.toString()
       insight.date = eventDate.date?.toISOString()
+
       return insight
     })
-
+    .filter((i) => !!i)
   let newInsights: SelectInsight[] = []
   if (insertInsights.length === 0) {
     // We are done. Add current researcher to book's finished researchers array

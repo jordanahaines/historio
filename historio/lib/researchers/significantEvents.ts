@@ -21,6 +21,7 @@ type ParsedInsightDate = {
 }
 
 const DATE_FORMATS = ["MM/dd/yyyy", "yyyy", "yyyy G"]
+const FINISHED_THRESHOLD = 2 // If we end up with this many events or less, we mark researcher done
 
 /**
  * Parses a date string in multiple formats.
@@ -182,6 +183,17 @@ const significantEventResearcher: Researcher = async (
     .update(researcherRuns)
     .set(runUpdate)
     .where(eq(researcherRuns.id, run.id))
+
+  if (insertInsights.length <= FINISHED_THRESHOLD) {
+    book.completed_researchers.push(SIGNIFICANT_EVENTS_RESEARCHER_KEY)
+    await db
+      .update(books)
+      .set({ completed_researchers: book.completed_researchers })
+      .where(eq(books.id, book.id))
+    console.debug(
+      `Significant events research for ${book.title} is now complete!`,
+    )
+  }
 
   console.debug(
     `Finished Significant Researcher for ${book.title}. Duration: ${duration}ms`,

@@ -2,16 +2,18 @@
 import { db } from "@/db"
 import { books, SelectBook } from "@/db/schema/book"
 import { insights } from "@/db/schema/insight"
-import significantEventResearcher from "@/lib/researchers/significantEvents"
+import significantEventResearcher, {
+  SIGNIFICANT_EVENTS_RESEARCHER_KEY,
+} from "@/lib/researchers/significantEvents"
 import { config } from "dotenv"
-import { asc, count, eq } from "drizzle-orm"
+import { arrayContains, asc, count, eq, not } from "drizzle-orm"
 import _ from "lodash"
 
 config({ path: "local.env" })
 
 import readline from "readline"
 
-const RESEARCHERS = ["significant"]
+const RESEARCHERS = [SIGNIFICANT_EVENTS_RESEARCHER_KEY]
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -41,6 +43,7 @@ async function processSingleBook() {
       insightCount: count(insights.id),
     })
     .from(books)
+    .where(not(arrayContains(books.completed_researchers, [researcherName])))
     .leftJoin(insights, eq(books.id, insights.book_id))
     .groupBy(books.id)
     .orderBy(asc(count(insights.id)))

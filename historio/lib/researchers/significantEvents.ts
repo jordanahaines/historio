@@ -6,14 +6,17 @@ import { SignificantEventsReturn } from "@/types/researcher"
 import { config } from "dotenv"
 import { eq } from "drizzle-orm"
 import _ from "lodash"
-import { PromptGeneratorFunction } from "./researchCoordinator"
+import {
+  PromptGeneratorFunction,
+  ResearcherConfiguration,
+} from "./researchCoordinator"
 import { parseDate } from "./utils"
 
 config({ path: "local.env" })
 
 export const SIGNIFICANT_EVENTS_RESEARCHER_KEY = "significant"
 
-export const generateSignificantEventsPrompt: PromptGeneratorFunction = (
+const generateSignificantEventsPrompt: PromptGeneratorFunction = (
   book: SelectBook,
   existingInsights?: SelectInsight[],
 ) => {
@@ -25,7 +28,7 @@ export const generateSignificantEventsPrompt: PromptGeneratorFunction = (
   return msg
 }
 
-export const parseSignificantEvents = async (
+const parseSignificantEvents = async (
   data: SignificantEventsReturn,
   book: SelectBook,
   existingInsights: SelectInsight[],
@@ -65,3 +68,13 @@ export const parseSignificantEvents = async (
     return insight
   })
 }
+
+export const significantEventResearcherConfig: ResearcherConfiguration = {
+  key: SIGNIFICANT_EVENTS_RESEARCHER_KEY,
+  finishedThreshold: 3,
+  assistantID: process.env.SIGNIFICANT_RESEARCHER_ASSISTANT_ID,
+  promptGenerator: generateSignificantEventsPrompt,
+  parseFunction: parseSignificantEvents,
+}
+export type ParseSignificantEvents = typeof parseSignificantEvents
+export default significantEventResearcherConfig

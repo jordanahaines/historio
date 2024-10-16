@@ -2,8 +2,9 @@
 import { db } from "@/db"
 import { books, SelectBook } from "@/db/schema/book"
 import { insights } from "@/db/schema/insight"
+import doResearch, { ResearcherConfiguration } from "@/lib/researchers/researchCoordinator"
 import significantEventResearcher, {
-  SIGNIFICANT_EVENTS_RESEARCHER_KEY,
+  significantEventResearcherConfig,
 } from "@/lib/researchers/significantEvents"
 import { config } from "dotenv"
 import { arrayContains, asc, count, eq, not } from "drizzle-orm"
@@ -13,7 +14,9 @@ config({ path: "local.env" })
 
 import readline from "readline"
 
-const RESEARCHERS = [SIGNIFICANT_EVENTS_RESEARCHER_KEY]
+const RESEARCHERS = {
+  significant: significantEventResearcherConfig,
+}
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -29,12 +32,12 @@ async function promptForInput(question: string): Promise<string> {
 }
 
 async function processSingleBook() {
-  RESEARCHERS.map((r, idx) => console.log(`${idx}: ${r}`))
+  const researcherKeys = Object.keys(RESEARCHERS)
+  researcherKeys.map((r, idx) => console.log(`${idx}: ${r}`))
   const researcherIdx = await promptForInput("Which researcher?")
-  const researcherName = RESEARCHERS[parseInt(researcherIdx)]
-  let researcher
-  if (researcherName === "significant") researcher = significantEventResearcher
-  else throw new Error("Invalid researcher")
+  const researcherKey = researcherKeys[parseInt(researcherIdx)]
+  const researcherConfig: ResearcherConfiguration =
+    RESEARCHERS[researcherKey]]
 
   // 10 books with the fewest insights for event processor we picked
   const booksWithLeastInsights = await db
@@ -43,7 +46,7 @@ async function processSingleBook() {
       insightCount: count(insights.id),
     })
     .from(books)
-    .where(not(arrayContains(books.completed_researchers, [researcherName])))
+    .where(not(arrayContains(books.completed_researchers, [researcherKey])))
     .leftJoin(insights, eq(books.id, insights.book_id))
     .groupBy(books.id)
     .orderBy(asc(count(insights.id)))
@@ -70,7 +73,7 @@ async function processSingleBook() {
     book = bookFetch[0]
   } else if (parseInt(bookPromptResult) === booksWithLeastInsights.length) {
     const results = Promise.all(
-      booksWithLeastInsights.map((b) => researcher(b.book)),
+      booksWithLeastInsights.map((b) => doResearch(b.book, researcherConfig, true)),
     )
     processSingleBook()
     return
@@ -80,9 +83,9 @@ async function processSingleBook() {
   }
   // Instead of forEach, use a for...of loop for sequential async/await
   for (let i = 0; i < iterations; i++) {
-    const [run, insights, updatedBook] = await researcher(book, true) // Wait for researcher to finish
+    const [run, insights, updatedBook] = await doResearch(book, researcherConfig, true) // Wait for researcher to finish
     if (updatedBook) book = updatedBook
-    if (updatedBook?.completed_researchers.includes(researcherName)) {
+    if (updatedBook?.completed_researchers.includes(researcherKey)) {
       // Yay we're done early. No need to waste OpenAI $$!
       break
     }

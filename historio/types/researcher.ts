@@ -19,4 +19,12 @@ export type SignificantEventsReturn = {
   }[]
 }
 
+export type MinorEventsReturn = {
+  insights: {
+    date: string
+    name: string
+    description?: string
+  }[]
+}
+
 export default Researcher

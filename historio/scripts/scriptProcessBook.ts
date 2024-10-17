@@ -2,13 +2,13 @@
 import { db } from "@/db"
 import { books, SelectBook } from "@/db/schema/book"
 import { insights } from "@/db/schema/insight"
-import doResearch, { ResearcherConfiguration } from "@/lib/researchers/researchCoordinator"
-import significantEventResearcher, {
-  significantEventResearcherConfig,
-} from "@/lib/researchers/significantEvents"
+import doResearch, {
+  ResearcherConfiguration,
+} from "@/lib/researchers/researchCoordinator"
+import { significantEventResearcherConfig } from "@/lib/researchers/significantEvents"
 import { config } from "dotenv"
 import { arrayContains, asc, count, eq, not } from "drizzle-orm"
-import _, { update } from "lodash"
+import _ from "lodash"
 
 config({ path: "local.env" })
 
@@ -34,10 +34,12 @@ async function promptForInput(question: string): Promise<string> {
 async function processSingleBook() {
   const researcherKeys = Object.keys(RESEARCHERS)
   researcherKeys.map((r, idx) => console.log(`${idx}: ${r}`))
-  const researcherIdx = await promptForInput("Which researcher?")
+  let researcherIdx = "0"
+  if (researcherKeys.length > 1) {
+    researcherIdx = await promptForInput("Which researcher?")
+  }
   const researcherKey = researcherKeys[parseInt(researcherIdx)]
-  const researcherConfig: ResearcherConfiguration =
-    RESEARCHERS[researcherKey]]
+  const researcherConfig: ResearcherConfiguration = RESEARCHERS[researcherKey]
 
   // 10 books with the fewest insights for event processor we picked
   const booksWithLeastInsights = await db
@@ -73,7 +75,9 @@ async function processSingleBook() {
     book = bookFetch[0]
   } else if (parseInt(bookPromptResult) === booksWithLeastInsights.length) {
     const results = Promise.all(
-      booksWithLeastInsights.map((b) => doResearch(b.book, researcherConfig, true)),
+      booksWithLeastInsights.map((b) =>
+        doResearch(b.book, researcherConfig, true),
+      ),
     )
     processSingleBook()
     return
@@ -83,7 +87,11 @@ async function processSingleBook() {
   }
   // Instead of forEach, use a for...of loop for sequential async/await
   for (let i = 0; i < iterations; i++) {
-    const [run, insights, updatedBook] = await doResearch(book, researcherConfig, true) // Wait for researcher to finish
+    const [run, insights, updatedBook] = await doResearch(
+      book,
+      researcherConfig,
+      true,
+    ) // Wait for researcher to finish
     if (updatedBook) book = updatedBook
     if (updatedBook?.completed_researchers.includes(researcherKey)) {
       // Yay we're done early. No need to waste OpenAI $$!

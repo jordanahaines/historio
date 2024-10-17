@@ -21,7 +21,7 @@ const generateSignificantEventsPrompt: PromptGeneratorFunction = (
   existingInsights?: SelectInsight[],
 ) => {
   let msg = `Title: ${book.title}\nAuthor: ${book.author}`
-  if (existingInsights) {
+  if (existingInsights?.length) {
     msg += "\n\n Do not include these events in your results:"
     _.map(existingInsights, "name").forEach((e) => (msg += `\n- ${e}`))
   }

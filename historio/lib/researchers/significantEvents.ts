@@ -10,23 +10,11 @@ import {
   PromptGeneratorFunction,
   ResearcherConfiguration,
 } from "./researchCoordinator"
-import { parseDate } from "./utils"
+import { generateGenericPrompt, parseDate } from "./utils"
 
 config({ path: "local.env" })
 
 export const SIGNIFICANT_EVENTS_RESEARCHER_KEY = "significant"
-
-const generateSignificantEventsPrompt: PromptGeneratorFunction = (
-  book: SelectBook,
-  existingInsights?: SelectInsight[],
-) => {
-  let msg = `Title: ${book.title}\nAuthor: ${book.author}`
-  if (existingInsights?.length) {
-    msg += "\n\n Do not include these events in your results:"
-    _.map(existingInsights, "name").forEach((e) => (msg += `\n- ${e}`))
-  }
-  return msg
-}
 
 const parseSignificantEvents = async (
   data: SignificantEventsReturn,
@@ -73,7 +61,7 @@ export const significantEventResearcherConfig: ResearcherConfiguration = {
   key: SIGNIFICANT_EVENTS_RESEARCHER_KEY,
   finishedThreshold: 3,
   assistantID: process.env.SIGNIFICANT_RESEARCHER_ASSISTANT_ID,
-  promptGenerator: generateSignificantEventsPrompt,
+  promptGenerator: generateGenericPrompt,
   parseFunction: parseSignificantEvents,
 }
 export type ParseSignificantEvents = typeof parseSignificantEvents

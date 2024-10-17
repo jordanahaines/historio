@@ -7,13 +7,14 @@ import { InsertResearcherRun, researcherRuns } from "@/db/schema/research"
 import { eq } from "drizzle-orm"
 import OpenAI from "openai"
 import { ParseSignificantEvents } from "./significantEvents"
+import { ParseMinorEvents } from "./minorEvents"
 
 export type PromptGeneratorFunction = (
   book: SelectBook,
   existingInsights?: SelectInsight[],
 ) => string
 
-type ParseFunction = ParseSignificantEvents // | other parse types
+type ParseFunction = ParseSignificantEvents | ParseMinorEvents // | other parse types
 
 // Each individual researcher has this
 export type ResearcherConfiguration = {

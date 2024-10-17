@@ -2,6 +2,7 @@
 import { db } from "@/db"
 import { books, SelectBook } from "@/db/schema/book"
 import { insights } from "@/db/schema/insight"
+import minorEventResearcherConfig from "@/lib/researchers/minorEvents"
 import doResearch, {
   ResearcherConfiguration,
 } from "@/lib/researchers/researchCoordinator"
@@ -16,6 +17,7 @@ import readline from "readline"
 
 const RESEARCHERS = {
   significant: significantEventResearcherConfig,
+  minor: minorEventResearcherConfig,
 }
 
 const rl = readline.createInterface({

@@ -1,4 +1,8 @@
 import { parse } from "date-fns/parse"
+import { PromptGeneratorFunction } from "./researchCoordinator"
+import { SelectBook } from "@/db/schema/book"
+import { SelectInsight } from "@/db/schema/insight"
+import _ from "lodash"
 
 export type ParsedInsightDate = {
   date: Date | null
@@ -34,4 +38,16 @@ export function parseDate(
     }
   }
   return { date: null, year: null }
+}
+
+export const generateGenericPrompt: PromptGeneratorFunction = (
+  book: SelectBook,
+  existingInsights?: SelectInsight[],
+) => {
+  let msg = `Title: ${book.title}\nAuthor: ${book.author}`
+  if (existingInsights?.length) {
+    msg += "\n\n Do not include these events in your results:"
+    _.map(existingInsights, "name").forEach((e) => (msg += `\n- ${e}`))
+  }
+  return msg
 }

@@ -34,6 +34,8 @@ async function promptForInput(question: string): Promise<string> {
 }
 
 async function processSingleBook() {
+  const insightCount = await db.select({ c: count(insights.id) }).from(insights)
+  console.log(`Total insights: ${insightCount[0].c}`)
   const researcherKeys = Object.keys(RESEARCHERS)
   researcherKeys.map((r, idx) => console.log(`${idx}: ${r}`))
   let researcherIdx = "0"
@@ -76,6 +78,7 @@ async function processSingleBook() {
     if (!bookFetch.length) throw new Error("No book found for id")
     book = bookFetch[0]
   } else if (parseInt(bookPromptResult) === booksWithLeastInsights.length) {
+    // Process all books a single time
     const results = Promise.all(
       booksWithLeastInsights.map((b) =>
         doResearch(b.book, researcherConfig, true),

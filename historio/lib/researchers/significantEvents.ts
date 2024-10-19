@@ -40,14 +40,33 @@ const parseSignificantEvents = async (
   const filteredInsights = data.insights.filter(
     (i) => !existingWikiLinks.includes(i.wikipedia_link),
   )
-  console.debug(
-    `Filtered out ${data.insights.length - filteredInsights.length} existing insights`,
-  )
+  const filteredCount = data.insights.length - filteredInsights.length
+
+  // Validation -- Wikipedia links required
+  const missingWikiLinkCount = _.filter(
+    filteredInsights,
+    (i) => !i.wikipedia_link,
+  ).length
+
+  if (missingWikiLinkCount) {
+    console.debug(`Missing wiki links: ${missingWikiLinkCount}`)
+    console.debug(JSON.stringify(data))
+
+    throw Error(
+      `Missing ${missingWikiLinkCount} links for significatn researcher on book ${book.title}`,
+    )
+  }
+
+  if (filteredCount) {
+    console.debug(`Filtered out ${filteredCount} existing insights`)
+  }
+
   return _.map(filteredInsights, (i) => {
     const insight: InsertInsight = {
       name: i.name,
       description: i.description,
       book_id: book.id,
+      wikipedia_link: i.wikipedia_link,
     }
     let eventDate = parseDate(i.date)
     insight.year = eventDate.year?.toString()

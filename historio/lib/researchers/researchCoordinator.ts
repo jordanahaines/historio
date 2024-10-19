@@ -97,12 +97,22 @@ export default async function doResearch(
 
   let newInsights: SelectInsight[] = []
 
+  // Insights without a date are filtered out
+  const filteredInsightsToInsert = insightsToInsert.filter(
+    (i) => i.date || i.year,
+  )
+  if (filteredInsightsToInsert.length < insightsToInsert.length) {
+    console.warn(
+      `Filtered out ${insightsToInsert.length - filteredInsightsToInsert.length} insights without a date!`,
+    )
+  }
+
   // Insert our new insights
   let newInsightCount = 0
-  if (insightsToInsert.length) {
+  if (filteredInsightsToInsert.length) {
     const newInsights = await db
       .insert(insights)
-      .values(insightsToInsert)
+      .values(filteredInsightsToInsert)
       .returning()
     newInsightCount = newInsights.length
     console.debug(

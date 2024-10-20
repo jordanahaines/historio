@@ -34,9 +34,16 @@ const parseSignificantEvents = async (
 
   // Next we return filtered set of significant events that aren't already in DB
   const existingWikiLinks = _.map(existingInsights, "wikipedia_link")
-  const filteredInsights = data.insights.filter(
-    (i) => !existingWikiLinks.includes(i.wikipedia_link),
-  )
+  const filteredInsights = data.insights.filter((e) => {
+    // No matching wiki link OR matching name and year from date
+    if (existingWikiLinks.includes(e.wikipedia_link)) return false
+
+    const dt = parseDate(e.date)
+    return !existingInsights.find(
+      (i) => i.name === e.name && i.year === dt.year,
+    )
+  })
+
   const filteredCount = data.insights.length - filteredInsights.length
 
   // Validation -- Wikipedia links required

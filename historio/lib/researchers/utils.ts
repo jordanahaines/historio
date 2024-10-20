@@ -9,7 +9,16 @@ export type ParsedInsightDate = {
   year: number | null
 }
 
-const DATE_FORMATS = ["MM/dd/yyyy", "yyyy", "yyyy G"]
+const DATE_FORMATS = [
+  "MM/dd/yyyy",
+  "MM/yyyy",
+  "yyyy",
+  "yyyy G",
+  "MM/dd/yyyy G",
+  "MM/yyyy G",
+  "MMM yyyy G",
+  "MMMM yyyy G",
+]
 
 /**
  * Parses a date string in multiple formats.
@@ -27,6 +36,7 @@ export function parseDate(
 
   // Remove commas, which sometimes appear in years
   dateString = dateString.replace(/,/g, "")
+  dateString = dateString.replace(/–/g, "/").trim()
   let dateObj: Date | undefined = undefined
   for (const format of DATE_FORMATS) {
     dateObj = parse(dateString, format, new Date())

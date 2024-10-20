@@ -6,10 +6,7 @@ import { SignificantEventsReturn } from "@/types/researcher"
 import { config } from "dotenv"
 import { eq } from "drizzle-orm"
 import _ from "lodash"
-import {
-  PromptGeneratorFunction,
-  ResearcherConfiguration,
-} from "./researchCoordinator"
+import { ResearcherConfiguration } from "./researchCoordinator"
 import { generateGenericPrompt, parseDate } from "./utils"
 
 config({ path: "local.env" })
@@ -61,7 +58,7 @@ const parseSignificantEvents = async (
     console.debug(`Filtered out ${filteredCount} existing insights`)
   }
 
-  return _.map(filteredInsights, (i) => {
+  const filteredDatedResults = _.map(filteredInsights, (i, idx) => {
     const insight: InsertInsight = {
       name: i.name,
       description: i.description,
@@ -72,8 +69,15 @@ const parseSignificantEvents = async (
     insight.year = eventDate.year?.toString()
     insight.date = eventDate.date?.toISOString()
 
+    if (!(insight.year || insight.date)) {
+      console.warn("Missing Date! Data from AI below:")
+      console.debug(JSON.stringify(data.insights[idx]))
+    }
+
     return insight
   })
+
+  return filteredDatedResults
 }
 
 export const significantEventResearcherConfig: ResearcherConfiguration = {

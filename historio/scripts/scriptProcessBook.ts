@@ -19,6 +19,7 @@ const RESEARCHERS = {
   significant: significantEventResearcherConfig,
   minor: minorEventResearcherConfig,
 }
+const PARALLELISM = 3
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -33,18 +34,7 @@ async function promptForInput(question: string): Promise<string> {
   })
 }
 
-async function processSingleBook() {
-  const insightCount = await db.select({ c: count(insights.id) }).from(insights)
-  console.log(`Total insights: ${insightCount[0].c}`)
-  const researcherKeys = Object.keys(RESEARCHERS)
-  researcherKeys.map((r, idx) => console.log(`${idx}: ${r}`))
-  let researcherIdx = "0"
-  if (researcherKeys.length > 1) {
-    researcherIdx = await promptForInput("Which researcher?")
-  }
-  const researcherKey = researcherKeys[parseInt(researcherIdx)]
-  const researcherConfig: ResearcherConfiguration = RESEARCHERS[researcherKey]
-
+async function getBooksWithFewestInsights(researcherKey: string) {
   // 10 books with the fewest insights for event processor we picked
   const booksWithLeastInsights = await db
     .select({
@@ -57,8 +47,21 @@ async function processSingleBook() {
     .groupBy(books.id)
     .orderBy(asc(count(insights.id)))
     .limit(10)
+  return booksWithLeastInsights
+}
+
+async function processSingleBook() {
+  const researcherKeys = Object.keys(RESEARCHERS)
+  researcherKeys.map((r, idx) => console.log(`${idx}: ${r}`))
+  let researcherIdx = "0"
+  if (researcherKeys.length > 1) {
+    researcherIdx = await promptForInput("Which researcher?")
+  }
+  const researcherKey = researcherKeys[parseInt(researcherIdx)]
+  const researcherConfig: ResearcherConfiguration = RESEARCHERS[researcherKey]
 
   // console log all them books
+  const booksWithLeastInsights = await getBooksWithFewestInsights(researcherKey)
   booksWithLeastInsights.map((b, idx) => {
     console.log(`${idx}: ${b.book.title}. ${b.insightCount} insights`)
   })
@@ -107,4 +110,53 @@ async function processSingleBook() {
   console.log("-------------- restarting script")
   processSingleBook()
 }
-processSingleBook()
+
+/** Randomly chooose books and unfinished researchers to achieve some fixed insight count */
+async function processToInsightGoal() {
+  const goal = parseInt(await promptForInput("How many more insights we want?"))
+
+  async function processBooks() {
+    // Execute researcher on three of them
+    const books = await getBooksWithFewestInsights("bad")
+    let idx = 0
+    let promises: ReturnType<typeof doResearch>[] = []
+    while (idx < books.length && promises.length < PARALLELISM) {
+      const book = books[idx]
+      const randomResearchers = _.shuffle(_.keys(RESEARCHERS))
+      const researcherKey = _.find(
+        randomResearchers,
+        (r) => !book.book.completed_researchers.includes(r),
+      )
+      if (!researcherKey) continue
+      promises.push(doResearch(book.book, RESEARCHERS[researcherKey]))
+      idx++
+    }
+    return Promise.all(promises)
+  }
+
+  let newInsightCount = 0
+  while (newInsightCount < goal) {
+    const result = await processBooks()
+    newInsightCount += _.sumBy(result, (r) => r[1].length)
+    console.log(`Total New insights: ${newInsightCount}`)
+    console.log("---------------")
+  }
+}
+
+async function start() {
+  const insightCount = await db.select({ c: count(insights.id) }).from(insights)
+  console.log(`Total insights: ${insightCount[0].c}`)
+  console.log("1: Choose Books")
+  console.log("2: Process to Goal")
+  const choice = await promptForInput("What do you want to do?")
+  if (choice === "1") {
+    processSingleBook()
+  } else if (choice === "2") {
+    processToInsightGoal()
+  } else {
+    console.log("Invalid choice")
+    start()
+  }
+}
+
+start()

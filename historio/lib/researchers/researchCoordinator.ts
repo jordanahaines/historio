@@ -110,7 +110,7 @@ export default async function doResearch(
   // Insert our new insights
   let newInsightCount = 0
   if (filteredInsightsToInsert.length) {
-    const newInsights = await db
+    newInsights = await db
       .insert(insights)
       .values(filteredInsightsToInsert)
       .returning()
@@ -144,7 +144,7 @@ export default async function doResearch(
       .set({ completed_researchers: book.completed_researchers })
       .where(eq(books.id, book.id))
     console.debug(
-      `Researcher ${researcherConfiguration.key} for ${book.title} is now complete!`,
+      `Completed Researcher: ${researcherConfiguration.key} for ${book.title} is now complete!`,
     )
   }
   console.debug(

@@ -8,6 +8,27 @@
       "when": 1726944236443,
       "tag": "0000_slimy_rictor",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1728479787038,
+      "tag": "0001_wise_wiccan",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1728481166884,
+      "tag": "0002_rich_starjammers",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1728482103144,
+      "tag": "0003_flat_alex_wilder",
+      "breakpoints": true
     }
   ]
 }

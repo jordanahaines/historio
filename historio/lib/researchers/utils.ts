@@ -11,6 +11,7 @@ export type ParsedInsightDate = {
 
 const DATE_FORMATS = [
   "MM/dd/yyyy",
+  "yyyy/MM/dd",
   "MM/yyyy",
   "yyyy",
   "yyyy G",

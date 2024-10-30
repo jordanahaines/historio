@@ -9,6 +9,7 @@ export type ParsedInsightDate = {
   year: number | null
 }
 
+// Note that hyphens are replaced with / in dates, so we don't need any formats with hyphens
 const DATE_FORMATS = [
   "MM/dd/yyyy",
   "yyyy/MM/dd",

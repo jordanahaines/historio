@@ -121,21 +121,26 @@ async function processToInsightGoal() {
     let idx = 0
     let promises: ReturnType<typeof doResearch>[] = []
     while (idx < books.length && promises.length < PARALLELISM) {
+      console.log("Append Promise")
       const book = books[idx]
       const randomResearchers = _.shuffle(_.keys(RESEARCHERS))
       const researcherKey = _.find(
         randomResearchers,
         (r) => !book.book.completed_researchers.includes(r),
       )
-      if (!researcherKey) continue
+      if (!researcherKey) {
+        idx += 1
+        continue
+      }
       promises.push(doResearch(book.book, RESEARCHERS[researcherKey]))
-      idx++
+      idx += 1
     }
     return Promise.all(promises)
   }
 
   let newInsightCount = 0
   while (newInsightCount < goal) {
+    console.log("Start Loop")
     const result = await processBooks()
     newInsightCount += _.sumBy(result, (r) => r[1].length)
     console.log(`Total New insights: ${newInsightCount}`)

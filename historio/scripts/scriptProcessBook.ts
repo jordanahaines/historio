@@ -19,7 +19,7 @@ const RESEARCHERS = {
   significant: significantEventResearcherConfig,
   minor: minorEventResearcherConfig,
 }
-const PARALLELISM = 3
+const PARALLELISM = 10
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -120,8 +120,7 @@ async function processToInsightGoal() {
     const books = await getBooksWithFewestInsights("bad")
     let idx = 0
     let promises: ReturnType<typeof doResearch>[] = []
-    while (idx < books.length && promises.length < PARALLELISM) {
-      console.log("Append Promise")
+    while (idx < books.length && promises.length <= PARALLELISM) {
       const book = books[idx]
       const randomResearchers = _.shuffle(_.keys(RESEARCHERS))
       const researcherKey = _.find(
@@ -135,12 +134,12 @@ async function processToInsightGoal() {
       promises.push(doResearch(book.book, RESEARCHERS[researcherKey]))
       idx += 1
     }
+    console.log("Returning Promises. Length: ", promises.length)
     return Promise.all(promises)
   }
 
   let newInsightCount = 0
   while (newInsightCount < goal) {
-    console.log("Start Loop")
     const result = await processBooks()
     newInsightCount += _.sumBy(result, (r) => r[1].length)
     console.log(`Total New insights: ${newInsightCount}`)

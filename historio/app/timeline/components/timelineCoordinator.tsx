@@ -7,22 +7,22 @@
  * Put  suspense boundary around this component as those items load
  */
 import { SelectTimeline, SelectTimelineBook } from "@/db/schema/timeline"
-import TimelineContext from "../timelineContext"
-import React from "react"
-import { SelectBook } from "@/db/schema/book"
+import { TimelineContextProvider } from "../timelineContext"
+import { FrontendTimelineBook } from "@/types/timeline"
+import TimelineContainer from "./timelineContainer"
 
 export default function HistorioTimelineCoordinator({
   timeline,
-  books,
   timelineBooks,
 }: {
   timeline: SelectTimeline
-  books: SelectBook[]
-  timelineBooks: SelectTimelineBook[]
+  timelineBooks: FrontendTimelineBook[]
 }) {
   return (
-    <TimelineContext.Provider value={{ timeline, books: null, zoomPan: {} }}>
-      {/* Timelines go here */}
-    </TimelineContext.Provider>
+    <TimelineContextProvider books={timelineBooks}>
+      {timelineBooks.map((book) => (
+        <TimelineContainer bookID={book.book_id} key={book.book_id} />
+      ))}
+    </TimelineContextProvider>
   )
 }

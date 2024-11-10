@@ -8,3 +8,19 @@ export enum ZoomLevel {
   Three = 3,
   Four = 4, // Most zoomed in
 }
+
+// Data we need to render book in timeline on frontend
+// This is what we use in a reducer in context
+export type FrontendTimelineBook = {
+  book_id: string
+  title: string
+  author: string
+  color: string
+  order: number
+  default_start: Date
+  default_end: Date
+  start: Date
+  end: Date
+  zoom: ZoomLevel
+  locked: boolean
+}

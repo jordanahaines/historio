@@ -1,13 +1,12 @@
-import "@/styles/globals.css"
-import { Metadata, Viewport } from "next"
-import { Link } from "@nextui-org/link"
+import "@/styles/globals.scss"
 import clsx from "clsx"
+import { Metadata, Viewport } from "next"
 
 import { Providers } from "./providers"
 
-import { siteConfig } from "@/config/site"
-import { fontSans, fontSerif, fontMono } from "@/config/fonts"
 import { Navbar } from "@/components/navbar"
+import { fontMono, fontSans, fontSerif } from "@/config/fonts"
+import { siteConfig } from "@/config/site"
 
 export const metadata: Metadata = {
   title: {

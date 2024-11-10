@@ -34,11 +34,11 @@ export default function TimelinePageTitle({
         <h1
           className={`${styles.timelineTitle} text-6xl ${fontSerif.className}`}
         >
-          Timelines \&nbsp;
+          Timelines <span className="opacity-40">\\</span>
         </h1>
         {!editing && (
           <>
-            <p className={`text-3xl`}>{title}</p>
+            <p className="text-3xl grow">{title}</p>
             <Button isIconOnly variant="faded" onClick={() => setEditing(true)}>
               <FiEdit />
             </Button>

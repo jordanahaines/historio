@@ -1,16 +1,10 @@
 import { db } from "@/db"
 import colors from "@/lib/colors"
+import { FrontendTimelineBook, ZoomLevel } from "@/types/timeline"
+import { eq } from "drizzle-orm"
 import _ from "lodash"
 import { books, SelectBook } from "../schema/book"
-import {
-  InsertTimeline,
-  SelectTimeline,
-  SelectTimelineBook,
-  timelineBooks,
-  timelines,
-} from "../schema/timeline"
-import { eq, inArray } from "drizzle-orm"
-import { time } from "console"
+import { SelectTimeline, timelineBooks, timelines } from "../schema/timeline"
 
 /**
  * Helper function to create a new timeline, given a list of books
@@ -52,7 +46,7 @@ export async function createTimeline(
 
 export async function fetchTimelineAndBooks(
   timelineID: string,
-): Promise<[SelectTimeline, SelectTimelineBook[], SelectBook[]]> {
+): Promise<[SelectTimeline, FrontendTimelineBook[]]> {
   const timeline = (
     await db
       .select()
@@ -66,13 +60,35 @@ export async function fetchTimelineAndBooks(
   }
 
   const tbooks = await db
-    .select()
+    .select({ tb: timelineBooks, title: books.title, author: books.author })
     .from(timelineBooks)
+    .innerJoin(books, eq(timelineBooks.book_id, books.id))
     .where(eq(timelineBooks.timeline_id, timelineID))
-  const returnBooks = await db
-    .select()
-    .from(books)
-    .where(inArray(books.id, _.map(tbooks, "id")))
 
-  return [timeline, tbooks, returnBooks]
+  const earliestStart = _.minBy(
+    _.filter(tbooks, "tb.default_start"),
+    "tb.default_start",
+  )?.tb.default_start
+  const latestEnd = _.maxBy(
+    _.filter(tbooks, "tb.default_end"),
+    "tb.default_end",
+  )?.tb.default_end
+
+  const flattenedBooks: FrontendTimelineBook[] = tbooks.map((t) => {
+    return {
+      book_id: t.tb.book_id,
+      title: t.title || "",
+      author: t.author || "",
+      color: t.tb.color || "",
+      order: parseInt(t.tb.order),
+      default_start: t.tb.default_start || earliestStart,
+      default_end: t.tb.default_end || latestEnd,
+      start: t.tb.default_start || earliestStart,
+      end: t.tb.default_end || latestEnd,
+      zoom: ZoomLevel.One,
+      locked: false,
+    }
+  })
+
+  return [timeline, flattenedBooks]
 }

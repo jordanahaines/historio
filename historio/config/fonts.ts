@@ -3,7 +3,14 @@ import {
   Inter as FontSans,
   Rosarivo,
   Outfit,
+  Gaegu,
 } from "next/font/google"
+
+export const fontHandwriting = Gaegu({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-handwriting",
+})
 
 export const fontSans = Outfit({
   subsets: ["latin"],

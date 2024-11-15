@@ -10,3 +10,11 @@ I hate having to think about where to put a new file, so here are the convention
 - DB queries are in `db/queries` (separated by the models they affect)
 - Non-UI business logic goes in `/lib`
 - UI business logic - server actions - go in `/actions` if they're re-used, otherwise they should be in the server component that is using them
+
+## Cheat Sheet
+### Classes
+- `.font-title` for title (serif) font
+- `.vertical-rule` for 2px full height div
+
+### Resources
+- [srcbook](https://github.com/srcbookdev/srcbook) for local shell-like stuff

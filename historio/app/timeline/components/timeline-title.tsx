@@ -8,7 +8,6 @@ import { FiEdit } from "react-icons/fi"
 
 import { useState } from "react"
 import { updateTimelineTitle } from "../actions"
-import styles from "./timelineTitle.module.scss"
 
 export type TimelinePageTitleProps = {
   timeline: SelectTimeline
@@ -31,9 +30,7 @@ export default function TimelinePageTitle({
   return (
     <div>
       <div className="editable-title-container flex justify-between items-center mb-4">
-        <h1
-          className={`${styles.timelineTitle} text-6xl ${fontSerif.className}`}
-        >
+        <h1 className="timelineTitle text-6xl ${fontSerif.className">
           Timelines <span className="opacity-40">\\</span>
         </h1>
         {!editing && (

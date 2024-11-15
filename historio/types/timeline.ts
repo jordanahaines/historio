@@ -1,3 +1,5 @@
+import { SelectInsight } from "@/db/schema/insight"
+
 /**
  * These zooms are multipliers. 4x means literally 4x the time per pixel
  * in horizontal timeline
@@ -12,6 +14,7 @@ export enum ZoomLevel {
 // Data we need to render book in timeline on frontend
 // This is what we use in a reducer in context
 export type FrontendTimelineBook = {
+  timeline_book_id: string
   book_id: string
   title: string
   author: string
@@ -23,4 +26,5 @@ export type FrontendTimelineBook = {
   end: Date
   zoom: ZoomLevel
   locked: boolean
+  insights: SelectInsight[]
 }

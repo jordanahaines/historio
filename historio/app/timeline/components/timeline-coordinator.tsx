@@ -6,10 +6,10 @@
  *
  * Put  suspense boundary around this component as those items load
  */
-import { SelectTimeline, SelectTimelineBook } from "@/db/schema/timeline"
-import { TimelineContextProvider } from "../timelineContext"
+import { SelectTimeline } from "@/db/schema/timeline"
 import { FrontendTimelineBook } from "@/types/timeline"
-import TimelineContainer from "./timelineContainer"
+import { TimelineContextProvider } from "../timelineContext"
+import TimelineContainer from "./timeline-container"
 
 export default function HistorioTimelineCoordinator({
   timeline,

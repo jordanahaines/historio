@@ -7,7 +7,7 @@ export default function BookCover({
   id,
   title,
   author,
-  width = 160,
+  width = 120,
   height = 200,
   customClass = "",
 }: {

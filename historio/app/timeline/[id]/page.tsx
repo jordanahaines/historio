@@ -1,6 +1,6 @@
 import { fetchTimelineAndBooks } from "@/db/queries/timelines"
-import TimelinePageTitle from "../components/timelineTitle"
-import HistorioTimelineCoordinator from "../components/timelineCoordinator"
+import TimelinePageTitle from "../components/timeline-title"
+import HistorioTimelineCoordinator from "../components/timeline-coordinator"
 
 export default async function Page({ params }: { params: { id: string } }) {
   const [timeline, timelineBooks] = await fetchTimelineAndBooks(params.id)

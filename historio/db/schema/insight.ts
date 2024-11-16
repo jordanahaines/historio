@@ -1,4 +1,11 @@
-import { date, numeric, pgTable, uuid, varchar } from "drizzle-orm/pg-core"
+import {
+  boolean,
+  date,
+  numeric,
+  pgTable,
+  uuid,
+  varchar,
+} from "drizzle-orm/pg-core"
 
 import { books } from "./book"
 import { BASE_SCHEMA_FIELDS } from "./common"
@@ -14,6 +21,7 @@ export const insights = pgTable("insights", {
   wikipedia_link: varchar("wikipedia_link"),
   views: numeric("views").default("0"),
   researcher_run: uuid("researcher_run").references(() => researcherRuns.id),
+  archived: boolean("archived").default(false),
 })
 
 // Researcher runs represent an instance of one researcher running for one book

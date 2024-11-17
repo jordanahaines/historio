@@ -20,9 +20,8 @@ export const parseMinorEvents = async (
   // The only filtering we do is to remove events with the same name and date
   // also events must havea  date
   const filteredEvents = data.insights.filter((e) => {
-    const eventDate = parseDate(e.date)
     return !existingInsights.find(
-      (i) => i.name === e.name && i.year === eventDate.year,
+      (i) => i.name?.toLowerCase() === e.name.toLowerCase(),
     )
   })
 

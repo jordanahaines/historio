@@ -3,6 +3,7 @@ import BookCover from "@/components/bookCover"
 /** Container for a single timeline */
 import { timelineDispatchAction, useTimelineContext } from "../timelineContext"
 import { IoSyncCircle, IoColorPaletteOutline } from "react-icons/io5"
+import { RiLightbulbFlashFill } from "react-icons/ri"
 import { FaUnlock, FaLock } from "react-icons/fa"
 import { FaCirclePlus, FaCircleMinus } from "react-icons/fa6"
 import ActualTimeline from "./actual-timeline"
@@ -16,6 +17,7 @@ import {
 import { Button } from "@nextui-org/button"
 import { Tooltip } from "@nextui-org/tooltip"
 import { useCallback } from "react"
+import { Chip } from "@nextui-org/chip"
 
 export default function TimelineContainer({ bookID }: { bookID: string }) {
   const { timelineContext, updateTimelineContext } = useTimelineContext()
@@ -110,29 +112,46 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
           <div className={`tab-diagonal z-0 ${bg} right`}></div>
         </div>
         <div className="w-1/2 flex justify-center"></div>
-        <div className="bg-zinc-700 rounded-br-lg text-white px-4 py-2 w-1/4 grow flex justify-end">
-          <p>{bookDetails.insights.length} Insights</p>
-          <Tooltip content="Sync all other timelines to match this one">
-            <Button isIconOnly variant="faded">
-              <IoSyncCircle />
-            </Button>
+        <div className="bg-white border-4 border-zinc-300 !border-t-0 rounded-b-lg px-4 py-2 w-1/4 grow flex justify-between items-center">
+          <Tooltip
+            content={`${bookDetails.insights.length} insights for this book`}
+          >
+            <Chip
+              color="primary"
+              size="sm"
+              endContent={<RiLightbulbFlashFill size={18} />}
+            >
+              {bookDetails.insights.length}&nbsp;
+            </Chip>
           </Tooltip>
-          <Tooltip content="Lock all other timelines to stay in sync with this one">
-            <Button isIconOnly variant="faded">
-              {bookDetails.locked ? <FaLock /> : <FaUnlock />}
-            </Button>
-          </Tooltip>
-          <div className="vertical-rule"></div>
-          <Tooltip content="Zoom in">
-            <Button isIconOnly variant="faded">
-              <FaCirclePlus />
-            </Button>
-          </Tooltip>
-          <Tooltip content="Zoom out">
-            <Button isDisabled isIconOnly variant="faded">
-              <FaCircleMinus />
-            </Button>
-          </Tooltip>
+          <div className="flex justify-end items-center">
+            <Tooltip content="Sync all other timelines to match this one">
+              <Button isIconOnly variant="ghost" className="border-0">
+                <IoSyncCircle />
+              </Button>
+            </Tooltip>
+            <Tooltip content="Lock all other timelines to stay in sync with this one">
+              <Button isIconOnly variant="ghost" className="border-0">
+                {bookDetails.locked ? <FaLock /> : <FaUnlock />}
+              </Button>
+            </Tooltip>
+            <div className="vertical-rule bg-zinc-200 w-1 h-3/4"></div>
+            <Tooltip content="Zoom in">
+              <Button isIconOnly variant="ghost" className="border-0">
+                <FaCirclePlus />
+              </Button>
+            </Tooltip>
+            <Tooltip content="Zoom out">
+              <Button
+                isDisabled
+                isIconOnly
+                variant="ghost"
+                className="border-0"
+              >
+                <FaCircleMinus />
+              </Button>
+            </Tooltip>
+          </div>
         </div>
       </div>
     </>

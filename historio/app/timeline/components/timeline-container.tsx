@@ -1,7 +1,7 @@
 "use client"
 import BookCover from "@/components/bookCover"
 /** Container for a single timeline */
-import { useTimelineContext } from "../timelineContext"
+import { timelineDispatchAction, useTimelineContext } from "../timelineContext"
 import { IoSyncCircle, IoColorPaletteOutline } from "react-icons/io5"
 import { FaUnlock, FaLock } from "react-icons/fa"
 import { FaCirclePlus, FaCircleMinus } from "react-icons/fa6"
@@ -15,9 +15,10 @@ import {
 } from "@nextui-org/dropdown"
 import { Button } from "@nextui-org/button"
 import { Tooltip } from "@nextui-org/tooltip"
+import { useCallback } from "react"
 
 export default function TimelineContainer({ bookID }: { bookID: string }) {
-  const { timelineContext } = useTimelineContext()
+  const { timelineContext, updateTimelineContext } = useTimelineContext()
   const bookDetails = timelineContext[bookID]
 
   // Only take title before colon to disregard subtitle
@@ -55,6 +56,18 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
     )
   }
 
+  const updateColor = useCallback(
+    (bookID: string, color: string) => {
+      if (updateTimelineContext) {
+        updateTimelineContext({
+          type: timelineDispatchAction.ChangeColor,
+          payload: { book_id: bookID, color },
+        })
+      }
+    },
+    [updateTimelineContext],
+  )
+
   return (
     <>
       <div className="border-4 z-20 relative !border-b-8 bg-white mt-10 border-zinc-300 rounded-t-lg w-full min-h-40 flex">
@@ -86,7 +99,10 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
                   <IoColorPaletteOutline size={30} />
                 </Button>
               </DropdownTrigger>
-              <DropdownMenu aria-label="Timeline Colors">
+              <DropdownMenu
+                onAction={(k: string) => updateColor(bookID, k)}
+                aria-label="Timeline Colors"
+              >
                 {Object.keys(tailwindTimelineColors).map(renderColorMenuItem)}
               </DropdownMenu>
             </Dropdown>

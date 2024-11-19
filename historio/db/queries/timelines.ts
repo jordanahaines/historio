@@ -1,7 +1,7 @@
 import { db } from "@/db"
-import colors from "@/lib/colors"
+import colors, { tailwindTimelineColors } from "@/lib/colors"
 import { FrontendTimelineBook, ZoomLevel } from "@/types/timeline"
-import { eq, inArray } from "drizzle-orm"
+import { eq, inArray, and } from "drizzle-orm"
 import _ from "lodash"
 import { books, SelectBook } from "../schema/book"
 import { SelectTimeline, timelineBooks, timelines } from "../schema/timeline"
@@ -77,7 +77,10 @@ export async function fetchTimelineAndBooks(
   const tinsights = await db
     .select()
     .from(insights)
-    .where(inArray(insights.book_id, bookIDs))
+    .where(
+      and(inArray(insights.book_id, bookIDs), eq(insights.archived, false)),
+    )
+
   const keyedInsights = _.groupBy(tinsights, "book_id")
 
   const earliestStart = _.minBy(
@@ -89,13 +92,19 @@ export async function fetchTimelineAndBooks(
     "tb.default_end",
   )?.tb.default_end
 
+  const usedColors = new Set<string>()
   const flattenedBooks: FrontendTimelineBook[] = tbooks.map((t) => {
+    const color = _.filter(
+      _.keys(tailwindTimelineColors),
+      (c) => !usedColors.has(c),
+    )[0]
+    usedColors.add(color)
     return {
       timeline_book_id: t.tb.id,
       book_id: t.tb.book_id,
       title: t.title || "",
       author: t.author || "",
-      color: t.tb.color || "",
+      color,
       order: t.tb.order || 0,
       default_start: t.tb.default_start || earliestStart,
       default_end: t.tb.default_end || latestEnd,

@@ -1,3 +1,4 @@
+"use client"
 import { Link } from "@nextui-org/link"
 import { Snippet } from "@nextui-org/snippet"
 import { Code } from "@nextui-org/code"
@@ -8,6 +9,13 @@ import styles from "./page.module.scss"
 import { siteConfig } from "@/config/site"
 import { title, subtitle } from "@/components/primitives"
 import { GithubIcon } from "@/components/icons"
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/dropdown"
+import { Button } from "@nextui-org/button"
 
 export default function Home() {
   return (
@@ -23,6 +31,17 @@ export default function Home() {
         </span>
         <div className={subtitle({ class: "mt-4" })}>
           Beautiful, fast and modern React UI library.
+        </div>
+        <div>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button type="button">Dropdown!</Button>
+            </DropdownTrigger>
+            <DropdownMenu>
+              <DropdownItem key="test">Example Item</DropdownItem>
+              <DropdownItem key="test">Example Item</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         </div>
       </div>
 

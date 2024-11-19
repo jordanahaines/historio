@@ -2,12 +2,19 @@
 import BookCover from "@/components/bookCover"
 /** Container for a single timeline */
 import { useTimelineContext } from "../timelineContext"
-import { IoSyncCircle } from "react-icons/io5"
+import { IoSyncCircle, IoColorPaletteOutline } from "react-icons/io5"
 import { FaUnlock, FaLock } from "react-icons/fa"
 import { FaCirclePlus, FaCircleMinus } from "react-icons/fa6"
+import ActualTimeline from "./actual-timeline"
+import _ from "lodash"
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/dropdown"
 import { Button } from "@nextui-org/button"
 import { Tooltip } from "@nextui-org/tooltip"
-import ActualTimeline from "./actual-timeline"
 
 export default function TimelineContainer({ bookID }: { bookID: string }) {
   const { timelineContext } = useTimelineContext()
@@ -18,9 +25,39 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
     ? bookDetails.title.split(":")[0]
     : bookDetails.title
 
+  // This has to be defined here to be picked up by tailwind
+  const tailwindTimelineColors = {
+    red: "bg-red-500",
+    amber: "bg-amber-500",
+    lime: "bg-lime-500",
+    sky: "bg-sky-500",
+    fuchsia: "bg-fuchsia-500",
+    pink: "bg-pink-500",
+    rose: "bg-rose-500",
+    teal: "bg-teal-500",
+    emerald: "bg-emerald-500",
+    indigo: "bg-indigo-500",
+    yellow: "bg-yellow-500",
+    violet: "bg-violet-500",
+  }
+  const bg = tailwindTimelineColors[bookDetails.color]
+
+  const renderColorMenuItem = (color: keyof typeof tailwindTimelineColors) => {
+    return (
+      <DropdownItem key={color}>
+        <div className="flex justify-start items-center">
+          <div
+            className={`${tailwindTimelineColors[color]} rounded-full w-2 h-2 mr-4`}
+          ></div>
+          <span>{_.capitalize(color)}</span>
+        </div>
+      </DropdownItem>
+    )
+  }
+
   return (
     <>
-      <div className="border-4 mt-10 border-zinc-800 rounded-t-lg w-full min-h-40 flex">
+      <div className="border-4 z-20 relative !border-b-8 bg-white mt-10 border-zinc-300 rounded-t-lg w-full min-h-40 flex">
         <BookCover
           id={bookDetails.book_id}
           title={bookDetails.title}
@@ -30,14 +67,35 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
         <ActualTimeline bookDetails={bookDetails} />
       </div>
       <div className="w-full flex">
-        <div className="border-2 border-top-0 bg-white border-zinc-800 px-4 py-2 w-1/3 flex flex-col justify-center">
-          <p className="font-title">{displayTitle}</p>
-          <p className="text-xs">by {bookDetails.author}</p>
+        <div
+          className={`${bg} tab-author relative ml-8 text-white px-2 pb-2 w-1/5 flex justify-between items-center`}
+        >
+          <div className={`tab-diagonal z-0 left ${bg}`}></div>
+          <div className="flex grow flex-col justify-center">
+            <p className="font-title z-10 text-bold">{displayTitle}</p>
+            <p className="text-xs z-10">by {bookDetails.author}</p>
+          </div>
+          <div className="w-1/5 flex justify-end">
+            <Dropdown>
+              <DropdownTrigger>
+                <Button
+                  className="!border-0 text-white !hover:bg-white hover:text-black"
+                  variant="ghost"
+                  isIconOnly
+                >
+                  <IoColorPaletteOutline size={30} />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Timeline Colors">
+                {Object.keys(tailwindTimelineColors).map(renderColorMenuItem)}
+              </DropdownMenu>
+            </Dropdown>
+          </div>
+          <div className={`tab-diagonal z-0 ${bg} right`}></div>
         </div>
-        <div className="border-2 border-top-0 bg-white border-zinc-800 px-4 py-2 w-1/3 flex justify-center">
+        <div className="w-1/2 flex justify-center"></div>
+        <div className="bg-zinc-700 rounded-br-lg text-white px-4 py-2 w-1/4 grow flex justify-end">
           <p>{bookDetails.insights.length} Insights</p>
-        </div>
-        <div className="border-2 border-top-0 bg-white border-zinc-800 px-4 py-2 w-1/3 flex justify-center">
           <Tooltip content="Sync all other timelines to match this one">
             <Button isIconOnly variant="faded">
               <IoSyncCircle />

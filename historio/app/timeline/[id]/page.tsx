@@ -3,7 +3,8 @@ import TimelinePageTitle from "../components/timeline-title"
 import HistorioTimelineCoordinator from "../components/timeline-coordinator"
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const [timeline, timelineBooks] = await fetchTimelineAndBooks(params.id)
+  const { id } = await params
+  const [timeline, timelineBooks] = await fetchTimelineAndBooks(id)
 
   return (
     <div>

@@ -31,14 +31,14 @@ export default function ActualTimeline({
     <div className="actualTimeline timelineViewport">
       <div className="timelineInner">
         <div className="timelineBackground flex items-center">
-          <div className="timelineLine bg-zinc-800"></div>
+          <div className="timelineLine bg-zinc-300"></div>
         </div>
         <div className="timelineContents px-2 flex items-center">
-          <div className="bg-zinc-800 text-white px-3 py-1 mr-8 startDate">
+          <div className="bg-zinc-300 text-white px-3 py-1 mr-8 startDate">
             {bookDetails.start.toLocaleDateString()}
           </div>
           {orderedInsights.map(renderInsight)}
-          <div className="bg-zinc-800 text-white px-3 py-1 ml-8 endDate">
+          <div className="bg-zinc-300 text-white px-3 py-1 ml-8 endDate">
             {bookDetails.end.toLocaleDateString()}
           </div>
         </div>

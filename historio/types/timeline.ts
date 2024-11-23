@@ -11,6 +11,11 @@ export enum ZoomLevel {
   Four = 4, // Most zoomed in
 }
 
+// Keyed on a date string
+export type GroupedInsights = {
+  string: SelectInsight[]
+}
+
 // Data we need to render book in timeline on frontend
 // This is what we use in a reducer in context
 export type FrontendTimelineBook = {
@@ -26,5 +31,7 @@ export type FrontendTimelineBook = {
   end: Date
   zoom: ZoomLevel
   locked: boolean
+  grouped_insights: GroupedInsights
+  // Deprecated
   insights: SelectInsight[]
 }

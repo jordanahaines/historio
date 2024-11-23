@@ -19,7 +19,7 @@ export default function BookCover({
   customClass?: string
 }) {
   return (
-    <div className="book-cover">
+    <div className="bookCover">
       <Image
         width={width}
         height={height}

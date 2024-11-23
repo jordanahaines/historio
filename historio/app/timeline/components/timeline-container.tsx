@@ -3,6 +3,7 @@ import BookCover from "@/components/bookCover"
 /** Container for a single timeline */
 import { timelineDispatchAction, useTimelineContext } from "../timelineContext"
 import { IoSyncCircle, IoColorPaletteOutline } from "react-icons/io5"
+import { MdStickyNote2 } from "react-icons/md"
 import { RiLightbulbFlashFill } from "react-icons/ri"
 import { FaUnlock, FaLock } from "react-icons/fa"
 import { FaCirclePlus, FaCircleMinus } from "react-icons/fa6"
@@ -113,17 +114,28 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
         </div>
         <div className="w-1/2 flex justify-center"></div>
         <div className="bg-white border-4 border-zinc-300 !border-t-0 rounded-b-lg px-4 py-2 w-1/4 grow flex justify-between items-center">
-          <Tooltip
-            content={`${bookDetails.insights.length} insights for this book`}
-          >
-            <Chip
-              color="primary"
-              size="sm"
-              endContent={<RiLightbulbFlashFill size={18} />}
+          <div className="flex justify-start gap-2">
+            <Tooltip
+              content={`${bookDetails.insights.length} insights for this book`}
             >
-              {bookDetails.insights.length}&nbsp;
-            </Chip>
-          </Tooltip>
+              <Chip
+                color="primary"
+                size="sm"
+                endContent={<RiLightbulbFlashFill size={18} />}
+              >
+                {bookDetails.insights.length}&nbsp;
+              </Chip>
+            </Tooltip>
+            <Tooltip content={`0 notes for this book`}>
+              <Chip
+                color="default"
+                size="sm"
+                endContent={<MdStickyNote2 size={18} />}
+              >
+                0
+              </Chip>
+            </Tooltip>
+          </div>
           <div className="flex justify-end items-center">
             <Tooltip content="Sync all other timelines to match this one">
               <Button isIconOnly variant="ghost" className="border-0">

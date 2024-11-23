@@ -6,6 +6,7 @@ import _ from "lodash"
 import { books, SelectBook } from "../schema/book"
 import { SelectTimeline, timelineBooks, timelines } from "../schema/timeline"
 import { insights } from "../schema/insight"
+import { GroupInsights } from "@/lib/timelines/utils"
 
 /**
  * Helper function to create a new timeline, given a list of books
@@ -99,6 +100,7 @@ export async function fetchTimelineAndBooks(
       (c) => !usedColors.has(c),
     )[0]
     usedColors.add(color)
+    const bookInsights = t.tb.book_id ? keyedInsights[t.tb.book_id] : []
     return {
       timeline_book_id: t.tb.id,
       book_id: t.tb.book_id,
@@ -112,7 +114,8 @@ export async function fetchTimelineAndBooks(
       end: t.tb.default_end || latestEnd,
       zoom: ZoomLevel.One,
       locked: false,
-      insights: t.tb.book_id ? keyedInsights[t.tb.book_id] : [],
+      insights: bookInsights,
+      grouped_insights: bookInsights.length ? GroupInsights(bookInsights) : [],
     }
   })
 

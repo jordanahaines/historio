@@ -60,7 +60,7 @@ export default function ActualTimeline({
   const renderBucket = (bucket: SelectInsight[], date: string, idx: number) => {
     let insights = bucket
     if (insights.length > numInsights) {
-      insights = _.sampleSize(insights, numInsights)
+      insights = insights.slice(0, numInsights)
     }
     const width = `${bucketWidth}px`
     const bucketYear = date.split("-")[0]

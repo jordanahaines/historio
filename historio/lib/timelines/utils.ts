@@ -9,7 +9,9 @@ const GROUP_INSIGHTS_BUCKETS = 10
 const DATE_FORMAT = "yyyy-MM-dd"
 
 /** Group our insights into date buckets */
-export function GroupInsights(insights: SelectInsight[]): GroupedInsights {
+export function GroupInsights(
+  insights: SelectInsight[],
+): [GroupedInsights, boolean, boolean] {
   // First we determine outliers using IQR
   const sortedInsights = _.sortBy(
     _.filter(insights, (i) => !!i.date),
@@ -53,8 +55,8 @@ export function GroupInsights(insights: SelectInsight[]): GroupedInsights {
     if (!d) return format(lowerBoundDate, DATE_FORMAT)
     return format(d, DATE_FORMAT)
   })
-  console.info("Buckets:")
-  console.log(_.mapValues(buckets, "length"))
+  // console.info("Buckets:")
+  // console.log(_.mapValues(buckets, "length"))
 
-  return buckets
+  return [buckets, lowerBound > 0, upperBound < sortedInsights.length - 1]
 }

@@ -32,6 +32,8 @@ export type FrontendTimelineBook = {
   zoom: ZoomLevel
   locked: boolean
   grouped_insights: GroupedInsights
+  has_earlier_insight?: boolean
+  has_later_insight?: boolean
   // Deprecated
   insights: SelectInsight[]
 }

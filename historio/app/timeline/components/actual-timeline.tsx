@@ -18,15 +18,27 @@ export default function ActualTimeline({
   const bucketWidth = numInsights * INSIGHT_WIDTH
 
   // Whether or not there are duplicate years. If so, we have to put month on those years
-  const orderedInsightYears = _.keys(bookDetails.grouped_insights)
+
+  const orderedInsightYears = _.keys(bookDetails.grouped_insights).sort()
   const displayYears = useMemo(() => {
     const oiyDates = orderedInsightYears.map((y) =>
       parse(y, "yyyy-MM-dd", new Date()),
     )
     const counts = _.countBy(oiyDates, (i) => i.getFullYear())
-    return _.map(oiyDates, (y) => {
-      if (counts[y.getFullYear()] > 1) return formatDate(y, "MMM yyyy")
-      return formatDate(y, "yyyy")
+    return _.map(oiyDates, (y, idx) => {
+      let display =
+        counts[y.getFullYear()] > 1
+          ? formatDate(y, "MMM yyyy")
+          : formatDate(y, "yyyy")
+      if (idx === 0 && bookDetails.has_earlier_insight) {
+        display = `${display} and prior`
+      } else if (
+        idx === orderedInsights.length - 1 &&
+        bookDetails.has_later_insight
+      ) {
+        display = `${display} and later`
+      }
+      return display
     })
   }, [JSON.stringify(orderedInsightYears)])
 
@@ -79,7 +91,7 @@ export default function ActualTimeline({
         const currentBucketIdx = timelineRef.current
           ? Math.floor(timelineRef.current.scrollLeft / bucketWidth)
           : 0
-        setYearDisplay(orderedInsights[currentBucketIdx][0].split("-")[0])
+        setYearDisplay(displayYears[currentBucketIdx])
       }
     },
     [timelineRef, yearDisplay],

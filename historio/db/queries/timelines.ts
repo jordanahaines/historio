@@ -2,7 +2,7 @@ import { db } from "@/db"
 import colors, { tailwindTimelineColors } from "@/lib/colors"
 import { FrontendTimelineBook, ZoomLevel } from "@/types/timeline"
 import { eq, inArray, and } from "drizzle-orm"
-import _ from "lodash"
+import _, { has } from "lodash"
 import { books, SelectBook } from "../schema/book"
 import { SelectTimeline, timelineBooks, timelines } from "../schema/timeline"
 import { insights } from "../schema/insight"
@@ -101,6 +101,7 @@ export async function fetchTimelineAndBooks(
     )[0]
     usedColors.add(color)
     const bookInsights = t.tb.book_id ? keyedInsights[t.tb.book_id] : []
+    const [groupedInsights, hasEarlier, hasLater] = GroupInsights(bookInsights)
     return {
       timeline_book_id: t.tb.id,
       book_id: t.tb.book_id,
@@ -115,7 +116,9 @@ export async function fetchTimelineAndBooks(
       zoom: ZoomLevel.One,
       locked: false,
       insights: bookInsights,
-      grouped_insights: bookInsights.length ? GroupInsights(bookInsights) : [],
+      grouped_insights: bookInsights.length ? groupedInsights : [],
+      has_earlier_insight: hasEarlier,
+      has_later_insight: hasLater,
     }
   })
 

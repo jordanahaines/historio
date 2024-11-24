@@ -1,9 +1,9 @@
 import { SelectInsight } from "@/db/schema/insight"
 import "@/styles/timeline.scss"
 import { FrontendTimelineBook } from "@/types/timeline"
-import { format, setYear } from "date-fns"
+import { format, formatDate, parse, setYear } from "date-fns"
 import _ from "lodash"
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useMemo, useRef, useState } from "react"
 
 const INSIGHT_WIDTH = 120
 
@@ -16,24 +16,29 @@ export default function ActualTimeline({
   const timelineRef = useRef(null)
   const numInsights = 5 // TODO: Calculate based on zoom level
   const bucketWidth = numInsights * INSIGHT_WIDTH
-  const [yearDisplay, setYearDisplay] = useState(
-    orderedInsights[0][0].split("-")[0],
-  )
+
+  // Whether or not there are duplicate years. If so, we have to put month on those years
+  const orderedInsightYears = _.keys(bookDetails.grouped_insights)
+  const displayYears = useMemo(() => {
+    const oiyDates = orderedInsightYears.map((y) =>
+      parse(y, "yyyy-MM-dd", new Date()),
+    )
+    const counts = _.countBy(oiyDates, (i) => i.getFullYear())
+    return _.map(oiyDates, (y) => {
+      if (counts[y.getFullYear()] > 1) return formatDate(y, "MMM yyyy")
+      return formatDate(y, "yyyy")
+    })
+  }, [JSON.stringify(orderedInsightYears)])
+
+  // First date that is displayed
+  const [yearDisplay, setYearDisplay] = useState(displayYears[0])
 
   const renderInsight = (insight: SelectInsight, idx: number) => {
-    const even = idx % 2 === 0
-    let dte = insight.date ? new Date(insight.date) : null
-    let dateDisplay = ""
-    if (dte && dte.getMonth() == 0 && dte.getDate() == 1) {
-    } else if (dte) {
-      dte = new Date(dte.valueOf() + dte.getTimezoneOffset() * 70 * 1000)
-      dateDisplay = format(dte, "MMM do")
-    }
     if (insight.date)
       return (
-        <div key={insight.id} className={`insight ${even ? "even" : "odd"}`}>
+        <div key={insight.id} className="insight">
           <p className="font-title font-bold text-blue-400 mb-2 border-b-2 border-blue-100">
-            {dateDisplay}
+            {displayYears[0]}
           </p>
           {insight.name}
         </div>
@@ -67,6 +72,7 @@ export default function ActualTimeline({
     )
   }
   // Event Handlers
+  const updateScrollContext = useCallback((newScrollOffset: number) => {}, [])
   const handleScroll = useCallback(
     (e: any) => {
       if (timelineRef.current) {

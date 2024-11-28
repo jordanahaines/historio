@@ -1,6 +1,6 @@
 import { SelectInsight } from "@/db/schema/insight"
 import "@/styles/timeline.scss"
-import { FrontendTimelineBook } from "@/types/timeline"
+import { FrontendTimelineBook, ZoomLevel } from "@/types/timeline"
 import { format, formatDate, parse, setYear } from "date-fns"
 import _ from "lodash"
 import { useCallback, useMemo, useRef, useState } from "react"
@@ -16,6 +16,7 @@ export default function ActualTimeline({
   const timelineRef = useRef(null)
   const numInsights = 5 // TODO: Calculate based on zoom level
   const bucketWidth = numInsights * INSIGHT_WIDTH
+  const [zoom, setZoom] = useState(bookDetails.zoom)
 
   // Whether or not there are duplicate years. If so, we have to put month on those years
 
@@ -83,18 +84,27 @@ export default function ActualTimeline({
       </div>
     )
   }
-  // Event Handlers
-  const updateScrollContext = useCallback((newScrollOffset: number) => {}, [])
   const handleScroll = useCallback(
     (e: any) => {
-      if (timelineRef.current) {
-        const currentBucketIdx = timelineRef.current
-          ? Math.floor(timelineRef.current.scrollLeft / bucketWidth)
-          : 0
-        setYearDisplay(displayYears[currentBucketIdx])
-      }
+      if (!timelineRef.current) return
+      // Adjust years
+      const currentBucketIdx = timelineRef.current
+        ? Math.floor(timelineRef.current.scrollLeft / bucketWidth)
+        : 0
+      setYearDisplay(displayYears[currentBucketIdx])
     },
     [timelineRef, yearDisplay],
+  )
+
+  const handleZoom = useCallback(
+    (zoomIn: boolean) => {
+      if (zoomIn && zoom < ZoomLevel.Four) {
+        setZoom(zoom + 1)
+      } else if (!zoomIn && zoom > ZoomLevel.One) {
+        setZoom(zoom - 1)
+      }
+    },
+    [zoom],
   )
 
   return (

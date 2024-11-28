@@ -71,6 +71,13 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
     [updateTimelineContext],
   )
 
+  const updateZoom = useCallback(
+    (bookID: string, zoomIn: boolean) => {
+      if (!updateTimelineContext) return
+    },
+    [updateTimelineContext],
+  )
+
   return (
     <>
       <div className="border-4 z-20 relative !border-b-8 bg-white mt-10 border-zinc-300 rounded-t-lg w-full min-h-40 flex">

@@ -1,4 +1,4 @@
-import { FrontendTimelineBook } from "@/types/timeline"
+import { FrontendTimelineBook, ZoomLevel } from "@/types/timeline"
 import _ from "lodash"
 import {
   createContext,
@@ -17,6 +17,7 @@ export type DispatchZoomPanPayload = {
   start: Date
   end: Date
   locked: boolean
+  zoom: ZoomLevel
 }
 export type ChangeColorPayload = {
   book_id: string

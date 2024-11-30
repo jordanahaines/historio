@@ -2,9 +2,6 @@
 import { Link } from "@nextui-org/link"
 import { Snippet } from "@nextui-org/snippet"
 import { Code } from "@nextui-org/code"
-import { button as buttonStyles } from "@nextui-org/theme"
-
-import styles from "./page.module.scss"
 
 import { siteConfig } from "@/config/site"
 import { title, subtitle } from "@/components/primitives"
@@ -21,7 +18,7 @@ export default function Home() {
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <div
-        className={`inline-block max-w-xl text-center justify-center ${styles.pageRed}`}
+        className={`inline-block max-w-xl text-center justify-center bg-amber-900	`}
       >
         <span className={title()}>Make&nbsp;</span>
         <span className={title({ color: "violet" })}>beautiful&nbsp;</span>
@@ -33,6 +30,7 @@ export default function Home() {
           Beautiful, fast and modern React UI library.
         </div>
         <div>
+          <Button></Button>
           <Dropdown>
             <DropdownTrigger>
               <Button type="button">Dropdown!</Button>
@@ -46,25 +44,7 @@ export default function Home() {
       </div>
 
       <div className="flex gap-3">
-        <Link
-          isExternal
-          className={buttonStyles({
-            color: "primary",
-            radius: "full",
-            variant: "shadow",
-          })}
-          href={siteConfig.links.docs}
-        >
-          Documentation
-        </Link>
-        <Link
-          isExternal
-          className={buttonStyles({ variant: "bordered", radius: "full" })}
-          href={siteConfig.links.github}
-        >
-          <GithubIcon size={20} />
-          GitHub
-        </Link>
+        
       </div>
 
       <div className="mt-8">

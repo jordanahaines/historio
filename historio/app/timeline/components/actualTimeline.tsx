@@ -1,7 +1,7 @@
 import { SelectInsight } from "@/db/schema/insight"
 import "@/styles/timeline.scss"
 import { FrontendTimelineBook, ZoomLevel } from "@/types/timeline"
-import { format, formatDate, parse, setYear } from "date-fns"
+import { formatDate, parse } from "date-fns"
 import _ from "lodash"
 import { useCallback, useMemo, useRef, useState } from "react"
 
@@ -51,7 +51,7 @@ export default function ActualTimeline({
       return (
         <div key={insight.id} className="insight">
           <p className="font-title font-bold text-blue-400 mb-2 border-b-2 border-blue-100">
-            {displayYears[0]}
+            {insight.year}
           </p>
           {insight.name}
         </div>

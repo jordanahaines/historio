@@ -1,33 +1,34 @@
 "use client"
 import BookCover from "@/components/bookCover"
 /** Container for a single timeline */
-import { timelineDispatchAction, useTimelineContext } from "../timelineContext"
-import { IoSyncCircle, IoColorPaletteOutline } from "react-icons/io5"
-import { MdStickyNote2 } from "react-icons/md"
-import { RiLightbulbFlashFill } from "react-icons/ri"
-import { FaUnlock, FaLock } from "react-icons/fa"
-import { FaCirclePlus, FaCircleMinus } from "react-icons/fa6"
-import ActualTimeline from "./actual-timeline"
-import _ from "lodash"
+import { FrontendTimelineBook } from "@/types/timeline"
+import { Button } from "@nextui-org/button"
+import { Chip } from "@nextui-org/chip"
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/dropdown"
-import { Button } from "@nextui-org/button"
 import { Tooltip } from "@nextui-org/tooltip"
+import _ from "lodash"
 import { useCallback } from "react"
-import { Chip } from "@nextui-org/chip"
+import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6"
+import { IoColorPaletteOutline } from "react-icons/io5"
+import { MdStickyNote2 } from "react-icons/md"
+import { RiLightbulbFlashFill } from "react-icons/ri"
+import { TimelineDispatchActionType, useTimelineContext } from "../timelineContext"
+import ActualTimeline from "./actualTimeline"
 
-export default function TimelineContainer({ bookID }: { bookID: string }) {
+export default function TimelineContainer({ book }: { book: FrontendTimelineBook }) {
   const { timelineContext, updateTimelineContext } = useTimelineContext()
-  const bookDetails = timelineContext[bookID]
+  const bookContext = _.find(timelineContext.books, b => b.bookID === book.book_id)
+  if (!bookContext) return
 
   // Only take title before colon to disregard subtitle
-  const displayTitle = bookDetails.title.includes(":")
-    ? bookDetails.title.split(":")[0]
-    : bookDetails.title
+  const displayTitle = book.title.includes(":")
+    ? book.title.split(":")[0]
+    : book.title
 
   // This has to be defined here to be picked up by tailwind
   const tailwindTimelineColors = {
@@ -44,7 +45,7 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
     yellow: "bg-yellow-500",
     violet: "bg-violet-500",
   }
-  const bg = tailwindTimelineColors[bookDetails.color]
+  const bg = tailwindTimelineColors[bookContext.currentColor]
 
   const renderColorMenuItem = (color: keyof typeof tailwindTimelineColors) => {
     return (
@@ -60,34 +61,27 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
   }
 
   const updateColor = useCallback(
-    (bookID: string, color: string) => {
+    (color: string) => {
       if (updateTimelineContext) {
         updateTimelineContext({
-          type: timelineDispatchAction.ChangeColor,
-          payload: { book_id: bookID, color },
+          type: TimelineDispatchActionType.updateBook,
+          payload: { ...bookContext, currentColor: color },
         })
       }
     },
-    [updateTimelineContext],
-  )
-
-  const updateZoom = useCallback(
-    (bookID: string, zoomIn: boolean) => {
-      if (!updateTimelineContext) return
-    },
-    [updateTimelineContext],
+    [updateTimelineContext, bookContext.bookID],
   )
 
   return (
     <>
       <div className="border-4 z-20 relative !border-b-8 bg-white mt-10 border-zinc-300 rounded-t-lg w-full min-h-40 flex">
         <BookCover
-          id={bookDetails.book_id}
-          title={bookDetails.title}
-          author={bookDetails.author}
+          id={book.book_id}
+          title={book.title}
+          author={book.author}
           customClass="rounded-tl"
         />
-        <ActualTimeline bookDetails={bookDetails} />
+        <ActualTimeline bookDetails={book} />
       </div>
       <div className="w-full flex">
         <div
@@ -96,7 +90,7 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
           <div className={`tab-diagonal z-0 left ${bg}`}></div>
           <div className="flex grow flex-col justify-center">
             <p className="font-title z-10 text-bold">{displayTitle}</p>
-            <p className="text-xs z-10">by {bookDetails.author}</p>
+            <p className="text-xs z-10">by {book.author}</p>
           </div>
           <div className="w-1/5 flex justify-end">
             <Dropdown>
@@ -110,7 +104,7 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
-                onAction={(k: string) => updateColor(bookID, k)}
+                onAction={(k) => updateColor(k.toString())}
                 aria-label="Timeline Colors"
               >
                 {Object.keys(tailwindTimelineColors).map(renderColorMenuItem)}
@@ -123,14 +117,14 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
         <div className="bg-white border-4 border-zinc-300 !border-t-0 rounded-b-lg px-4 py-2 w-1/4 grow flex justify-between items-center">
           <div className="flex justify-start gap-2">
             <Tooltip
-              content={`${bookDetails.insights.length} insights for this book`}
+              content={`${book.insights.length} insights for this book`}
             >
               <Chip
                 color="primary"
                 size="sm"
                 endContent={<RiLightbulbFlashFill size={18} />}
               >
-                {bookDetails.insights.length}&nbsp;
+                {book.insights.length}&nbsp;
               </Chip>
             </Tooltip>
             <Tooltip content={`0 notes for this book`}>
@@ -144,7 +138,7 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
             </Tooltip>
           </div>
           <div className="flex justify-end items-center">
-            <Tooltip content="Sync all other timelines to match this one">
+            {/* <Tooltip content="Sync all other timelines to match this one">
               <Button isIconOnly variant="ghost" className="border-0">
                 <IoSyncCircle />
               </Button>
@@ -153,7 +147,7 @@ export default function TimelineContainer({ bookID }: { bookID: string }) {
               <Button isIconOnly variant="ghost" className="border-0">
                 {bookDetails.locked ? <FaLock /> : <FaUnlock />}
               </Button>
-            </Tooltip>
+            </Tooltip> */}
             <div className="vertical-rule bg-zinc-200 w-1 h-3/4"></div>
             <Tooltip content="Zoom in">
               <Button isIconOnly variant="ghost" className="border-0">

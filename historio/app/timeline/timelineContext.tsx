@@ -8,34 +8,42 @@ import {
   useReducer,
 } from "react"
 
-export enum timelineDispatchAction {
-  ZoomPan,
-  ChangeColor,
+export enum TimelineDispatchActionType {
+  updateBook,
+  updateSettings
 }
-export type DispatchZoomPanPayload = {
-  book_id: string
-  start: Date
-  end: Date
-  locked: boolean
-  zoom: ZoomLevel
+export enum TimelineBarsMode {
+  fullBook,
+  currentView,
+  hidden
 }
-export type ChangeColorPayload = {
-  book_id: string
-  color: string
+
+export type TimelineContextBook = {
+  bookID: string
+  bookTitle: string
+  currentColor: string
+  currentStart: string
+  currentEnd: string
+  currentZoom: number // Literally a multiplier
+  barsMode: TimelineBarsMode
+}
+
+export type TimelineContextSettings = {
+  showMiniMap: boolean
 }
 
 export type TimelineDispatchAction =
-  | { type: timelineDispatchAction.ZoomPan; payload: DispatchZoomPanPayload }
-  | { type: timelineDispatchAction.ChangeColor; payload: ChangeColorPayload }
+  | { type: TimelineDispatchActionType.updateBook; payload: Partial<TimelineContextBook> & { bookID: string} }
+  | { type: TimelineDispatchActionType.updateSettings; payload: Partial<TimelineContextSettings> }
 
 // This is our actual context. An object of FrontendTimelineBooks, keyed on book ID for fast update
 export type HistorioTimelineContext = {
-  [key: string]: FrontendTimelineBook
+  settings: TimelineContextSettings,
+  books: TimelineContextBook[]
 }
 
 /**
- * Update the start/end of all locked books if the new book is locked.
- * If it's not locked, then just update the update book
+ * Pretty simple reducer to update object
  */
 const historioContextReducer = (
   state: HistorioTimelineContext,
@@ -43,26 +51,12 @@ const historioContextReducer = (
 ): HistorioTimelineContext => {
   const newState = { ...state }
   switch (update.type) {
-    case timelineDispatchAction.ZoomPan:
-      newState[update.payload.book_id] = {
-        ...newState[update.payload.book_id],
-        ...update.payload,
-      }
-      if (update.payload.locked) {
-        // Need to update all locked books and this one
-        _.mapValues(newState, (v) => {
-          if (v.locked) {
-            v.start = update.payload.start
-            v.end = update.payload.end
-          }
-        })
-      }
-    case timelineDispatchAction.ChangeColor:
-      newState[update.payload.book_id].color = (
-        update.payload as ChangeColorPayload
-      ).color
+    case TimelineDispatchActionType.updateBook:
+      const bookIdx = _.findIndex(state.books, b => b.bookID === update.payload.bookID)
+      newState.books[bookIdx] = { ...newState.books[bookIdx], ...update.payload}
+    case TimelineDispatchActionType.updateSettings:
+      newState.settings = {...newState.settings, ...update.payload}
   }
-
   return newState
 }
 
@@ -79,9 +73,21 @@ export function TimelineContextProvider({
   books,
   children,
 }: TimelinexContextProviderProps) {
+  const initialContext: HistorioTimelineContext = {
+    settings: { showMiniMap: true},
+    books: books.map(b => ({
+      bookID: b.book_id,
+      bookTitle: b.title,
+      currentColor: b.color,
+      currentStart: b.default_start.toISOString(),
+      currentEnd: b.default_end.toISOString(),
+      currentZoom: 1,
+      barsMode: TimelineBarsMode.fullBook
+    }))
+  }
   const [ctx, updateCtx] = useReducer(
     historioContextReducer,
-    _.keyBy(books, "book_id"),
+    initialContext
   )
 
   return (

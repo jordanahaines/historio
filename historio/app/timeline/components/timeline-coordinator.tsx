@@ -9,7 +9,7 @@
 import { SelectTimeline } from "@/db/schema/timeline"
 import { FrontendTimelineBook } from "@/types/timeline"
 import { TimelineContextProvider } from "../timelineContext"
-import TimelineContainer from "./timeline-container"
+import TimelineContainer from "./timelineContainer"
 
 export default function HistorioTimelineCoordinator({
   timeline,
@@ -21,7 +21,7 @@ export default function HistorioTimelineCoordinator({
   return (
     <TimelineContextProvider books={timelineBooks}>
       {timelineBooks.map((book) => (
-        <TimelineContainer bookID={book.book_id} key={book.book_id} />
+        <TimelineContainer book={book} key={book.book_id} />
       ))}
     </TimelineContextProvider>
   )

@@ -8,6 +8,8 @@ import {
   useReducer,
 } from "react"
 
+const DEFAULT_ZOOM = 2
+
 export enum TimelineDispatchActionType {
   updateBook,
   updateSettings
@@ -81,7 +83,7 @@ export function TimelineContextProvider({
       currentColor: b.color,
       currentStart: b.default_start.toISOString(),
       currentEnd: b.default_end.toISOString(),
-      currentZoom: 1,
+      currentZoom: DEFAULT_ZOOM,
       barsMode: TimelineBarsMode.fullBook
     }))
   }

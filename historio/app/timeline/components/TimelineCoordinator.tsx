@@ -9,7 +9,7 @@
 import { SelectTimeline } from "@/db/schema/timeline"
 import { FrontendTimelineBook } from "@/types/timeline"
 import { TimelineContextProvider } from "../timelineContext"
-import TimelineContainer from "./timelineContainer"
+import TimelineContainer from "./TimelineContainer"
 
 export default function HistorioTimelineCoordinator({
   timeline,

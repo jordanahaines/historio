@@ -1,22 +1,40 @@
 import { SelectInsight } from "@/db/schema/insight"
 import "@/styles/timeline.scss"
 import { FrontendTimelineBook, ZoomLevel } from "@/types/timeline"
-import { formatDate, parse } from "date-fns"
+import { add, differenceInDays, formatDate, parse } from "date-fns"
 import _ from "lodash"
 import { useCallback, useMemo, useRef, useState } from "react"
+import { useTimelineContext } from "../timelineContext"
+import TimelineOverlapBar from "./TimelineOverlapBar"
 
 const INSIGHT_WIDTH = 120
+const INSIGHTS_PER_BUCKET = {
+  1: 2,
+  2: 5,
+  3: 7,
+  4: 9,
+}
 
 export default function ActualTimeline({
   bookDetails,
 }: {
   bookDetails: FrontendTimelineBook
 }) {
-  const orderedInsights = _.toPairs(bookDetails.grouped_insights)
+  const orderedInsights = useMemo(
+    () => _.sortBy(_.toPairs(bookDetails.grouped_insights), (p) => p[0]),
+    [bookDetails.book_id],
+  )
+  const { timelineContext } = useTimelineContext()
+  const bookContext = _.find(
+    timelineContext.books,
+    (b) => b.bookID === bookDetails.book_id,
+  )
+  if (!bookContext) return
+
   const timelineRef = useRef(null)
-  const numInsights = 5 // TODO: Calculate based on zoom level
+  const numInsights = INSIGHTS_PER_BUCKET[Math.floor(bookContext.currentZoom)] // TODO: Calculate based on zoom level
   const bucketWidth = numInsights * INSIGHT_WIDTH
-  const [zoom, setZoom] = useState(bookDetails.zoom)
+  const totalWidth = bucketWidth * orderedInsights.length
 
   // Whether or not there are duplicate years. If so, we have to put month on those years
 
@@ -75,7 +93,7 @@ export default function ActualTimeline({
     return (
       <div className="insightBucket relative">
         <div
-          className="insightsContainer flex justify-center items-start pt-2 pb-1 h-[170]"
+          className="insightsContainer flex justify-center items-start pt-2 pb-1 h-[170] even:bg-zinc-200"
           style={{ width }}
         >
           {insights.map(renderInsight)}
@@ -88,23 +106,18 @@ export default function ActualTimeline({
     (e: any) => {
       if (!timelineRef.current) return
       // Adjust years
+      const left = timelineRef.current.scrollLeft
       const currentBucketIdx = timelineRef.current
-        ? Math.floor(timelineRef.current.scrollLeft / bucketWidth)
+        ? Math.floor(left / bucketWidth)
         : 0
       setYearDisplay(displayYears[currentBucketIdx])
+      // const start = add(bookDetails.start, {days: })
     },
     [timelineRef, yearDisplay],
   )
 
-  const handleZoom = useCallback(
-    (zoomIn: boolean) => {
-      if (zoomIn && zoom < ZoomLevel.Four) {
-        setZoom(zoom + 1)
-      } else if (!zoomIn && zoom > ZoomLevel.One) {
-        setZoom(zoom - 1)
-      }
-    },
-    [zoom],
+  const otherBooks = timelineContext.books.filter(
+    (b) => b.bookID !== bookDetails.book_id,
   )
 
   return (
@@ -118,8 +131,14 @@ export default function ActualTimeline({
         ref={timelineRef}
       >
         <div className="timelineInner">
-          <div className="timelineBackground flex items-center">
-            <div className="timelineLine bg-zinc-300"></div>
+          <div className="timelineBars" style={{ width: totalWidth }}>
+            {otherBooks.map((b) => (
+              <TimelineOverlapBar
+                parentStartDate={bookDetails.start}
+                parentEndDate={bookDetails.end}
+                barBookID={b.bookID}
+              />
+            ))}
           </div>
           <div className="timelineContents px-2 flex items-center">
             {orderedInsights.map((oi, idx) => renderBucket(oi[1], oi[0], idx))}

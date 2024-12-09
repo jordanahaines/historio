@@ -55,8 +55,12 @@ export function GroupInsights(
     if (!d) return format(lowerBoundDate, DATE_FORMAT)
     return format(d, DATE_FORMAT)
   })
-  // console.info("Buckets:")
-  // console.log(_.mapValues(buckets, "length"))
+  // In case there are no events in one of the buckets
+  _.each(dateIndices, (d) => {
+    if (!buckets[format(d, DATE_FORMAT)]) {
+      buckets[format(d, DATE_FORMAT)] = []
+    }
+  })
 
   return [buckets, lowerBound > 0, upperBound < sortedInsights.length - 1]
 }

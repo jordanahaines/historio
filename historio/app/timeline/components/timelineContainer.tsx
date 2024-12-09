@@ -17,18 +17,34 @@ import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6"
 import { IoColorPaletteOutline } from "react-icons/io5"
 import { MdStickyNote2 } from "react-icons/md"
 import { RiLightbulbFlashFill } from "react-icons/ri"
-import { TimelineDispatchActionType, useTimelineContext } from "../timelineContext"
-import ActualTimeline from "./actualTimeline"
+import {
+  TimelineDispatchActionType,
+  UpdateTimelineContext,
+  useTimelineContext,
+} from "../timelineContext"
+import ActualTimeline from "./ActualTimeline"
 
-export default function TimelineContainer({ book }: { book: FrontendTimelineBook }) {
+const MIN_ZOOM = 1
+const MAX_ZOOM = 4
+
+export default function TimelineContainer({
+  book,
+}: {
+  book: FrontendTimelineBook
+}) {
   const { timelineContext, updateTimelineContext } = useTimelineContext()
-  const bookContext = _.find(timelineContext.books, b => b.bookID === book.book_id)
+  const bookContext = _.find(
+    timelineContext.books,
+    (b) => b.bookID === book.book_id,
+  )
   if (!bookContext) return
 
   // Only take title before colon to disregard subtitle
-  const displayTitle = book.title.includes(":")
+  let displayTitle = book.title.includes(":")
     ? book.title.split(":")[0]
     : book.title
+
+  displayTitle += `(${book.default_start.getFullYear()} - ${book.default_end.getFullYear()})`
 
   // This has to be defined here to be picked up by tailwind
   const tailwindTimelineColors = {
@@ -70,6 +86,19 @@ export default function TimelineContainer({ book }: { book: FrontendTimelineBook
       }
     },
     [updateTimelineContext, bookContext.bookID],
+  )
+
+  const onZoom = useCallback(
+    (newZoom: number) => {
+      if (newZoom < MIN_ZOOM || newZoom > MAX_ZOOM) return
+      if (updateTimelineContext) {
+        updateTimelineContext({
+          type: TimelineDispatchActionType.updateBook,
+          payload: { ...bookContext, currentZoom: newZoom },
+        })
+      }
+    },
+    [bookContext.currentZoom, updateTimelineContext],
   )
 
   return (
@@ -116,9 +145,7 @@ export default function TimelineContainer({ book }: { book: FrontendTimelineBook
         <div className="w-1/2 flex justify-center"></div>
         <div className="bg-white border-4 border-zinc-300 !border-t-0 rounded-b-lg px-4 py-2 w-1/4 grow flex justify-between items-center">
           <div className="flex justify-start gap-2">
-            <Tooltip
-              content={`${book.insights.length} insights for this book`}
-            >
+            <Tooltip content={`${book.insights.length} insights for this book`}>
               <Chip
                 color="primary"
                 size="sm"
@@ -149,19 +176,26 @@ export default function TimelineContainer({ book }: { book: FrontendTimelineBook
               </Button>
             </Tooltip> */}
             <div className="vertical-rule bg-zinc-200 w-1 h-3/4"></div>
-            <Tooltip content="Zoom in">
-              <Button isIconOnly variant="ghost" className="border-0">
-                <FaCirclePlus />
-              </Button>
-            </Tooltip>
-            <Tooltip content="Zoom out">
+            <Tooltip content="Zoom in (show more events)">
               <Button
-                isDisabled
+                onClick={() => onZoom(bookContext.currentZoom + 1)}
+                isDisabled={bookContext.currentZoom >= MAX_ZOOM}
                 isIconOnly
                 variant="ghost"
                 className="border-0"
               >
-                <FaCircleMinus />
+                <FaCirclePlus size={20} />
+              </Button>
+            </Tooltip>
+            <Tooltip content="Zoom out (show fewer events)">
+              <Button
+                isDisabled={bookContext.currentZoom <= MIN_ZOOM}
+                isIconOnly
+                variant="ghost"
+                className="border-0"
+                onClick={() => onZoom(bookContext.currentZoom - 1)}
+              >
+                <FaCircleMinus size={20} />
               </Button>
             </Tooltip>
           </div>

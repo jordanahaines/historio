@@ -7,6 +7,7 @@ import { books, SelectBook } from "../schema/book"
 import { SelectTimeline, timelineBooks, timelines } from "../schema/timeline"
 import { insights } from "../schema/insight"
 import { GroupInsights } from "@/lib/timelines/utils"
+import { parseDate } from "@/lib/researchers/utils"
 
 /**
  * Helper function to create a new timeline, given a list of books
@@ -102,6 +103,8 @@ export async function fetchTimelineAndBooks(
     usedColors.add(color)
     const bookInsights = t.tb.book_id ? keyedInsights[t.tb.book_id] : []
     const [groupedInsights, hasEarlier, hasLater] = GroupInsights(bookInsights)
+    const start = parseDate(_.min(_.keys(groupedInsights))).date as Date
+    const end = parseDate(_.max(_.keys(groupedInsights))).date as Date
     return {
       timeline_book_id: t.tb.id,
       book_id: t.tb.book_id,
@@ -109,10 +112,10 @@ export async function fetchTimelineAndBooks(
       author: t.author || "",
       color,
       order: t.tb.order || 0,
-      default_start: t.tb.default_start || earliestStart,
-      default_end: t.tb.default_end || latestEnd,
-      start: t.tb.default_start || earliestStart,
-      end: t.tb.default_end || latestEnd,
+      default_start: start,
+      default_end: end,
+      start: start,
+      end: end,
       zoom: ZoomLevel.One,
       locked: false,
       insights: bookInsights,

@@ -2,11 +2,11 @@
 import { db } from "@/db"
 import { books, SelectBook } from "@/db/schema/book"
 import { insights } from "@/db/schema/insight"
-import minorEventResearcherConfig from "@/lib/researchers/minorEvents"
+import minorEventResearcherConfig from "@/lib/researchers/minor-events"
 import doResearch, {
   ResearcherConfiguration,
-} from "@/lib/researchers/researchCoordinator"
-import { significantEventResearcherConfig } from "@/lib/researchers/significantEvents"
+} from "@/lib/researchers/research-coordinator"
+import { significantEventResearcherConfig } from "@/lib/researchers/significant-events"
 import { config } from "dotenv"
 import { arrayContains, asc, count, eq, not } from "drizzle-orm"
 import _ from "lodash"
@@ -19,7 +19,7 @@ const RESEARCHERS = {
   significant: significantEventResearcherConfig,
   minor: minorEventResearcherConfig,
 }
-const PARALLELISM = 3
+const PARALLELISM = 10
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -120,17 +120,21 @@ async function processToInsightGoal() {
     const books = await getBooksWithFewestInsights("bad")
     let idx = 0
     let promises: ReturnType<typeof doResearch>[] = []
-    while (idx < books.length && promises.length < PARALLELISM) {
+    while (idx < books.length && promises.length <= PARALLELISM) {
       const book = books[idx]
       const randomResearchers = _.shuffle(_.keys(RESEARCHERS))
       const researcherKey = _.find(
         randomResearchers,
         (r) => !book.book.completed_researchers.includes(r),
       )
-      if (!researcherKey) continue
+      if (!researcherKey) {
+        idx += 1
+        continue
+      }
       promises.push(doResearch(book.book, RESEARCHERS[researcherKey]))
-      idx++
+      idx += 1
     }
+    console.log("Returning Promises. Length: ", promises.length)
     return Promise.all(promises)
   }
 

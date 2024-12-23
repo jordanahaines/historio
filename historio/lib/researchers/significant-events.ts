@@ -6,7 +6,7 @@ import { SignificantEventsReturn } from "@/types/researcher"
 import { config } from "dotenv"
 import { eq } from "drizzle-orm"
 import _ from "lodash"
-import { ResearcherConfiguration } from "./researchCoordinator"
+import { ResearcherConfiguration } from "./research-coordinator"
 import { generateGenericPrompt, parseDate } from "./utils"
 
 config({ path: "local.env" })
@@ -37,10 +37,8 @@ const parseSignificantEvents = async (
   const filteredInsights = data.insights.filter((e) => {
     // No matching wiki link OR matching name and year from date
     if (existingWikiLinks.includes(e.wikipedia_link)) return false
-
-    const dt = parseDate(e.date)
     return !existingInsights.find(
-      (i) => i.name === e.name && i.year === dt.year,
+      (i) => i.name?.toLowerCase() === e.name.toLowerCase(),
     )
   })
 

@@ -1,2 +1,4 @@
 historio/local.env
 **/node_Modules/**
+historio.code-workspace
+**/.DS_Store

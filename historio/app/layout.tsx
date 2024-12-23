@@ -1,13 +1,12 @@
-import "@/styles/globals.css"
-import { Metadata, Viewport } from "next"
-import { Link } from "@nextui-org/link"
+import "@/styles/globals.scss"
 import clsx from "clsx"
+import { Metadata, Viewport } from "next"
 
 import { Providers } from "./providers"
 
-import { siteConfig } from "@/config/site"
-import { fontSans, fontSerif, fontMono } from "@/config/fonts"
 import { Navbar } from "@/components/navbar"
+import { fontMono, fontSans, fontSerif, fontHandwriting } from "@/config/fonts"
+import { siteConfig } from "@/config/site"
 
 export const metadata: Metadata = {
   title: {
@@ -34,26 +33,19 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning lang="en">
-      <head>
-        {/* <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Rosarivo:ital@0;1&display=swap"
-          rel="stylesheet"
-        /> */}
-      </head>
       <body
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable,
           fontSerif.variable,
           fontMono.variable,
+          fontHandwriting.variable,
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="relative flex flex-col h-screen">
             <Navbar />
-            <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+            <main className="container mx-auto max-w-full pt-12 px-12 flex-grow">
               {children}
             </main>
           </div>

@@ -5,7 +5,7 @@
 import fs from "fs/promises"
 import { cwd } from "process"
 
-import goodreadsImport from "@/lib/goodreadsImport"
+import goodreadsImport from "@/lib/goodreads-import"
 
 const main = async () => {
   // Read file passed as prop

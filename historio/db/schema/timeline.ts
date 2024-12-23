@@ -1,4 +1,11 @@
-import { boolean, pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core"
+import {
+  boolean,
+  integer,
+  pgTable,
+  timestamp,
+  uuid,
+  varchar,
+} from "drizzle-orm/pg-core"
 
 import { books } from "./book"
 import { BASE_SCHEMA_FIELDS } from "./common"
@@ -21,7 +28,7 @@ export const timelineBooks = pgTable("timeline_books", {
   default_start: timestamp("default_start"),
   default_end: timestamp("default_end"),
   color: varchar("color"),
-  order: varchar("order"),
+  order: integer("order"),
 })
 
 export type InsertTimelineBook = typeof timelineBooks.$inferInsert

@@ -1,3 +1,18 @@
+export const tailwindTimelineColors = {
+  red: "bg-red-500/50",
+  amber: "bg-amber-500/50",
+  lime: "bg-lime-500/50",
+  sky: "bg-sky-500/50",
+  fuchsia: "bg-fuchsia-500/50",
+  pink: "bg-pink-500/50",
+  rose: "bg-rose-500/50",
+  teal: "bg-teal-500/50",
+  emerald: "bg-emerald-500/50",
+  indigo: "bg-indigo-500/50",
+  yellow: "bg-yellow-500/50",
+  violet: "bg-violet-500/50",
+}
+
 const mdColors = [
   "#F44336",
   "#FFEBEE",

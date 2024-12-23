@@ -1,5 +1,5 @@
 import { parse } from "date-fns/parse"
-import { PromptGeneratorFunction } from "./researchCoordinator"
+import { PromptGeneratorFunction } from "./research-coordinator"
 import { SelectBook } from "@/db/schema/book"
 import { SelectInsight } from "@/db/schema/insight"
 import _ from "lodash"
@@ -13,6 +13,7 @@ export type ParsedInsightDate = {
 const DATE_FORMATS = [
   "MM/dd/yyyy",
   "yyyy/MM/dd",
+  "yyyy/M/d",
   "MM/yyyy",
   "yyyy",
   "yyyy G",
@@ -38,7 +39,7 @@ export function parseDate(
 
   // Remove commas, which sometimes appear in years
   dateString = dateString.replace(/,/g, "")
-  dateString = dateString.replace(/–/g, "/").trim()
+  dateString = dateString.replaceAll("-", "/").trim()
   let dateObj: Date | undefined = undefined
   for (const format of DATE_FORMATS) {
     dateObj = parse(dateString, format, new Date())

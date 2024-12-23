@@ -60,6 +60,8 @@ export default function TimelineContainer({
     yellow: "bg-yellow-500",
     violet: "bg-violet-500",
   }
+
+  // @ts-ignore
   const bg = tailwindTimelineColors[bookContext.currentColor]
 
   const renderColorMenuItem = (color: keyof typeof tailwindTimelineColors) => {
@@ -135,7 +137,10 @@ export default function TimelineContainer({
                 onAction={(k) => updateColor(k.toString())}
                 aria-label="Timeline Colors"
               >
-                {Object.keys(tailwindTimelineColors).map(renderColorMenuItem)}
+                {
+                  // @ts-ignore
+                  Object.keys(tailwindTimelineColors).map(renderColorMenuItem)
+                }
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -164,20 +169,10 @@ export default function TimelineContainer({
             </Tooltip>
           </div>
           <div className="flex justify-end items-center">
-            {/* <Tooltip content="Sync all other timelines to match this one">
-              <Button isIconOnly variant="ghost" className="border-0">
-                <IoSyncCircle />
-              </Button>
-            </Tooltip>
-            <Tooltip content="Lock all other timelines to stay in sync with this one">
-              <Button isIconOnly variant="ghost" className="border-0">
-                {bookDetails.locked ? <FaLock /> : <FaUnlock />}
-              </Button>
-            </Tooltip> */}
             <div className="vertical-rule bg-zinc-200 w-1 h-3/4"></div>
             <Tooltip content="Zoom in (show more events)">
               <Button
-                onClick={() => onZoom(bookContext.currentZoom + 1)}
+                onPress={() => onZoom(bookContext.currentZoom + 1)}
                 isDisabled={bookContext.currentZoom >= MAX_ZOOM}
                 isIconOnly
                 variant="ghost"

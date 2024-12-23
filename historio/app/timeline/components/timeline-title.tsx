@@ -19,7 +19,7 @@ export default function TimelinePageTitle({
   const [title, setTitle] = useState(timeline.title || "")
   const [saving, setSaving] = useState(false)
 
-  // Save handler
+  // Save handler to update title
   const updateTitle = async () => {
     setSaving(true)
     await updateTimelineTitle(timeline.id, title)
@@ -40,7 +40,7 @@ export default function TimelinePageTitle({
               <Button
                 isIconOnly
                 variant="faded"
-                onClick={() => setEditing(true)}
+                onPress={() => setEditing(true)}
               >
                 <FiEdit />
               </Button>
@@ -53,7 +53,7 @@ export default function TimelinePageTitle({
                 onChange={(e) => setTitle(e.target.value)}
               />
               <Button
-                onClick={updateTitle}
+                onPress={updateTitle}
                 isLoading={saving}
                 className="ml-2"
                 isIconOnly

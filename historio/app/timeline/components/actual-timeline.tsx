@@ -1,7 +1,7 @@
 import { SelectInsight } from "@/db/schema/insight"
 import "@/styles/timeline.scss"
-import { FrontendTimelineBook, ZoomLevel } from "@/types/timeline"
-import { add, differenceInDays, formatDate, parse } from "date-fns"
+import { FrontendTimelineBook } from "@/types/timeline"
+import { formatDate, parse } from "date-fns"
 import _ from "lodash"
 import { useCallback, useMemo, useRef, useState } from "react"
 import { useTimelineContext } from "../context-timeline"
@@ -32,6 +32,7 @@ export default function ActualTimeline({
   if (!bookContext) return
 
   const timelineRef = useRef(null)
+  // @ts-ignore
   const numInsights = INSIGHTS_PER_BUCKET[Math.floor(bookContext.currentZoom)] // TODO: Calculate based on zoom level
   const bucketWidth = numInsights * INSIGHT_WIDTH
   const totalWidth = bucketWidth * orderedInsights.length
@@ -102,20 +103,23 @@ export default function ActualTimeline({
       </div>
     )
   }
+
+  // On Scroll:
+  // 1) Adjust the static year label
   const handleScroll = useCallback(
     (e: any) => {
       if (!timelineRef.current) return
+      const timelineDiv: HTMLDivElement = timelineRef.current as HTMLDivElement
       // Adjust years
-      const left = timelineRef.current.scrollLeft
-      const currentBucketIdx = timelineRef.current
-        ? Math.floor(left / bucketWidth)
-        : 0
+      const left = timelineDiv.scrollLeft
+      const currentBucketIdx = timelineDiv ? Math.floor(left / bucketWidth) : 0
       setYearDisplay(displayYears[currentBucketIdx])
       // const start = add(bookDetails.start, {days: })
     },
     [timelineRef, yearDisplay],
   )
 
+  // Used to render overlap bars
   const otherBooks = timelineContext.books.filter(
     (b) => b.bookID !== bookDetails.book_id,
   )

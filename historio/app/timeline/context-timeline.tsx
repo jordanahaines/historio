@@ -12,12 +12,12 @@ const DEFAULT_ZOOM = 2
 
 export enum TimelineDispatchActionType {
   updateBook,
-  updateSettings
+  updateSettings,
 }
 export enum TimelineBarsMode {
   fullBook,
   currentView,
-  hidden
+  hidden,
 }
 
 export type TimelineContextBook = {
@@ -35,12 +35,18 @@ export type TimelineContextSettings = {
 }
 
 export type TimelineDispatchAction =
-  | { type: TimelineDispatchActionType.updateBook; payload: Partial<TimelineContextBook> & { bookID: string} }
-  | { type: TimelineDispatchActionType.updateSettings; payload: Partial<TimelineContextSettings> }
+  | {
+      type: TimelineDispatchActionType.updateBook
+      payload: Partial<TimelineContextBook> & { bookID: string }
+    }
+  | {
+      type: TimelineDispatchActionType.updateSettings
+      payload: Partial<TimelineContextSettings>
+    }
 
 // This is our actual context. An object of FrontendTimelineBooks, keyed on book ID for fast update
 export type HistorioTimelineContext = {
-  settings: TimelineContextSettings,
+  settings: TimelineContextSettings
   books: TimelineContextBook[]
 }
 
@@ -54,10 +60,16 @@ const historioContextReducer = (
   const newState = { ...state }
   switch (update.type) {
     case TimelineDispatchActionType.updateBook:
-      const bookIdx = _.findIndex(state.books, b => b.bookID === update.payload.bookID)
-      newState.books[bookIdx] = { ...newState.books[bookIdx], ...update.payload}
+      const bookIdx = _.findIndex(
+        state.books,
+        (b) => b.bookID === update.payload.bookID,
+      )
+      newState.books[bookIdx] = {
+        ...newState.books[bookIdx],
+        ...update.payload,
+      }
     case TimelineDispatchActionType.updateSettings:
-      newState.settings = {...newState.settings, ...update.payload}
+      newState.settings = { ...newState.settings, ...update.payload }
   }
   return newState
 }
@@ -67,7 +79,12 @@ type TimelinexContextProviderProps = {
   children: ReactNode
 }
 
-export const TimelineContext = createContext<HistorioTimelineContext>({})
+const baseContext: HistorioTimelineContext = {
+  settings: { showMiniMap: true },
+  books: [],
+}
+export const TimelineContext =
+  createContext<HistorioTimelineContext>(baseContext)
 export const UpdateTimelineContext =
   createContext<Dispatch<TimelineDispatchAction> | null>(null)
 
@@ -76,21 +93,18 @@ export function TimelineContextProvider({
   children,
 }: TimelinexContextProviderProps) {
   const initialContext: HistorioTimelineContext = {
-    settings: { showMiniMap: true},
-    books: books.map(b => ({
+    settings: { showMiniMap: true },
+    books: books.map((b) => ({
       bookID: b.book_id,
       bookTitle: b.title,
       currentColor: b.color,
       currentStart: b.default_start.toISOString(),
       currentEnd: b.default_end.toISOString(),
       currentZoom: DEFAULT_ZOOM,
-      barsMode: TimelineBarsMode.fullBook
-    }))
+      barsMode: TimelineBarsMode.fullBook,
+    })),
   }
-  const [ctx, updateCtx] = useReducer(
-    historioContextReducer,
-    initialContext
-  )
+  const [ctx, updateCtx] = useReducer(historioContextReducer, initialContext)
 
   return (
     <TimelineContext.Provider value={ctx}>

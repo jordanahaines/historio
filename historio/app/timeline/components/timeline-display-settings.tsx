@@ -1,6 +1,7 @@
 /**
  * This component renders Drawer and button to update timeline display settings.
  * Reads and writes to timeline context
+ * //TODO: I don't think this is within context, so will need to fix that
  */
 
 import { Button } from "@nextui-org/button"

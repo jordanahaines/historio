@@ -50,12 +50,12 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
   const style = { width: `${width}%`, left: `${left}%` }
   let tooltip = `${renderBook.bookTitle} (${parseISO(renderBook.currentStart).getFullYear()} - ${parseISO(renderBook.currentEnd).getFullYear()})`
 
+  // @ts-ignore
+  const colorClass = `timelineBar ${tailwindTimelineColors[renderBook.currentColor]}`
+
   return (
     <Tooltip content={tooltip}>
-      <div
-        className={`timelineBar ${tailwindTimelineColors[renderBook.currentColor]}`}
-        style={style}
-      ></div>
+      <div className={colorClass} style={style}></div>
     </Tooltip>
   )
 }

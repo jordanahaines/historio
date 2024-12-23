@@ -1,13 +1,17 @@
 import { db } from "@/db"
 import colors, { tailwindTimelineColors } from "@/lib/colors"
-import { FrontendTimelineBook, ZoomLevel } from "@/types/timeline"
-import { eq, inArray, and } from "drizzle-orm"
-import _, { has } from "lodash"
-import { books, SelectBook } from "../schema/book"
-import { SelectTimeline, timelineBooks, timelines } from "../schema/timeline"
-import { insights } from "../schema/insight"
-import { GroupInsights } from "@/lib/timelines/utils"
 import { parseDate } from "@/lib/researchers/utils"
+import { GroupInsights } from "@/lib/timelines/utils"
+import {
+  FrontendTimelineBook,
+  GroupedInsights,
+  ZoomLevel,
+} from "@/types/timeline"
+import { and, eq, inArray } from "drizzle-orm"
+import _ from "lodash"
+import { books, SelectBook } from "../schema/book"
+import { insights } from "../schema/insight"
+import { SelectTimeline, timelineBooks, timelines } from "../schema/timeline"
 
 /**
  * Helper function to create a new timeline, given a list of books
@@ -36,7 +40,7 @@ export async function createTimeline(
     return {
       timeline_id: newTimeline.id,
       book_id: b.id,
-      order: idx.toString(),
+      order: idx,
       color: colors[_.random(0, colors.length - 1)],
       default_start: defaultStart,
       default_end: defaultEnd,
@@ -73,7 +77,7 @@ export async function fetchTimelineAndBooks(
 
   const bookIDs: string[] = _.filter(
     tbooks.map((t) => t.tb.book_id),
-    (t) => !!t,
+    (t) => t !== null,
   )
 
   const tinsights = await db
@@ -103,11 +107,12 @@ export async function fetchTimelineAndBooks(
     usedColors.add(color)
     const bookInsights = t.tb.book_id ? keyedInsights[t.tb.book_id] : []
     const [groupedInsights, hasEarlier, hasLater] = GroupInsights(bookInsights)
-    const start = parseDate(_.min(_.keys(groupedInsights))).date as Date
-    const end = parseDate(_.max(_.keys(groupedInsights))).date as Date
+    const insightKeys = _.keys(groupedInsights).filter((k) => !!k)
+    const start = parseDate(_.min(insightKeys) as string).date as Date
+    const end = parseDate(_.max(insightKeys) as string).date as Date
     return {
       timeline_book_id: t.tb.id,
-      book_id: t.tb.book_id,
+      book_id: t.tb.book_id as string,
       title: t.title || "",
       author: t.author || "",
       color,
@@ -119,7 +124,9 @@ export async function fetchTimelineAndBooks(
       zoom: ZoomLevel.One,
       locked: false,
       insights: bookInsights,
-      grouped_insights: bookInsights.length ? groupedInsights : [],
+      grouped_insights: (bookInsights.length
+        ? groupedInsights
+        : []) as GroupedInsights,
       has_earlier_insight: hasEarlier,
       has_later_insight: hasLater,
     }

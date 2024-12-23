@@ -23,8 +23,10 @@ I hate having to think about where to put a new file, so here are the convention
 
 ### Classes
 
-- `.font-title` for title (serif) font
+- `.font-title` for title (serif) font (Rosarivo)
+- `.font-handwriting` for handwriting font (Gaegu)
 - `.vertical-rule` for 2px full height div
+-
 
 ### Resources
 

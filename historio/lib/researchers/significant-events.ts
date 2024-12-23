@@ -6,7 +6,7 @@ import { SignificantEventsReturn } from "@/types/researcher"
 import { config } from "dotenv"
 import { eq } from "drizzle-orm"
 import _ from "lodash"
-import { ResearcherConfiguration } from "./researchCoordinator"
+import { ResearcherConfiguration } from "./research-coordinator"
 import { generateGenericPrompt, parseDate } from "./utils"
 
 config({ path: "local.env" })

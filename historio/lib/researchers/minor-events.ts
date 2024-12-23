@@ -3,7 +3,7 @@ import { SelectBook } from "@/db/schema/book"
 import { InsertInsight, SelectInsight } from "@/db/schema/insight"
 import { MinorEventsReturn } from "@/types/researcher"
 import { config } from "dotenv"
-import { ResearcherConfiguration } from "./researchCoordinator"
+import { ResearcherConfiguration } from "./research-coordinator"
 import { generateGenericPrompt, parseDate } from "./utils"
 
 config({ path: "local.env" })

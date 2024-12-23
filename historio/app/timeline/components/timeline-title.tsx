@@ -7,7 +7,7 @@ import { FiEdit } from "react-icons/fi"
 
 import { useState } from "react"
 import { updateTimelineTitle } from "../actions"
-import TimelineDisplaySettings from "./TimelineDisplaySettings"
+import TimelineDisplaySettings from "./timeline-display-settings"
 
 export type TimelinePageTitleProps = {
   timeline: SelectTimeline

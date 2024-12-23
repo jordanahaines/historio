@@ -2,11 +2,11 @@
 import { db } from "@/db"
 import { books, SelectBook } from "@/db/schema/book"
 import { insights } from "@/db/schema/insight"
-import minorEventResearcherConfig from "@/lib/researchers/minorEvents"
+import minorEventResearcherConfig from "@/lib/researchers/minor-events"
 import doResearch, {
   ResearcherConfiguration,
-} from "@/lib/researchers/researchCoordinator"
-import { significantEventResearcherConfig } from "@/lib/researchers/significantEvents"
+} from "@/lib/researchers/research-coordinator"
+import { significantEventResearcherConfig } from "@/lib/researchers/significant-events"
 import { config } from "dotenv"
 import { arrayContains, asc, count, eq, not } from "drizzle-orm"
 import _ from "lodash"

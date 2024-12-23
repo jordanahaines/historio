@@ -4,8 +4,8 @@ import { FrontendTimelineBook, ZoomLevel } from "@/types/timeline"
 import { add, differenceInDays, formatDate, parse } from "date-fns"
 import _ from "lodash"
 import { useCallback, useMemo, useRef, useState } from "react"
-import { useTimelineContext } from "../timelineContext"
-import TimelineOverlapBar from "./TimelineOverlapBar"
+import { useTimelineContext } from "../context-timeline"
+import TimelineOverlapBar from "./timeline-overlap-bars"
 
 const INSIGHT_WIDTH = 120
 const INSIGHTS_PER_BUCKET = {

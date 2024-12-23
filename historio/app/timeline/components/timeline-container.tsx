@@ -1,5 +1,5 @@
 "use client"
-import BookCover from "@/components/bookCover"
+import BookCover from "@/components/book-cover"
 /** Container for a single timeline */
 import { FrontendTimelineBook } from "@/types/timeline"
 import { Button } from "@nextui-org/button"
@@ -19,10 +19,9 @@ import { MdStickyNote2 } from "react-icons/md"
 import { RiLightbulbFlashFill } from "react-icons/ri"
 import {
   TimelineDispatchActionType,
-  UpdateTimelineContext,
   useTimelineContext,
-} from "../timelineContext"
-import ActualTimeline from "./ActualTimeline"
+} from "../context-timeline"
+import ActualTimeline from "./actual-timeline"
 
 const MIN_ZOOM = 1
 const MAX_ZOOM = 4

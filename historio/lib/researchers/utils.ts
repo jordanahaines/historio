@@ -1,5 +1,5 @@
 import { parse } from "date-fns/parse"
-import { PromptGeneratorFunction } from "./researchCoordinator"
+import { PromptGeneratorFunction } from "./research-coordinator"
 import { SelectBook } from "@/db/schema/book"
 import { SelectInsight } from "@/db/schema/insight"
 import _ from "lodash"

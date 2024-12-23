@@ -6,8 +6,8 @@ import { insights, SelectInsight } from "@/db/schema/insight"
 import { InsertResearcherRun, researcherRuns } from "@/db/schema/research"
 import { eq } from "drizzle-orm"
 import OpenAI from "openai"
-import { ParseSignificantEvents } from "./significantEvents"
-import { ParseMinorEvents } from "./minorEvents"
+import { ParseSignificantEvents } from "./significant-events"
+import { ParseMinorEvents } from "./minor-events"
 
 export type PromptGeneratorFunction = (
   book: SelectBook,

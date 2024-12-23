@@ -1,5 +1,4 @@
 "use client"
-import { MdOutlineDisplaySettings } from "react-icons/md"
 import { SelectTimeline } from "@/db/schema/timeline"
 import { Button } from "@nextui-org/button"
 import { Input } from "@nextui-org/input"
@@ -8,6 +7,7 @@ import { FiEdit } from "react-icons/fi"
 
 import { useState } from "react"
 import { updateTimelineTitle } from "../actions"
+import TimelineDisplaySettings from "./TimelineDisplaySettings"
 
 export type TimelinePageTitleProps = {
   timeline: SelectTimeline
@@ -65,9 +65,7 @@ export default function TimelinePageTitle({
             </>
           )}
         </div>
-        <Button color="primary" endContent={<MdOutlineDisplaySettings />}>
-          Timeline Display Settings
-        </Button>
+        <TimelineDisplaySettings />
       </div>
       <hr />
     </div>

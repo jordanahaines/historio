@@ -1,6 +1,6 @@
 import { fetchTimelineAndBooks } from "@/db/queries/timelines"
-import TimelinePageTitle from "../components/TimelineTitle"
-import HistorioTimelineCoordinator from "../components/TimelineCoordinator"
+import TimelinePageTitle from "../components/timeline-title"
+import TimelineCoordinator from "../components/timeline-coordinator"
 
 export default async function Page({ params }: { params: { id: string } }) {
   const { id } = await params
@@ -9,10 +9,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <div>
       <TimelinePageTitle timeline={timeline} />
-      <HistorioTimelineCoordinator
-        timeline={timeline}
-        timelineBooks={timelineBooks}
-      />
+      <TimelineCoordinator timeline={timeline} timelineBooks={timelineBooks} />
     </div>
   )
 }

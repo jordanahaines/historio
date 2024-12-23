@@ -187,7 +187,7 @@ export default function TimelineContainer({
                 isIconOnly
                 variant="ghost"
                 className="border-0"
-                onClick={() => onZoom(bookContext.currentZoom - 1)}
+                onPress={() => onZoom(bookContext.currentZoom - 1)}
               >
                 <FaCircleMinus size={20} />
               </Button>

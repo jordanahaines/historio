@@ -1,15 +1,16 @@
-export type SiteConfig = typeof siteConfig;
+export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
-  name: "Next.js + NextUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "Historio",
+  description:
+    "Build timelines and explore history through your favorite books",
   navItems: [
     {
       label: "Home",
       href: "/",
     },
     {
-      label: "Docs",
+      label: "D",
       href: "/docs",
     },
     {
@@ -66,4 +67,4 @@ export const siteConfig = {
     discord: "https://discord.gg/9b6yyZKmH4",
     sponsor: "https://patreon.com/jrgarciadev",
   },
-};
+}

@@ -3,13 +3,16 @@
 @tailwind utilities;
 
 main.container {
-    background-image: url('/img/bg/groovepaper.png');
+  background-image: url("/img/bg/groovepaper.png");
 }
 
 .font-title {
-    font-family: var(--font-sans);
+  font-family: var(--font-sans);
+}
+.font-serif {
+  font-family: var(--font-serif);
 }
 
 .handwriting {
-    font-family: var(--font-handwriting);
+  font-family: var(--font-handwriting);
 }

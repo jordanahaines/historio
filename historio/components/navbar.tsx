@@ -1,30 +1,17 @@
-import {
-  Navbar as NextUINavbar,
-  NavbarContent,
-  NavbarMenu,
-  NavbarMenuToggle,
-  NavbarBrand,
-  NavbarItem,
-  NavbarMenuItem,
-} from "@nextui-org/navbar"
-import { Button } from "@nextui-org/button"
-import { Kbd } from "@nextui-org/kbd"
-import { Link } from "@nextui-org/link"
+"use client"
 import { Input } from "@nextui-org/input"
-import { link as linkStyles } from "@nextui-org/theme"
-import NextLink from "next/link"
-import clsx from "clsx"
-
-import { siteConfig } from "@/config/site"
-import { ThemeSwitch } from "@/components/theme-switch"
+import { Kbd } from "@nextui-org/kbd"
+import { BsSubstack } from "react-icons/bs"
 import {
-  TwitterIcon,
-  GithubIcon,
-  DiscordIcon,
-  HeartFilledIcon,
-  SearchIcon,
-  Logo,
-} from "@/components/icons"
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Navbar as NextUINavbar,
+} from "@nextui-org/navbar"
+import { Avatar, Button, Image } from "@nextui-org/react"
+import NextLink from "next/link"
+
+import { SearchIcon } from "@/components/icons"
 
 export const Navbar = () => {
   const searchInput = (
@@ -35,9 +22,7 @@ export const Navbar = () => {
         input: "text-sm",
       }}
       endContent={
-        <Kbd className="hidden lg:inline-block" keys={["command"]}>
-          K
-        </Kbd>
+        <Kbd className="hidden lg:inline-block" keys={["command"]}></Kbd>
       }
       labelPlacement="outside"
       placeholder="Search..."
@@ -49,93 +34,73 @@ export const Navbar = () => {
   )
 
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
-            <Logo />
-            <p className="font-bold text-inherit">ACME</p>
-          </NextLink>
-        </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
-              <NextLink
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium",
-                )}
-                color="foreground"
-                href={item.href}
-              >
-                {item.label}
-              </NextLink>
-            </NavbarItem>
-          ))}
-        </ul>
-      </NavbarContent>
-
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden sm:flex gap-2">
-          <Link isExternal aria-label="Twitter" href={siteConfig.links.twitter}>
-            <TwitterIcon className="text-default-500" />
-          </Link>
-          <Link isExternal aria-label="Discord" href={siteConfig.links.discord}>
-            <DiscordIcon className="text-default-500" />
-          </Link>
-          <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-            <GithubIcon className="text-default-500" />
-          </Link>
-          <ThemeSwitch />
-        </NavbarItem>
-        <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-        <NavbarItem className="hidden md:flex">
-          <Button
-            isExternal
-            as={Link}
-            className="text-sm font-normal text-default-600 bg-default-100"
-            href={siteConfig.links.sponsor}
-            startContent={<HeartFilledIcon className="text-danger" />}
-            variant="flat"
+    <NextUINavbar
+      maxWidth="2xl"
+      className="bg-black text-white text-2xl"
+      position="sticky"
+    >
+      <NavbarBrand>
+        <NextLink className="flex justify-start items-center gap-1" href="/">
+          <Image
+            width={65}
+            src="/img/logo/logo_transparent.png"
+            alt="Historio"
+            isZoomed
+          />
+          <h1 className="font-bold ml-3 text-3xl font-serif">Historio</h1>
+        </NextLink>
+      </NavbarBrand>
+      <NavbarContent justify="center">
+        <img
+          className="opacity-30 mr-6"
+          width={60}
+          src="/img/elements/colliseum.png"
+          alt="Colliseum"
+        />
+        <NavbarItem>
+          <NextLink
+            className="underline decoration-4 decoration-green-500 text-2xl underline-offset-4"
+            color="white"
+            href="/"
           >
-            Sponsor
+            Demo
+          </NextLink>
+        </NavbarItem>
+        <img
+          className="opacity-35 ml-4"
+          width={60}
+          src="/img/elements/midway.png"
+          alt="Battle of Midway"
+        />
+      </NavbarContent>
+      <NavbarContent justify="end">
+        <NavbarItem>
+          <Button
+            className="bg-black text-orange-400"
+            href="https://learnbuildteach.substack.com/p/building-historio-episode-0"
+          >
+            <BsSubstack />
+            &nbsp;About
           </Button>
         </NavbarItem>
+        <NavbarItem className="ml-8">
+          <div className="flex items-center">
+            <span className="opacity-50">by&nbsp;</span>
+            <NextLink
+              href="https://www.linkedin.com/in/jordanahaines"
+              target="_blank"
+              className="hover:border-b-4 border-blue-400 hover:scale-125 flex items-center px-2 mx-2"
+            >
+              <Avatar
+                size="sm"
+                src="https://cdn.bsky.app/img/avatar/plain/did:plc:mkbncjxrakp5drcyfx3o2ehc/bafkreicx3dcb42mw4b2rqck6rvmvp5fxrwkmx3nwsespiut6g27onbtwbe@jpeg"
+              />
+              &nbsp;Jordan
+            </NextLink>
+            <span className="opacity-50">in MPLS</span>
+          </div>
+        </NavbarItem>
       </NavbarContent>
-
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-          <GithubIcon className="text-default-500" />
-        </Link>
-        <ThemeSwitch />
-        <NavbarMenuToggle />
-      </NavbarContent>
-
-      <NavbarMenu>
-        {searchInput}
-        <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                      ? "danger"
-                      : "foreground"
-                }
-                href="#"
-                size="lg"
-              >
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          ))}
-        </div>
-      </NavbarMenu>
     </NextUINavbar>
   )
 }

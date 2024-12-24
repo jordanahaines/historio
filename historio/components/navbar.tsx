@@ -55,6 +55,7 @@ export const Navbar = () => {
           className="opacity-30 mr-6"
           width={60}
           src="/img/elements/colliseum.png"
+          alt="Colliseum"
         />
         <NavbarItem>
           <NextLink
@@ -69,6 +70,7 @@ export const Navbar = () => {
           className="opacity-35 ml-4"
           width={60}
           src="/img/elements/midway.png"
+          alt="Battle of Midway"
         />
       </NavbarContent>
       <NavbarContent justify="end">

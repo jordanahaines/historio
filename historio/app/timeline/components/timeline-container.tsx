@@ -114,7 +114,7 @@ export default function TimelineContainer({
         />
         <ActualTimeline bookDetails={book} />
       </div>
-      <div className={`w-full flex`}>
+      <div className="w-full flex">
         <div
           className={`${bg} tab-author relative ml-8 text-white px-2 pb-2 w-1/5 flex justify-between items-center`}
         >

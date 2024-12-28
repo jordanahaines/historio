@@ -12,19 +12,6 @@ const config: Config = {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    // colors: {
-    //   // blue: {
-    //   //   100: "#D6DDF5",
-    //   //   200: "#B0BCEB",
-    //   //   300: "#7B89C5",
-    //   //   400: "#4A558C",
-    //   //   500: "#181E40",
-    //   //   600: "#111637",
-    //   //   700: "#0C102E",
-    //   //   800: "#070A25",
-    //   //   900: "#04061E",
-    //   // },
-    // },
     extend: {
       fontFamily: {
         sans: ["var(--font-sans)"],

@@ -17,16 +17,15 @@ import {
   DropdownTrigger,
   useDisclosure,
 } from "@nextui-org/react"
+import _ from "lodash"
+import { useCallback } from "react"
+import { IoColorPaletteOutline } from "react-icons/io5"
 import { MdOutlineDisplaySettings } from "react-icons/md"
 import {
   TimelineContextBook,
   TimelineDispatchActionType,
   useTimelineContext,
 } from "../context-timeline"
-import { FrontendTimelineBook } from "@/types/timeline"
-import { IoColorPaletteOutline } from "react-icons/io5"
-import { useCallback } from "react"
-import _ from "lodash"
 
 export default function TimelineDisplaySettings() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()

@@ -2,7 +2,7 @@ import { SelectInsight } from "@/db/schema/insight"
 import "@/styles/timeline.scss"
 import { FrontendTimelineBook } from "@/types/timeline"
 import { formatDate, parse } from "date-fns"
-import _, { update } from "lodash"
+import _ from "lodash"
 import { useCallback, useMemo, useRef, useState } from "react"
 import {
   TimelineDispatchActionType,
@@ -139,10 +139,8 @@ export default function ActualTimeline({
     (b) => b.bookID !== bookDetails.book_id,
   )
 
-  let wrapperClass = "timelineWrapper"
-
   return (
-    <div className={wrapperClass}>
+    <div className="timelineWrapper">
       <div className="currentYear z-20 insightBucketYear bg-zinc-600 text-white font-bold font-xl font-title px-2 py-1 rounded absolute">
         {yearDisplay}
       </div>

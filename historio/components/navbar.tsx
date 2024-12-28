@@ -17,7 +17,10 @@ export const Navbar = () => {
       position="sticky"
     >
       <NavbarBrand>
-        <NextLink className="flex justify-start items-center gap-1" href="/">
+        <NextLink
+          className="flex justify-start mr-2 items-center gap-1"
+          href="/"
+        >
           <Image
             width={65}
             src="/img/logo/logo_transparent.png"
@@ -26,14 +29,20 @@ export const Navbar = () => {
           />
           <h1 className="font-bold ml-3 text-3xl font-serif">Historio</h1>
         </NextLink>
-      </NavbarBrand>
-      <NavbarContent justify="center">
         <img
-          className="opacity-30 mr-6"
+          className="opacity-25 mx-2"
           width={60}
           src="/img/elements/colliseum.png"
           alt="Colliseum"
         />
+        <img
+          className="opacity-30 mx-2"
+          width={60}
+          src="/img/elements/midway.png"
+          alt="Battle of Midway"
+        />
+      </NavbarBrand>
+      <NavbarContent justify="center">
         <NavbarItem>
           <NextLink
             className="underline decoration-4 decoration-green-500 text-2xl underline-offset-4"
@@ -43,12 +52,6 @@ export const Navbar = () => {
             Demo
           </NextLink>
         </NavbarItem>
-        <img
-          className="opacity-35 ml-4"
-          width={60}
-          src="/img/elements/midway.png"
-          alt="Battle of Midway"
-        />
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>

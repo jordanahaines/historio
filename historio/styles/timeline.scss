@@ -37,13 +37,15 @@
   .timelineBar {
     height: 22px;
     width: 100%;
-    opacity: 0.09;
+    opacity: 0.08;
     border-radius: 8px;
     position: relative;
     margin-bottom: 8px;
+
+    // Appears over insights
     z-index: 2;
     &:hover {
-      opacity: 0.4;
+      opacity: 0.51;
     }
   }
 }
@@ -61,7 +63,7 @@
     flex-shrink: 0;
     line-height: 0.9;
     margin: 0px 12px;
-    z-index: 3;
+    z-index: 1;
   }
 }
 .timelineTitle {
@@ -76,7 +78,7 @@
 
   &.left {
     transform: rotate(330deg);
-    left: -20px;
+    left: -19px;
     top: -14px;
   }
   &.right {

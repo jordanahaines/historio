@@ -37,15 +37,20 @@ export default function TimelineContainer({
     (b) => b.bookID === book.book_id,
   )
   if (!bookContext) return
+  // Another book is highlighted; adjust our opacity down
+  const antiHighlighted =
+    !bookContext.highlighted && _.some(timelineContext.books, "highlighted")
 
   // Only take title before colon to disregard subtitle
-  let displayTitle = book.title.includes(":")
+  const displayTitle = book.title.includes(":")
     ? book.title.split(":")[0]
     : book.title
 
-  displayTitle += `(${book.default_start.getFullYear()} - ${book.default_end.getFullYear()})`
+  const byline =
+    book.author +
+    ` (${book.default_start.getFullYear()} - ${book.default_end.getFullYear()})`
 
-  // This has to be defined here to be picked up by tailwind
+  // These have to be defined here to be picked up by tailwind
   const tailwindTimelineColors = {
     red: "bg-red-500",
     amber: "bg-amber-500",
@@ -60,9 +65,24 @@ export default function TimelineContainer({
     yellow: "bg-yellow-500",
     violet: "bg-violet-500",
   }
+  const tailwindBorderColors = {
+    red: "border-red-500",
+    amber: "border-amber-500",
+    lime: "border-lime-500",
+    sky: "border-sky-500",
+    fuchsia: "border-fuchsia-500",
+    pink: "border-pink-500",
+    rose: "border-rose-500",
+    teal: "border-teal-500",
+    emerald: "border-emerald-500",
+    indigo: "border-indigo-500",
+    yellow: "border-yellow-500",
+    violet: "border-violet-500",
+  }
 
   // @ts-ignore
-  const bg = tailwindTimelineColors[bookContext.currentColor]
+  let bg = tailwindTimelineColors[bookContext.currentColor]
+  if (antiHighlighted) bg = "bg-zinc-300"
 
   const renderColorMenuItem = (color: keyof typeof tailwindTimelineColors) => {
     return (
@@ -102,9 +122,16 @@ export default function TimelineContainer({
     [bookContext.currentZoom, updateTimelineContext],
   )
 
+  let border = "border-zinc-300"
+  if (bookContext.highlighted) {
+    border = tailwindBorderColors[bookContext.currentColor]
+  }
+
   return (
     <>
-      <div className="border-4 z-20 relative !border-b-8 bg-white mt-10 border-zinc-300 rounded-t-lg w-full min-h-40 flex">
+      <div
+        className={`border-4 z-20 relative !border-b-8 ${border} bg-white mt-10  rounded-t-lg w-full min-h-40 flex`}
+      >
         <BookCover
           id={book.book_id}
           title={book.title}
@@ -113,14 +140,14 @@ export default function TimelineContainer({
         />
         <ActualTimeline bookDetails={book} />
       </div>
-      <div className="w-full flex">
+      <div className={`w-full flex`}>
         <div
           className={`${bg} tab-author relative ml-8 text-white px-2 pb-2 w-1/5 flex justify-between items-center`}
         >
           <div className={`tab-diagonal z-0 left ${bg}`}></div>
           <div className="flex grow flex-col justify-center">
             <p className="font-title z-10 text-bold">{displayTitle}</p>
-            <p className="text-xs z-10">by {book.author}</p>
+            <p className="text-xs z-10">by {byline}</p>
           </div>
           <div className="w-1/5 flex justify-end">
             <Dropdown>

@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+$color-light-blue: "#DFDCF2";
+$color-blue: "#181E40";
+$color-green: "#78A614";
+$color-light-green: "#AFD91A";
+$color-offwhite: "#F2EDDC";
+
 main.container {
   background-image: url("/img/bg/groovepaper.png");
 }

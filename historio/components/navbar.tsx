@@ -1,7 +1,4 @@
 "use client"
-import { Input } from "@nextui-org/input"
-import { Kbd } from "@nextui-org/kbd"
-import { BsSubstack } from "react-icons/bs"
 import {
   NavbarBrand,
   NavbarContent,
@@ -10,33 +7,13 @@ import {
 } from "@nextui-org/navbar"
 import { Avatar, Button, Image } from "@nextui-org/react"
 import NextLink from "next/link"
-
-import { SearchIcon } from "@/components/icons"
+import { BsSubstack } from "react-icons/bs"
 
 export const Navbar = () => {
-  const searchInput = (
-    <Input
-      aria-label="Search"
-      classNames={{
-        inputWrapper: "bg-default-100",
-        input: "text-sm",
-      }}
-      endContent={
-        <Kbd className="hidden lg:inline-block" keys={["command"]}></Kbd>
-      }
-      labelPlacement="outside"
-      placeholder="Search..."
-      startContent={
-        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-      }
-      type="search"
-    />
-  )
-
   return (
     <NextUINavbar
       maxWidth="2xl"
-      className="bg-black text-white text-2xl"
+      className="bg-slate-950 text-white text-2xl"
       position="sticky"
     >
       <NavbarBrand>
@@ -76,7 +53,7 @@ export const Navbar = () => {
       <NavbarContent justify="end">
         <NavbarItem>
           <Button
-            className="bg-black text-orange-400"
+            className="bg-black text-orange-400 text-2xl"
             href="https://learnbuildteach.substack.com/p/building-historio-episode-0"
           >
             <BsSubstack />
@@ -89,7 +66,7 @@ export const Navbar = () => {
             <NextLink
               href="https://www.linkedin.com/in/jordanahaines"
               target="_blank"
-              className="hover:border-b-4 border-blue-400 hover:scale-125 flex items-center px-2 mx-2"
+              className="border-b-4 border-transparent hover:border-blue-400 flex items-center px-2 mx-2"
             >
               <Avatar
                 size="sm"

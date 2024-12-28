@@ -6,6 +6,7 @@ export type TimelineOverlapBarProps = {
   parentStartDate: Date
   parentEndDate: Date
   barBookID: string // ID of book in context we are rendering bar for
+  onHover: (hovered: boolean) => void // So that we can highlight other books
 }
 
 export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
@@ -55,7 +56,12 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
 
   return (
     <Tooltip content={tooltip}>
-      <div className={colorClass} style={style}></div>
+      <div
+        onMouseEnter={() => props.onHover(true)}
+        onMouseLeave={() => props.onHover(false)}
+        className={colorClass}
+        style={style}
+      ></div>
     </Tooltip>
   )
 }

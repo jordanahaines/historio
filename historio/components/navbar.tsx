@@ -1,7 +1,4 @@
 "use client"
-import { Input } from "@nextui-org/input"
-import { Kbd } from "@nextui-org/kbd"
-import { BsSubstack } from "react-icons/bs"
 import {
   NavbarBrand,
   NavbarContent,
@@ -10,37 +7,20 @@ import {
 } from "@nextui-org/navbar"
 import { Avatar, Button, Image } from "@nextui-org/react"
 import NextLink from "next/link"
-
-import { SearchIcon } from "@/components/icons"
+import { BsSubstack } from "react-icons/bs"
 
 export const Navbar = () => {
-  const searchInput = (
-    <Input
-      aria-label="Search"
-      classNames={{
-        inputWrapper: "bg-default-100",
-        input: "text-sm",
-      }}
-      endContent={
-        <Kbd className="hidden lg:inline-block" keys={["command"]}></Kbd>
-      }
-      labelPlacement="outside"
-      placeholder="Search..."
-      startContent={
-        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-      }
-      type="search"
-    />
-  )
-
   return (
     <NextUINavbar
       maxWidth="2xl"
-      className="bg-black text-white text-2xl"
+      className="bg-slate-950 text-white text-2xl"
       position="sticky"
     >
       <NavbarBrand>
-        <NextLink className="flex justify-start items-center gap-1" href="/">
+        <NextLink
+          className="flex justify-start mr-2 items-center gap-1"
+          href="/"
+        >
           <Image
             width={65}
             src="/img/logo/logo_transparent.png"
@@ -49,14 +29,20 @@ export const Navbar = () => {
           />
           <h1 className="font-bold ml-3 text-3xl font-serif">Historio</h1>
         </NextLink>
-      </NavbarBrand>
-      <NavbarContent justify="center">
         <img
-          className="opacity-30 mr-6"
+          className="opacity-25 mx-2"
           width={60}
           src="/img/elements/colliseum.png"
           alt="Colliseum"
         />
+        <img
+          className="opacity-30 mx-2"
+          width={60}
+          src="/img/elements/midway.png"
+          alt="Battle of Midway"
+        />
+      </NavbarBrand>
+      <NavbarContent justify="center">
         <NavbarItem>
           <NextLink
             className="underline decoration-4 decoration-green-500 text-2xl underline-offset-4"
@@ -66,17 +52,11 @@ export const Navbar = () => {
             Demo
           </NextLink>
         </NavbarItem>
-        <img
-          className="opacity-35 ml-4"
-          width={60}
-          src="/img/elements/midway.png"
-          alt="Battle of Midway"
-        />
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
           <Button
-            className="bg-black text-orange-400"
+            className="bg-black text-orange-400 text-2xl"
             href="https://learnbuildteach.substack.com/p/building-historio-episode-0"
           >
             <BsSubstack />
@@ -89,7 +69,7 @@ export const Navbar = () => {
             <NextLink
               href="https://www.linkedin.com/in/jordanahaines"
               target="_blank"
-              className="hover:border-b-4 border-blue-400 hover:scale-125 flex items-center px-2 mx-2"
+              className="border-b-4 border-transparent hover:border-blue-400 flex items-center px-2 mx-2"
             >
               <Avatar
                 size="sm"

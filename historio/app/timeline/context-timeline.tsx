@@ -28,6 +28,7 @@ export type TimelineContextBook = {
   currentEnd: string
   currentZoom: number // Literally a multiplier
   barsMode: TimelineBarsMode
+  highlighted: boolean
 }
 
 export type TimelineContextSettings = {
@@ -102,6 +103,7 @@ export function TimelineContextProvider({
       currentEnd: b.default_end.toISOString(),
       currentZoom: DEFAULT_ZOOM,
       barsMode: TimelineBarsMode.fullBook,
+      highlighted: false,
     })),
   }
   const [ctx, updateCtx] = useReducer(historioContextReducer, initialContext)

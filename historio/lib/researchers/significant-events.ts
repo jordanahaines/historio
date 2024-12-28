@@ -37,8 +37,8 @@ const parseSignificantEvents = async (
   const filteredInsights = data.insights.filter((e) => {
     // No matching wiki link OR matching name and year from date
     if (existingWikiLinks.includes(e.wikipedia_link)) return false
-    return !existingInsights.find(
-      (i) => i.name?.toLowerCase() === e.name.toLowerCase(),
+    return !existingInsights.find((i) =>
+      i.name?.toLowerCase().includes(e.name.toLowerCase()),
     )
   })
 

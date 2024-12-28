@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+$color-light-blue: "#DFDCF2";
+$color-blue: "#181E40";
+$color-green: "#78A614";
+$color-light-green: "#AFD91A";
+$color-offwhite: "#F2EDDC";
+
 main.container {
   background-image: url("/img/bg/groovepaper.png");
 }
@@ -12,7 +18,10 @@ main.container {
 .font-serif {
   font-family: var(--font-serif);
 }
-
 .handwriting {
   font-family: var(--font-handwriting);
+}
+.help {
+  color: #94a3b8;
+  font-size: 0.75em;
 }

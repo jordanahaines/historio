@@ -7,13 +7,15 @@ import { FiEdit } from "react-icons/fi"
 
 import { useState } from "react"
 import { updateTimelineTitle } from "../actions"
-import TimelineDisplaySettings from "./timeline-display-settings"
+import TimelineDisplaySettings from "./drawer-timeline-display-settings"
 
 export type TimelinePageTitleProps = {
   timeline: SelectTimeline
+  editable?: boolean
 }
 export default function TimelinePageTitle({
   timeline,
+  editable = false,
 }: TimelinePageTitleProps) {
   const [editing, setEditing] = useState(false)
   const [title, setTitle] = useState(timeline.title || "")
@@ -37,13 +39,15 @@ export default function TimelinePageTitle({
           {!editing && (
             <>
               <p className="text-3xl mr-6">{title}</p>
-              <Button
-                isIconOnly
-                variant="faded"
-                onPress={() => setEditing(true)}
-              >
-                <FiEdit />
-              </Button>
+              {editable && (
+                <Button
+                  isIconOnly
+                  variant="faded"
+                  onPress={() => setEditing(true)}
+                >
+                  <FiEdit />
+                </Button>
+              )}
             </>
           )}
           {editing && (

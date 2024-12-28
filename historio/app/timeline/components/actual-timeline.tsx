@@ -4,7 +4,10 @@ import { FrontendTimelineBook } from "@/types/timeline"
 import { formatDate, parse } from "date-fns"
 import _ from "lodash"
 import { useCallback, useMemo, useRef, useState } from "react"
-import { useTimelineContext } from "../context-timeline"
+import {
+  TimelineDispatchActionType,
+  useTimelineContext,
+} from "../context-timeline"
 import TimelineOverlapBar from "./timeline-overlap-bars"
 
 const INSIGHT_WIDTH = 120
@@ -24,12 +27,13 @@ export default function ActualTimeline({
     () => _.sortBy(_.toPairs(bookDetails.grouped_insights), (p) => p[0]),
     [bookDetails.book_id],
   )
-  const { timelineContext } = useTimelineContext()
+  const { timelineContext, updateTimelineContext } = useTimelineContext()
   const bookContext = _.find(
     timelineContext.books,
     (b) => b.bookID === bookDetails.book_id,
   )
-  if (!bookContext) return
+
+  if (!bookContext || !updateTimelineContext) return
 
   const timelineRef = useRef(null)
   // @ts-ignore
@@ -119,6 +123,17 @@ export default function ActualTimeline({
     [timelineRef, yearDisplay],
   )
 
+  /** Update context to indicate a book has been highlighted */
+  const handleHighlight = useCallback(
+    (id: string, highlighted: boolean) => {
+      updateTimelineContext({
+        type: TimelineDispatchActionType.updateBook,
+        payload: { bookID: id, highlighted },
+      })
+    },
+    [updateTimelineContext],
+  )
+
   // Used to render overlap bars
   const otherBooks = timelineContext.books.filter(
     (b) => b.bookID !== bookDetails.book_id,
@@ -141,6 +156,7 @@ export default function ActualTimeline({
                 parentStartDate={bookDetails.start}
                 parentEndDate={bookDetails.end}
                 barBookID={b.bookID}
+                onHover={(h) => handleHighlight(b.bookID, h)}
               />
             ))}
           </div>

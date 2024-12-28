@@ -50,7 +50,6 @@ export default function TimelineContainer({
     book.author +
     ` (${book.default_start.getFullYear()} - ${book.default_end.getFullYear()})`
 
-  // These have to be defined here to be picked up by tailwind
   const tailwindTimelineColors = {
     red: "bg-red-500",
     amber: "bg-amber-500",
@@ -83,31 +82,6 @@ export default function TimelineContainer({
   // @ts-ignore
   let bg = tailwindTimelineColors[bookContext.currentColor]
   if (antiHighlighted) bg = "bg-zinc-300"
-
-  const renderColorMenuItem = (color: keyof typeof tailwindTimelineColors) => {
-    return (
-      <DropdownItem key={color}>
-        <div className="flex justify-start items-center">
-          <div
-            className={`${tailwindTimelineColors[color]} rounded-full w-2 h-2 mr-4`}
-          ></div>
-          <span>{_.capitalize(color)}</span>
-        </div>
-      </DropdownItem>
-    )
-  }
-
-  const updateColor = useCallback(
-    (color: string) => {
-      if (updateTimelineContext) {
-        updateTimelineContext({
-          type: TimelineDispatchActionType.updateBook,
-          payload: { ...bookContext, currentColor: color },
-        })
-      }
-    },
-    [updateTimelineContext, bookContext.bookID],
-  )
 
   const onZoom = useCallback(
     (newZoom: number) => {
@@ -149,28 +123,7 @@ export default function TimelineContainer({
             <p className="font-title z-10 text-bold">{displayTitle}</p>
             <p className="text-xs z-10">by {byline}</p>
           </div>
-          <div className="w-1/5 flex justify-end">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button
-                  className="!border-0 text-white !hover:bg-white hover:text-black"
-                  variant="ghost"
-                  isIconOnly
-                >
-                  <IoColorPaletteOutline size={30} />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                onAction={(k) => updateColor(k.toString())}
-                aria-label="Timeline Colors"
-              >
-                {
-                  // @ts-ignore
-                  Object.keys(tailwindTimelineColors).map(renderColorMenuItem)
-                }
-              </DropdownMenu>
-            </Dropdown>
-          </div>
+          <div className="w-1/5 flex justify-end"></div>
           <div className={`tab-diagonal z-0 ${bg} right`}></div>
         </div>
         <div className="w-1/2 flex justify-center"></div>

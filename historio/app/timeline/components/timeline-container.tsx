@@ -4,17 +4,10 @@ import BookCover from "@/components/book-cover"
 import { FrontendTimelineBook } from "@/types/timeline"
 import { Button } from "@nextui-org/button"
 import { Chip } from "@nextui-org/chip"
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@nextui-org/dropdown"
 import { Tooltip } from "@nextui-org/tooltip"
 import _ from "lodash"
 import { useCallback } from "react"
 import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6"
-import { IoColorPaletteOutline } from "react-icons/io5"
 import { MdStickyNote2 } from "react-icons/md"
 import { RiLightbulbFlashFill } from "react-icons/ri"
 import {

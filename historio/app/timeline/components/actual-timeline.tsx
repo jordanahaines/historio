@@ -3,7 +3,7 @@ import "@/styles/timeline.scss"
 import { FrontendTimelineBook } from "@/types/timeline"
 import { formatDate, parse } from "date-fns"
 import _ from "lodash"
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   TimelineDispatchActionType,
   useTimelineContext,
@@ -122,6 +122,23 @@ export default function ActualTimeline({
     },
     [timelineRef, yearDisplay],
   )
+
+  // React to scroll events from context
+  useEffect(() => {
+    const to = timelineContext.scrollTo
+    if (!to || !timelineRef.current) return
+    // We gotta scroll!
+    let scrollPercent =
+      (to.getTime() - bookDetails.start.getTime()) /
+      (bookDetails.end.getTime() - bookDetails.start.getTime())
+    scrollPercent = Math.max(0, Math.min(1, scrollPercent))
+    const left = scrollPercent * timelineRef.current.scrollWidth
+
+    timelineRef.current.scrollTo({
+      left,
+      behavior: "smooth",
+    })
+  }, [timelineContext.scrollTo])
 
   /** Update context to indicate a book has been highlighted */
   const handleHighlight = useCallback(

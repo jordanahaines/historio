@@ -11,8 +11,9 @@ import {
 const DEFAULT_ZOOM = 2
 
 export enum TimelineDispatchActionType {
-  updateBook,
-  updateSettings,
+  updateBook = "update",
+  updateSettings = "settings",
+  updateScrollTo = "scroll",
 }
 export enum TimelineBarsMode {
   fullBook,
@@ -44,11 +45,16 @@ export type TimelineDispatchAction =
       type: TimelineDispatchActionType.updateSettings
       payload: Partial<TimelineContextSettings>
     }
+  | {
+      type: TimelineDispatchActionType.updateScrollTo
+      payload: Date | null
+    }
 
 // This is our actual context. An object of FrontendTimelineBooks, keyed on book ID for fast update
 export type HistorioTimelineContext = {
   settings: TimelineContextSettings
   books: TimelineContextBook[]
+  scrollTo: Date | null
 }
 
 /**
@@ -69,8 +75,13 @@ const historioContextReducer = (
         ...newState.books[bookIdx],
         ...update.payload,
       }
+      break
     case TimelineDispatchActionType.updateSettings:
       newState.settings = { ...newState.settings, ...update.payload }
+      break
+    case TimelineDispatchActionType.updateScrollTo:
+      newState.scrollTo = update.payload as Date | null
+      break
   }
   return newState
 }
@@ -82,6 +93,7 @@ type TimelinexContextProviderProps = {
 
 const baseContext: HistorioTimelineContext = {
   settings: { showMiniMap: true },
+  scrollTo: null,
   books: [],
 }
 export const TimelineContext =
@@ -95,6 +107,7 @@ export function TimelineContextProvider({
 }: TimelinexContextProviderProps) {
   const initialContext: HistorioTimelineContext = {
     settings: { showMiniMap: true },
+    scrollTo: null,
     books: books.map((b) => ({
       bookID: b.book_id,
       bookTitle: b.title,

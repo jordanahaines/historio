@@ -1,11 +1,12 @@
 import { SelectInsight } from "@/db/schema/insight"
 import "@/styles/timeline.scss"
 import { FrontendTimelineBook } from "@/types/timeline"
-import { formatDate, parse } from "date-fns"
+import { add, differenceInDays, formatDate, parse } from "date-fns"
 import _ from "lodash"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   TimelineDispatchActionType,
+  UpdateTimelineContext,
   useTimelineContext,
 } from "../context-timeline"
 import TimelineOverlapBar from "./timeline-overlap-bars"
@@ -110,15 +111,33 @@ export default function ActualTimeline({
 
   // On Scroll:
   // 1) Adjust the static year label
+  // 2) Adjust current start/end in context
   const handleScroll = useCallback(
     (e: any) => {
       if (!timelineRef.current) return
       const timelineDiv: HTMLDivElement = timelineRef.current as HTMLDivElement
       // Adjust years
       const left = timelineDiv.scrollLeft
+      const right = left + timelineDiv.clientWidth
       const currentBucketIdx = timelineDiv ? Math.floor(left / bucketWidth) : 0
       setYearDisplay(displayYears[currentBucketIdx])
-      // const start = add(bookDetails.start, {days: })
+
+      const leftPct = left / timelineDiv.scrollWidth
+      const rightPct = right / timelineDiv.scrollWidth
+      const start = add(bookDetails.start, {
+        days: leftPct * differenceInDays(bookDetails.end, bookDetails.start),
+      })
+      const end = add(bookDetails.start, {
+        days: rightPct * differenceInDays(bookDetails.end, bookDetails.start),
+      })
+      updateTimelineContext({
+        type: TimelineDispatchActionType.updateBook,
+        payload: {
+          ...bookContext,
+          currentStart: start.toISOString(),
+          currentEnd: end.toISOString(),
+        },
+      })
     },
     [timelineRef, yearDisplay],
   )

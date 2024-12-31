@@ -1,5 +1,5 @@
 import { differenceInDays, parseISO } from "date-fns"
-import { useTimelineContext } from "../context-timeline"
+import { TimelineBarsMode, useTimelineContext } from "../context-timeline"
 import { Tooltip } from "@nextui-org/tooltip"
 
 export type TimelineOverlapBarProps = {
@@ -13,11 +13,17 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
   const { parentStartDate, parentEndDate, barBookID } = props
   const { timelineContext } = useTimelineContext()
   const renderBook = timelineContext.books.find((b) => b.bookID === barBookID)
-  if (!renderBook) return
+  if (
+    !renderBook ||
+    timelineContext.settings.barsMode === TimelineBarsMode.hidden
+  )
+    return
 
   const { currentStart, currentEnd } = renderBook
-  const startDate = parseISO(currentStart)
-  const endDate = parseISO(currentEnd)
+  const dynamic =
+    timelineContext.settings.barsMode === TimelineBarsMode.currentView
+  const startDate = dynamic ? parseISO(currentStart) : renderBook.start
+  const endDate = dynamic ? parseISO(currentEnd) : renderBook.end
 
   const parentDurationDays = differenceInDays(parentEndDate, parentStartDate)
   const barDurationDays = differenceInDays(

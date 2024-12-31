@@ -16,24 +16,26 @@ export enum TimelineDispatchActionType {
   updateScrollTo = "scroll",
 }
 export enum TimelineBarsMode {
-  fullBook,
-  currentView,
-  hidden,
+  fullBook = "full",
+  currentView = "current",
+  hidden = "hidden",
 }
 
 export type TimelineContextBook = {
   bookID: string
   bookTitle: string
   currentColor: string
+  start: Date
+  end: Date
   currentStart: string
   currentEnd: string
   currentZoom: number // Literally a multiplier
-  barsMode: TimelineBarsMode
   highlighted: boolean
 }
 
 export type TimelineContextSettings = {
   showMiniMap: boolean
+  barsMode: TimelineBarsMode
 }
 
 export type TimelineDispatchAction =
@@ -92,7 +94,7 @@ type TimelinexContextProviderProps = {
 }
 
 const baseContext: HistorioTimelineContext = {
-  settings: { showMiniMap: true },
+  settings: { showMiniMap: true, barsMode: TimelineBarsMode.fullBook },
   scrollTo: null,
   books: [],
 }
@@ -106,12 +108,14 @@ export function TimelineContextProvider({
   children,
 }: TimelinexContextProviderProps) {
   const initialContext: HistorioTimelineContext = {
-    settings: { showMiniMap: true },
+    settings: { showMiniMap: true, barsMode: TimelineBarsMode.fullBook },
     scrollTo: null,
     books: books.map((b) => ({
       bookID: b.book_id,
       bookTitle: b.title,
       currentColor: b.color,
+      start: b.start,
+      end: b.end,
       currentStart: b.default_start.toISOString(),
       currentEnd: b.default_end.toISOString(),
       currentZoom: DEFAULT_ZOOM,

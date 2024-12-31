@@ -6,14 +6,10 @@ import {
 
 export type TimelineMinimapProps = {
   events: Date[]
-  books: { start: Date; end: Date; id: string }[]
 }
 
-export default function TimelineMinimap({
-  events,
-  books,
-}: TimelineMinimapProps) {
-  const { timelineContext, updateTimelineContext } = useTimelineContext()
+export default function TimelineMinimap({ events }: TimelineMinimapProps) {
+  const { updateTimelineContext } = useTimelineContext()
 
   // Pan all timelines that overlap this date to this date
   // TODO: Put method in context provider?

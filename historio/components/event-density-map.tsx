@@ -20,7 +20,6 @@ export type EventDensityMapProps = {
 }
 
 const NUM_BUCKETS = 25 // Number of distinct bubbles to show
-const MAX_SIZE = 10
 const SCALE_FACTOR = 1.8
 const MONTH_THRESHOLD = 300
 
@@ -40,7 +39,7 @@ export default function EventDensityMap(props: EventDensityMapProps) {
     violet: "bg-violet-500/30",
   }
 
-  const events = [...props.events].sort()
+  const events = _.sortBy([...props.events]).toReversed()
   if (events.length === 0) return "No Events" // TODO: Better handling of this case
   const end = props.end ?? events[0]
   const start = props.start ?? events[events.length - 1]

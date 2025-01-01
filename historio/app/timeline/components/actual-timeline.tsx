@@ -113,7 +113,7 @@ export default function ActualTimeline({
   // 1) Adjust the static year label
   // 2) Adjust current start/end in context
   const handleScroll = useCallback(
-    (e: any) => {
+    (e?: any) => {
       if (!timelineRef.current) return
       const timelineDiv: HTMLDivElement = timelineRef.current as HTMLDivElement
       // Adjust years
@@ -141,6 +141,11 @@ export default function ActualTimeline({
     },
     [timelineRef, yearDisplay],
   )
+
+  // Set initial current start/end so we don't get jitter when scrolling
+  useEffect(() => {
+    handleScroll()
+  }, [])
 
   // React to scroll events from context
   useEffect(() => {

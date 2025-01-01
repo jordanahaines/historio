@@ -29,12 +29,22 @@ export default function TimelineMinimap({ events }: TimelineMinimapProps) {
     color: b.currentColor,
   }))
 
+  const handleHover = (hovered: boolean, idx: number) => {
+    if (!updateTimelineContext) return
+    const book = timelineContext.books[idx]
+    updateTimelineContext({
+      type: TimelineDispatchActionType.updateBook,
+      payload: { ...book, highlighted: hovered },
+    })
+  }
+
   return (
     <div className="hover:scale-110 hover:bottom-1 transition-transform border-4 border-zinc-300 timeline-minimap fixed bottom-0 left-4 rounded-t-lg p">
       <EventDensityMap
         viewports={viewports}
         events={events}
         onPress={handlePress}
+        onHoverViewport={handleHover}
       ></EventDensityMap>
     </div>
   )

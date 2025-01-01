@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useMemo, useRef } from "react"
+import React, { SyntheticEvent, useCallback, useMemo, useRef } from "react"
 import { differenceInDays, add, format } from "date-fns"
 import _ from "lodash"
 import { Tooltip } from "@nextui-org/tooltip"
@@ -16,6 +16,7 @@ export type EventDensityMapProps = {
   showLine?: boolean
   viewports?: DensityMapViewport[]
   onPress: (ts: Date) => void
+  onHoverViewport?: (hovered: boolean, viewportIdx: number) => void
 }
 
 const NUM_BUCKETS = 25 // Number of distinct bubbles to show
@@ -88,9 +89,8 @@ export default function EventDensityMap(props: EventDensityMapProps) {
     )
   }
 
-  const renderViewport = (viewport: DensityMapViewport) => {
+  const renderViewport = (viewport: DensityMapViewport, idx: number) => {
     if (!divRef.current) return
-    const containerWidth = divRef.current.clientWidth
     const leftPercent = Math.max(
       differenceInDays(viewport.start, start) / durationDays,
       0,
@@ -106,11 +106,21 @@ export default function EventDensityMap(props: EventDensityMapProps) {
     const border = TAILWIND_BORDER_COLORS[viewport.color as TailwindColor]
     return (
       <div
+        onMouseEnter={() => handleViewportHover(true, idx)}
+        onMouseLeave={() => handleViewportHover(false, idx)}
         className={`${bg} ${border} border-2 timeline-viewport absolute`}
         style={{ left: `${leftPercent * 100}%`, width: `${widthPercent}%` }}
       ></div>
     )
   }
+
+  const handleViewportHover = useCallback(
+    (hovered: boolean, idx: number) => {
+      if (!props.onHoverViewport) return
+      props.onHoverViewport(hovered, idx)
+    },
+    [props.viewports?.length],
+  )
 
   // When someone clicks timeline, calculate date and pass up to parent
   const handleClick = (e: SyntheticEvent) => {

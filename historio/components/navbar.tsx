@@ -48,7 +48,7 @@ export const Navbar = () => {
             <NextLink
               href="https://www.linkedin.com/in/jordanahaines"
               target="_blank"
-              className="border-b-4 border-transparent hover:border-blue-400 flex items-center px-2 mx-2"
+              className="border-b-4 border-transparent hover:border-blue-400 flex items-center px-1 mx-2"
             >
               <Avatar
                 size="sm"
@@ -60,13 +60,13 @@ export const Navbar = () => {
           </div>
         </NavbarItem>
         <NavbarItem>
-          <Button
-            className="bg-black text-white hover:text-orange-400 text-xl"
+          <NextLink
+            className="bg-black text-white hover:text-green-500 text-xl"
             href="https://learnbuildteach.substack.com/p/building-historio-episode-0"
+            target="_blank"
           >
-            <BsSubstack className="text-lg" />
-            &nbsp;About
-          </Button>
+            About
+          </NextLink>
         </NavbarItem>
       </NavbarContent>
     </NextUINavbar>

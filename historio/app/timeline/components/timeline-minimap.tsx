@@ -3,13 +3,14 @@ import {
   TimelineDispatchActionType,
   useTimelineContext,
 } from "../context-timeline"
+import { parseISO } from "date-fns"
 
 export type TimelineMinimapProps = {
   events: Date[]
 }
 
 export default function TimelineMinimap({ events }: TimelineMinimapProps) {
-  const { updateTimelineContext } = useTimelineContext()
+  const { timelineContext, updateTimelineContext } = useTimelineContext()
 
   // Pan all timelines that overlap this date to this date
   // TODO: Put method in context provider?
@@ -21,9 +22,20 @@ export default function TimelineMinimap({ events }: TimelineMinimapProps) {
     })
   }
 
+  // Each book gets its own viewport for start and end
+  const viewports = timelineContext.books.map((b) => ({
+    start: b.currentStart ? parseISO(b.currentStart) : b.start,
+    end: b.currentEnd ? parseISO(b.currentEnd) : b.end,
+    color: b.currentColor,
+  }))
+
   return (
     <div className="hover:scale-110 hover:bottom-1 transition-transform border-4 border-zinc-300 timeline-minimap fixed bottom-0 left-4 rounded-t-lg p">
-      <EventDensityMap events={events} onPress={handlePress}></EventDensityMap>
+      <EventDensityMap
+        viewports={viewports}
+        events={events}
+        onPress={handlePress}
+      ></EventDensityMap>
     </div>
   )
 }

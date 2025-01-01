@@ -100,6 +100,9 @@
     rgba(0, 0, 0, 0)
   );
 }
+.timeline-outer-container {
+  padding-bottom: 80px;
+}
 .timeline-minimap {
   position: fixed;
   height: 50px;
@@ -117,6 +120,10 @@
       background: #475569;
       opacity: 0.15;
       height: 4px;
+    }
+    .timeline-viewport {
+      height: 85%;
+      top: 3%;
     }
     .event-bubble {
       width: 16px;

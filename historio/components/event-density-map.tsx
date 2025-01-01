@@ -2,13 +2,19 @@ import React, { SyntheticEvent, useMemo, useRef } from "react"
 import { differenceInDays, add, format } from "date-fns"
 import _ from "lodash"
 import { Tooltip } from "@nextui-org/tooltip"
+import { TAILWIND_BORDER_COLORS, TailwindColor } from "@/types/colors"
 
+export type DensityMapViewport = {
+  start: Date
+  end: Date
+  color: string
+}
 export type EventDensityMapProps = {
   start?: Date // timestamp
   end?: Date // timestamp
   events: Date[] // timestamps
   showLine?: boolean
-  viewports?: { start: Date; end: Date; color: string }[]
+  viewports?: DensityMapViewport[]
   onPress: (ts: Date) => void
 }
 
@@ -18,6 +24,21 @@ const SCALE_FACTOR = 1.8
 const MONTH_THRESHOLD = 300
 
 export default function EventDensityMap(props: EventDensityMapProps) {
+  const BG_COLORS = {
+    red: "bg-red-500/30",
+    amber: "bg-amber-500/30",
+    lime: "bg-lime-500/30",
+    sky: "bg-sky-500/30",
+    fuchsia: "bg-fuchsia-500/30",
+    pink: "bg-pink-500/30",
+    rose: "bg-rose-500/30",
+    teal: "bg-teal-500/30",
+    emerald: "bg-emerald-500/30",
+    indigo: "bg-indigo-500/30",
+    yellow: "bg-yellow-500/30",
+    violet: "bg-violet-500/30",
+  }
+
   const events = [...props.events].sort()
   if (events.length === 0) return "No Events" // TODO: Better handling of this case
   const end = props.end ?? events[0]
@@ -67,6 +88,30 @@ export default function EventDensityMap(props: EventDensityMapProps) {
     )
   }
 
+  const renderViewport = (viewport: DensityMapViewport) => {
+    if (!divRef.current) return
+    const containerWidth = divRef.current.clientWidth
+    const leftPercent = Math.max(
+      differenceInDays(viewport.start, start) / durationDays,
+      0,
+    )
+    let widthPercent = 0
+    if (viewport.end > start) {
+      widthPercent = Math.min(
+        differenceInDays(viewport.end, start) / durationDays,
+        100 - leftPercent,
+      )
+    }
+    const bg = BG_COLORS[viewport.color as keyof typeof BG_COLORS]
+    const border = TAILWIND_BORDER_COLORS[viewport.color as TailwindColor]
+    return (
+      <div
+        className={`${bg} ${border} border-2 timeline-viewport absolute`}
+        style={{ left: `${leftPercent * 100}%`, width: `${widthPercent}%` }}
+      ></div>
+    )
+  }
+
   // When someone clicks timeline, calculate date and pass up to parent
   const handleClick = (e: SyntheticEvent) => {
     if (!divRef.current) return
@@ -78,7 +123,6 @@ export default function EventDensityMap(props: EventDensityMapProps) {
     const days = Math.round(diffPercent * durationDays)
     const clickDate = add(start, { days })
     props.onPress(clickDate)
-    console.log({ clickDate })
   }
 
   return (
@@ -89,9 +133,10 @@ export default function EventDensityMap(props: EventDensityMapProps) {
       <p className="px-4 font-bold font-serif">{start.getFullYear()}</p>
       <div
         ref={divRef}
-        className="bubble-container grow flex justify-between items-center h-full w-full"
+        className="bubble-container relative grow flex justify-between items-center h-full w-full"
       >
         {bubbles.map(renderBubble)}
+        {props.viewports?.map(renderViewport)}
       </div>
 
       <p className="px-4 font-bold font-serif">{end.getFullYear()}</p>

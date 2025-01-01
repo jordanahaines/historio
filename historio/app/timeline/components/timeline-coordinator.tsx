@@ -36,19 +36,15 @@ export default function TimelineCoordinator({
     ).map((d) => parse(d, "yyyy-MM-dd", new Date()))
   }, [eventCount])
 
-  const minimapBooks = timelineBooks.map((b) => ({
-    start: b.start,
-    end: b.end,
-    id: b.book_id,
-  }))
-
   return (
     <TimelineContextProvider books={timelineBooks}>
-      <TimelinePageTitle timeline={timeline} />
-      {timelineBooks.map((book) => (
-        <TimelineContainer book={book} key={book.book_id} />
-      ))}
-      <TimelineMinimap books={minimapBooks} events={events} />
+      <div className="timeline-outer-container">
+        <TimelinePageTitle timeline={timeline} />
+        {timelineBooks.map((book) => (
+          <TimelineContainer book={book} key={book.book_id} />
+        ))}
+        <TimelineMinimap events={events} />
+      </div>
     </TimelineContextProvider>
   )
 }

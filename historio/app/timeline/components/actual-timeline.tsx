@@ -139,7 +139,7 @@ export default function ActualTimeline({
         },
       })
     },
-    [timelineRef, yearDisplay],
+    [timelineRef, yearDisplay, bookContext],
   )
 
   // Set initial current start/end so we don't get jitter when scrolling

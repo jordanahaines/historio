@@ -22,6 +22,7 @@ export type EventDensityMapProps = {
 const NUM_BUCKETS = 25 // Number of distinct bubbles to show
 const SCALE_FACTOR = 1.8
 const MONTH_THRESHOLD = 300
+const BASE_Z_INDEX = 23
 
 export default function EventDensityMap(props: EventDensityMapProps) {
   const BG_COLORS = {
@@ -46,8 +47,12 @@ export default function EventDensityMap(props: EventDensityMapProps) {
   const durationDays = differenceInDays(end, start)
   const bucketSize = durationDays / NUM_BUCKETS
   const showMonths = bucketSize < MONTH_THRESHOLD
-
   const divRef = useRef<HTMLDivElement>(null)
+
+  // This is used to determine Z-index of viewports so that smallest is on top
+  const viewportSizes = _.sortBy(
+    props.viewports?.map((v) => differenceInDays(v.end, v.start)),
+  ).toReversed()
 
   // number[] of length NUM_BUCKETS where each elt is number of events in that bucket
   const bubbles = useMemo(() => {
@@ -90,32 +95,32 @@ export default function EventDensityMap(props: EventDensityMapProps) {
 
   const renderViewport = (viewport: DensityMapViewport, idx: number) => {
     if (!divRef.current) return
+    const days = differenceInDays(viewport.end, viewport.start)
     const leftPercent = Math.max(
       differenceInDays(viewport.start, start) / durationDays,
       0,
     )
-    let widthPercent = 0
-    if (viewport.end > start) {
-      widthPercent = Math.min(
-        differenceInDays(viewport.end, start) / durationDays,
-        100 - leftPercent,
-      )
-    }
+    const widthPercent = days / durationDays
     const bg = BG_COLORS[viewport.color as keyof typeof BG_COLORS]
     const border = TAILWIND_BORDER_COLORS[viewport.color as TailwindColor]
+    const zIndex = BASE_Z_INDEX + _.findIndex(viewportSizes, (s) => s === days)
     return (
       <div
         onMouseEnter={() => handleViewportHover(true, idx)}
         onMouseLeave={() => handleViewportHover(false, idx)}
         className={`${bg} ${border} border-2 timeline-viewport absolute`}
-        style={{ left: `${leftPercent * 100}%`, width: `${widthPercent}%` }}
+        style={{
+          left: `${leftPercent * 100}%`,
+          width: `${widthPercent * 100}%`,
+          zIndex,
+        }}
       ></div>
     )
   }
 
   const handleViewportHover = useCallback(
     (hovered: boolean, idx: number) => {
-      if (!props.onHoverViewport) return
+      if (!props.onHoverViewport || !props.viewports) return
       props.onHoverViewport(hovered, idx)
     },
     [props.viewports?.length],

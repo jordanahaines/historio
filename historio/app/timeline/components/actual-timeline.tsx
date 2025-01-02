@@ -145,7 +145,7 @@ export default function ActualTimeline({
   // Set initial current start/end so we don't get jitter when scrolling
   useEffect(() => {
     handleScroll()
-  }, [])
+  }, [bookContext.currentZoom])
 
   // React to scroll events from context
   useEffect(() => {

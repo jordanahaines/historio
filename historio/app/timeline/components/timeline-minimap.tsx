@@ -23,13 +23,16 @@ export default function TimelineMinimap({ events }: TimelineMinimapProps) {
     })
   }
 
-  // Each book gets its own viewport for start and end
-  const viewports = timelineContext.books.map((b) => ({
-    start: b.currentStart ? parseISO(b.currentStart) : b.start,
-    end: b.currentEnd ? parseISO(b.currentEnd) : b.end,
-    color: b.currentColor,
-  }))
+  // Map each book with current start and end to viewport
+  const viewports = timelineContext.books
+    .filter((b) => b.currentStart && b.currentEnd)
+    .map((b) => ({
+      start: parseISO(b.currentStart),
+      end: parseISO(b.currentEnd),
+      color: b.currentColor,
+    }))
 
+  // Highlight book when its viewport on minimap is hovered
   const handleHover = (hovered: boolean, idx: number) => {
     if (!updateTimelineContext) return
     const book = timelineContext.books[idx]

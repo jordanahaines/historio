@@ -6,7 +6,6 @@ import _ from "lodash"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   TimelineDispatchActionType,
-  UpdateTimelineContext,
   useTimelineContext,
 } from "../context-timeline"
 import TimelineOverlapBar from "./timeline-overlap-bars"
@@ -36,7 +35,7 @@ export default function ActualTimeline({
 
   if (!bookContext || !updateTimelineContext) return
 
-  const timelineRef = useRef(null)
+  const timelineRef = useRef<HTMLDivElement>(null)
   // @ts-ignore
   const numInsights = INSIGHTS_PER_BUCKET[Math.floor(bookContext.currentZoom)] // TODO: Calculate based on zoom level
   const bucketWidth = numInsights * INSIGHT_WIDTH
@@ -143,6 +142,7 @@ export default function ActualTimeline({
   )
 
   // Set initial current start/end so we don't get jitter when scrolling
+  // Also do this on zoom so minimap updates
   useEffect(() => {
     handleScroll()
   }, [bookContext.currentZoom])

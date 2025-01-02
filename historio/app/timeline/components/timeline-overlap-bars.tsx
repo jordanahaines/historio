@@ -20,6 +20,8 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
     return
 
   const { currentStart, currentEnd } = renderBook
+
+  // Dynamic = current view; moves as timeline pans
   const dynamic =
     timelineContext.settings.barsMode === TimelineBarsMode.currentView
   const startDate = dynamic ? parseISO(currentStart) : renderBook.start
@@ -31,13 +33,12 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
     startDate > parentStartDate ? startDate : parentStartDate,
   )
 
-  let left = 0,
-    width = 100
+  let left = 0
   if (startDate > parentStartDate) {
     left =
       (100 * differenceInDays(startDate, parentStartDate)) / parentDurationDays
   }
-  width = (100 * barDurationDays) / parentDurationDays
+  const width = (100 * barDurationDays) / parentDurationDays
 
   const tailwindTimelineColors = {
     red: "bg-red-500",

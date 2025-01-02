@@ -66,7 +66,7 @@ export default function EventDensityMap(props: EventDensityMapProps) {
       result[idx] += 1
     })
     return result
-  }, [JSON.stringify(events)])
+  }, [events.length])
 
   // Render one of our timeline bubbles, to scale
   const renderBubble = (eventCount: number, idx: number) => {
@@ -93,6 +93,7 @@ export default function EventDensityMap(props: EventDensityMapProps) {
     )
   }
 
+  // Render one viewport overlay on top of density map (represents one book)
   const renderViewport = (viewport: DensityMapViewport, idx: number) => {
     if (!divRef.current) return
     const days = differenceInDays(viewport.end, viewport.start)

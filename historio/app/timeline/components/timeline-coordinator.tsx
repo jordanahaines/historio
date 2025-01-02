@@ -30,10 +30,11 @@ export default function TimelineCoordinator({
 
   // Dates for all of our events
   const events = useMemo(() => {
-    return _.filter(
-      _.flattenDeep(timelineBooks.map((b) => b.insights.map((i) => i.date))),
-      (d) => d !== null,
-    ).map((d) => parse(d, "yyyy-MM-dd", new Date()))
+    const allInsightDates = _.flattenDeep(
+      timelineBooks.map((b) => b.insights.map((i) => i.date)),
+    )
+    const insightDates = _.filter(allInsightDates, (d) => d !== null)
+    return _.map(insightDates, (d) => parse(d, "yyyy-MM-dd", new Date()))
   }, [eventCount])
 
   return (

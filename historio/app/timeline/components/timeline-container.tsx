@@ -4,17 +4,10 @@ import BookCover from "@/components/book-cover"
 import { FrontendTimelineBook } from "@/types/timeline"
 import { Button } from "@nextui-org/button"
 import { Chip } from "@nextui-org/chip"
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@nextui-org/dropdown"
 import { Tooltip } from "@nextui-org/tooltip"
 import _ from "lodash"
 import { useCallback } from "react"
 import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6"
-import { IoColorPaletteOutline } from "react-icons/io5"
 import { MdStickyNote2 } from "react-icons/md"
 import { RiLightbulbFlashFill } from "react-icons/ri"
 import {
@@ -83,7 +76,7 @@ export default function TimelineContainer({
   let bg = tailwindTimelineColors[bookContext.currentColor]
   if (antiHighlighted) bg = "bg-zinc-300"
 
-  const onZoom = useCallback(
+  const handleZoom = useCallback(
     (newZoom: number) => {
       if (newZoom < MIN_ZOOM || newZoom > MAX_ZOOM) return
       if (updateTimelineContext) {
@@ -93,7 +86,7 @@ export default function TimelineContainer({
         })
       }
     },
-    [bookContext.currentZoom, updateTimelineContext],
+    [bookContext, updateTimelineContext],
   )
 
   let border = "border-zinc-300"
@@ -152,7 +145,7 @@ export default function TimelineContainer({
             <div className="vertical-rule bg-zinc-200 w-1 h-3/4"></div>
             <Tooltip content="Zoom in (show more events)">
               <Button
-                onPress={() => onZoom(bookContext.currentZoom + 1)}
+                onPress={() => handleZoom(bookContext.currentZoom + 1)}
                 isDisabled={bookContext.currentZoom >= MAX_ZOOM}
                 isIconOnly
                 variant="ghost"
@@ -167,7 +160,7 @@ export default function TimelineContainer({
                 isIconOnly
                 variant="ghost"
                 className="border-0"
-                onPress={() => onZoom(bookContext.currentZoom - 1)}
+                onPress={() => handleZoom(bookContext.currentZoom - 1)}
               >
                 <FaCircleMinus size={20} />
               </Button>

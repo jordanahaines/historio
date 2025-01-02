@@ -1,9 +1,9 @@
 import { SelectInsight } from "@/db/schema/insight"
 import "@/styles/timeline.scss"
 import { FrontendTimelineBook } from "@/types/timeline"
-import { formatDate, parse } from "date-fns"
+import { add, differenceInDays, formatDate, parse } from "date-fns"
 import _ from "lodash"
-import { useCallback, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import {
   TimelineDispatchActionType,
   useTimelineContext,
@@ -35,7 +35,7 @@ export default function ActualTimeline({
 
   if (!bookContext || !updateTimelineContext) return
 
-  const timelineRef = useRef(null)
+  const timelineRef = useRef<HTMLDivElement>(null)
   // @ts-ignore
   const numInsights = INSIGHTS_PER_BUCKET[Math.floor(bookContext.currentZoom)] // TODO: Calculate based on zoom level
   const bucketWidth = numInsights * INSIGHT_WIDTH
@@ -110,18 +110,59 @@ export default function ActualTimeline({
 
   // On Scroll:
   // 1) Adjust the static year label
+  // 2) Adjust current start/end in context
   const handleScroll = useCallback(
-    (e: any) => {
+    (e?: any) => {
       if (!timelineRef.current) return
       const timelineDiv: HTMLDivElement = timelineRef.current as HTMLDivElement
       // Adjust years
       const left = timelineDiv.scrollLeft
+      const right = left + timelineDiv.clientWidth
       const currentBucketIdx = timelineDiv ? Math.floor(left / bucketWidth) : 0
       setYearDisplay(displayYears[currentBucketIdx])
-      // const start = add(bookDetails.start, {days: })
+
+      const leftPct = left / timelineDiv.scrollWidth
+      const rightPct = right / timelineDiv.scrollWidth
+      const start = add(bookDetails.start, {
+        days: leftPct * differenceInDays(bookDetails.end, bookDetails.start),
+      })
+      const end = add(bookDetails.start, {
+        days: rightPct * differenceInDays(bookDetails.end, bookDetails.start),
+      })
+      updateTimelineContext({
+        type: TimelineDispatchActionType.updateBook,
+        payload: {
+          ...bookContext,
+          currentStart: start.toISOString(),
+          currentEnd: end.toISOString(),
+        },
+      })
     },
-    [timelineRef, yearDisplay],
+    [timelineRef, yearDisplay, bookContext],
   )
+
+  // Set initial current start/end so we don't get jitter when scrolling
+  // Also do this on zoom so minimap updates
+  useEffect(() => {
+    handleScroll()
+  }, [bookContext.currentZoom])
+
+  // React to scroll events from context
+  useEffect(() => {
+    const to = timelineContext.scrollTo
+    if (!to || !timelineRef.current) return
+    // We gotta scroll!
+    let scrollPercent =
+      (to.getTime() - bookDetails.start.getTime()) /
+      (bookDetails.end.getTime() - bookDetails.start.getTime())
+    scrollPercent = Math.max(0, Math.min(1, scrollPercent))
+    const left = scrollPercent * timelineRef.current.scrollWidth
+
+    timelineRef.current.scrollTo({
+      left,
+      behavior: "smooth",
+    })
+  }, [timelineContext.scrollTo])
 
   /** Update context to indicate a book has been highlighted */
   const handleHighlight = useCallback(

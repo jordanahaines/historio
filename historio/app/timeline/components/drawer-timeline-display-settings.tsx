@@ -15,6 +15,8 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Radio,
+  RadioGroup,
   useDisclosure,
 } from "@nextui-org/react"
 import _ from "lodash"
@@ -22,6 +24,7 @@ import { useCallback } from "react"
 import { IoColorPaletteOutline } from "react-icons/io5"
 import { MdOutlineDisplaySettings } from "react-icons/md"
 import {
+  TimelineBarsMode,
   TimelineContextBook,
   TimelineDispatchActionType,
   useTimelineContext,
@@ -76,7 +79,7 @@ export default function TimelineDisplaySettings() {
   }
   const renderBookSelect = (book: TimelineContextBook) => {
     return (
-      <div className="py-2 flex justify-between items-center border-b-2 border-slate-200">
+      <div className="py-2 flex justify-between items-center border-b-1 border-slate-100 last:border-b-0">
         <p className="pr-4">{book.bookTitle}</p>
         <Dropdown className="grow">
           <DropdownTrigger>
@@ -101,6 +104,50 @@ export default function TimelineDisplaySettings() {
     )
   }
 
+  const handleChangeBarMode = useCallback(
+    (val: TimelineBarsMode) => {
+      updateTimelineContext({
+        type: TimelineDispatchActionType.updateSettings,
+        payload: { barsMode: val },
+      })
+    },
+    [updateTimelineContext],
+  )
+
+  const renderBarsMode = () => {
+    return (
+      <div className="py-4">
+        <RadioGroup
+          color="primary"
+          label="Overlap Bars Mode"
+          value={timelineContext.settings.barsMode}
+          onChange={(e) =>
+            handleChangeBarMode(e.target.value as TimelineBarsMode)
+          }
+        >
+          <Radio
+            value={TimelineBarsMode.fullBook}
+            description="Overlap bars represent the full duration of other timelines"
+          >
+            Full Timeline
+          </Radio>
+          <Radio
+            value={TimelineBarsMode.currentView}
+            description="Overlap bars represent the current view of other timelines"
+          >
+            Current View Only
+          </Radio>
+          <Radio
+            value={TimelineBarsMode.hidden}
+            description="Hide overlap bars"
+          >
+            Hide Bars
+          </Radio>
+        </RadioGroup>
+      </div>
+    )
+  }
+
   return (
     <>
       <Button
@@ -114,14 +161,21 @@ export default function TimelineDisplaySettings() {
         <DrawerContent>
           <DrawerHeader>Timeline Display Settings</DrawerHeader>
           <DrawerBody>
-            <p>More settings coming soon! But look, this drawer works!</p>
-            <Divider />
             <div className="pt-4">
               <h3 className="font-serif font-bold text-center">Book Colors</h3>
               <p className="help text-center">
                 Adjust the color for each book on the timeline
               </p>
               {timelineContext.books.map(renderBookSelect)}
+            </div>
+            <div className="pt-4 mt-2 border-t-3 border-t-zinc-500">
+              <h3 className="font-serif font-bold text-center">Overlap Bars</h3>
+              <p className="help text-center">
+                The background of each timeline has colored bars to visualize
+                overlap with other timelines. Hover over one of these bars to
+                highlight the associated timeline
+              </p>
+              {renderBarsMode()}
             </div>
           </DrawerBody>
         </DrawerContent>

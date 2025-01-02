@@ -29,18 +29,6 @@ export const Navbar = () => {
           />
           <h1 className="font-bold ml-3 text-3xl font-serif">Historio</h1>
         </NextLink>
-        <img
-          className="opacity-25 mx-2"
-          width={60}
-          src="/img/elements/colliseum.png"
-          alt="Colliseum"
-        />
-        <img
-          className="opacity-30 mx-2"
-          width={60}
-          src="/img/elements/midway.png"
-          alt="Battle of Midway"
-        />
       </NavbarBrand>
       <NavbarContent justify="center">
         <NavbarItem>
@@ -54,22 +42,13 @@ export const Navbar = () => {
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
-        <NavbarItem>
-          <Button
-            className="bg-black text-orange-400 text-2xl"
-            href="https://learnbuildteach.substack.com/p/building-historio-episode-0"
-          >
-            <BsSubstack />
-            &nbsp;About
-          </Button>
-        </NavbarItem>
-        <NavbarItem className="ml-8">
+        <NavbarItem className="mr-2">
           <div className="flex items-center">
             <span className="opacity-50">by&nbsp;</span>
             <NextLink
               href="https://www.linkedin.com/in/jordanahaines"
               target="_blank"
-              className="border-b-4 border-transparent hover:border-blue-400 flex items-center px-2 mx-2"
+              className="border-b-4 border-transparent hover:border-blue-400 flex items-center px-1 mx-2"
             >
               <Avatar
                 size="sm"
@@ -79,6 +58,15 @@ export const Navbar = () => {
             </NextLink>
             <span className="opacity-50">in MPLS</span>
           </div>
+        </NavbarItem>
+        <NavbarItem>
+          <NextLink
+            className="bg-black text-white hover:text-green-500 text-xl"
+            href="https://learnbuildteach.substack.com/p/building-historio-episode-0"
+            target="_blank"
+          >
+            About
+          </NextLink>
         </NavbarItem>
       </NavbarContent>
     </NextUINavbar>

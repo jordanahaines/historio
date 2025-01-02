@@ -11,28 +11,31 @@ import {
 const DEFAULT_ZOOM = 2
 
 export enum TimelineDispatchActionType {
-  updateBook,
-  updateSettings,
+  updateBook = "update",
+  updateSettings = "settings",
+  updateScrollTo = "scroll",
 }
 export enum TimelineBarsMode {
-  fullBook,
-  currentView,
-  hidden,
+  fullBook = "full",
+  currentView = "current",
+  hidden = "hidden",
 }
 
 export type TimelineContextBook = {
   bookID: string
   bookTitle: string
   currentColor: string
+  start: Date
+  end: Date
   currentStart: string
   currentEnd: string
   currentZoom: number // Literally a multiplier
-  barsMode: TimelineBarsMode
   highlighted: boolean
 }
 
 export type TimelineContextSettings = {
   showMiniMap: boolean
+  barsMode: TimelineBarsMode
 }
 
 export type TimelineDispatchAction =
@@ -44,11 +47,16 @@ export type TimelineDispatchAction =
       type: TimelineDispatchActionType.updateSettings
       payload: Partial<TimelineContextSettings>
     }
+  | {
+      type: TimelineDispatchActionType.updateScrollTo
+      payload: Date | null
+    }
 
 // This is our actual context. An object of FrontendTimelineBooks, keyed on book ID for fast update
 export type HistorioTimelineContext = {
   settings: TimelineContextSettings
   books: TimelineContextBook[]
+  scrollTo: Date | null
 }
 
 /**
@@ -69,8 +77,13 @@ const historioContextReducer = (
         ...newState.books[bookIdx],
         ...update.payload,
       }
+      break
     case TimelineDispatchActionType.updateSettings:
       newState.settings = { ...newState.settings, ...update.payload }
+      break
+    case TimelineDispatchActionType.updateScrollTo:
+      newState.scrollTo = update.payload as Date | null
+      break
   }
   return newState
 }
@@ -81,7 +94,8 @@ type TimelinexContextProviderProps = {
 }
 
 const baseContext: HistorioTimelineContext = {
-  settings: { showMiniMap: true },
+  settings: { showMiniMap: true, barsMode: TimelineBarsMode.fullBook },
+  scrollTo: null,
   books: [],
 }
 export const TimelineContext =
@@ -94,11 +108,14 @@ export function TimelineContextProvider({
   children,
 }: TimelinexContextProviderProps) {
   const initialContext: HistorioTimelineContext = {
-    settings: { showMiniMap: true },
+    settings: { showMiniMap: true, barsMode: TimelineBarsMode.fullBook },
+    scrollTo: null,
     books: books.map((b) => ({
       bookID: b.book_id,
       bookTitle: b.title,
       currentColor: b.color,
+      start: b.start,
+      end: b.end,
       currentStart: b.default_start.toISOString(),
       currentEnd: b.default_end.toISOString(),
       currentZoom: DEFAULT_ZOOM,

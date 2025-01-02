@@ -100,3 +100,45 @@
     rgba(0, 0, 0, 0)
   );
 }
+.timeline-outer-container {
+  padding-bottom: 80px;
+}
+.timeline-minimap {
+  position: fixed;
+  height: 50px;
+  z-index: 21;
+  width: 75%;
+  left: 12.5%;
+  .event-density-map {
+    height: 50px;
+    .line {
+      position: absolute;
+      top: calc(50% - 2px);
+      width: 90%;
+      left: 5%;
+      z-index: 21;
+      background: #475569;
+      opacity: 0.15;
+      height: 4px;
+    }
+    .timeline-viewport {
+      height: 85%;
+      top: 3%;
+      z-index: 23;
+    }
+    .event-bubble {
+      width: 16px;
+      height: 16px;
+      opacity: 0.7;
+      position: relative;
+      z-index: 22;
+      background: hsl(
+        var(--nextui-primary) /
+          var(--nextui-primary-opacity, var(--tw-bg-opacity))
+      );
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}

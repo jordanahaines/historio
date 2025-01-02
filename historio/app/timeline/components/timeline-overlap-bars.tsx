@@ -1,5 +1,5 @@
 import { differenceInDays, parseISO } from "date-fns"
-import { useTimelineContext } from "../context-timeline"
+import { TimelineBarsMode, useTimelineContext } from "../context-timeline"
 import { Tooltip } from "@nextui-org/tooltip"
 
 export type TimelineOverlapBarProps = {
@@ -13,11 +13,19 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
   const { parentStartDate, parentEndDate, barBookID } = props
   const { timelineContext } = useTimelineContext()
   const renderBook = timelineContext.books.find((b) => b.bookID === barBookID)
-  if (!renderBook) return
+  if (
+    !renderBook ||
+    timelineContext.settings.barsMode === TimelineBarsMode.hidden
+  )
+    return
 
   const { currentStart, currentEnd } = renderBook
-  const startDate = parseISO(currentStart)
-  const endDate = parseISO(currentEnd)
+
+  // Dynamic = current view; moves as timeline pans
+  const dynamic =
+    timelineContext.settings.barsMode === TimelineBarsMode.currentView
+  const startDate = dynamic ? parseISO(currentStart) : renderBook.start
+  const endDate = dynamic ? parseISO(currentEnd) : renderBook.end
 
   const parentDurationDays = differenceInDays(parentEndDate, parentStartDate)
   const barDurationDays = differenceInDays(
@@ -25,13 +33,12 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
     startDate > parentStartDate ? startDate : parentStartDate,
   )
 
-  let left = 0,
-    width = 100
+  let left = 0
   if (startDate > parentStartDate) {
     left =
       (100 * differenceInDays(startDate, parentStartDate)) / parentDurationDays
   }
-  width = (100 * barDurationDays) / parentDurationDays
+  const width = (100 * barDurationDays) / parentDurationDays
 
   const tailwindTimelineColors = {
     red: "bg-red-500",
@@ -49,19 +56,16 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
   }
 
   const style = { width: `${width}%`, left: `${left}%` }
-  let tooltip = `${renderBook.bookTitle} (${parseISO(renderBook.currentStart).getFullYear()} - ${parseISO(renderBook.currentEnd).getFullYear()})`
 
   // @ts-ignore
   const colorClass = `timelineBar ${tailwindTimelineColors[renderBook.currentColor]}`
 
   return (
-    <Tooltip content={tooltip}>
-      <div
-        onMouseEnter={() => props.onHover(true)}
-        onMouseLeave={() => props.onHover(false)}
-        className={colorClass}
-        style={style}
-      ></div>
-    </Tooltip>
+    <div
+      onMouseEnter={() => props.onHover(true)}
+      onMouseLeave={() => props.onHover(false)}
+      className={colorClass}
+      style={style}
+    ></div>
   )
 }

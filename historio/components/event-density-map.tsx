@@ -2,6 +2,7 @@ import React, { SyntheticEvent, useCallback, useMemo, useRef } from "react"
 import { differenceInDays, add, format } from "date-fns"
 import _ from "lodash"
 import { Tooltip } from "@nextui-org/tooltip"
+
 import { TAILWIND_BORDER_COLORS, TailwindColor } from "@/types/colors"
 
 export type DensityMapViewport = {
@@ -88,7 +89,7 @@ export default function EventDensityMap(props: EventDensityMapProps) {
           </span>
         }
       >
-        <div className="event-bubble rounded-full" style={style}></div>
+        <div className="event-bubble rounded-full" style={style} />
       </Tooltip>
     )
   }
@@ -107,15 +108,15 @@ export default function EventDensityMap(props: EventDensityMapProps) {
     const zIndex = BASE_Z_INDEX + _.findIndex(viewportSizes, (s) => s === days)
     return (
       <div
-        onMouseEnter={() => handleViewportHover(true, idx)}
-        onMouseLeave={() => handleViewportHover(false, idx)}
         className={`${bg} ${border} border-2 timeline-viewport absolute`}
         style={{
           left: `${leftPercent * 100}%`,
           width: `${widthPercent * 100}%`,
           zIndex,
         }}
-      ></div>
+        onMouseEnter={() => handleViewportHover(true, idx)}
+        onMouseLeave={() => handleViewportHover(false, idx)}
+      />
     )
   }
 
@@ -142,8 +143,9 @@ export default function EventDensityMap(props: EventDensityMapProps) {
 
   return (
     <div
-      onClick={handleClick}
       className="relative bg-white event-density-map rounded-t-lg w-full flex justify-center items-center"
+      onClick={handleClick}
+      role="presentation"
     >
       <p className="px-4 font-bold font-serif">{start.getFullYear()}</p>
       <div
@@ -155,7 +157,7 @@ export default function EventDensityMap(props: EventDensityMapProps) {
       </div>
 
       <p className="px-4 font-bold font-serif">{end.getFullYear()}</p>
-      <div className="line"></div>
+      <div className="line" />
     </div>
   )
 }

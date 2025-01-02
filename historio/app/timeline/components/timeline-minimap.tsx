@@ -1,10 +1,12 @@
-import EventDensityMap from "@/components/event-density-map"
+import { parseISO } from "date-fns"
+import _ from "lodash"
+
 import {
   TimelineDispatchActionType,
   useTimelineContext,
 } from "../context-timeline"
-import { parseISO } from "date-fns"
-import _ from "lodash"
+
+import EventDensityMap from "@/components/event-density-map"
 
 export type TimelineMinimapProps = {
   events: Date[]
@@ -48,13 +50,13 @@ export default function TimelineMinimap({ events }: TimelineMinimapProps) {
   return (
     <div className="hover:scale-110 hover:bottom-1 transition-transform border-4 border-zinc-300 timeline-minimap fixed bottom-0 left-4 rounded-t-lg p">
       <EventDensityMap
-        viewports={viewports}
-        events={events}
-        onPress={handlePress}
-        start={start}
         end={end}
+        events={events}
+        start={start}
+        viewports={viewports}
         onHoverViewport={handleHover}
-      ></EventDensityMap>
+        onPress={handlePress}
+      />
     </div>
   )
 }

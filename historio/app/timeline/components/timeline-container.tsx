@@ -1,7 +1,5 @@
 "use client"
-import BookCover from "@/components/book-cover"
 /** Container for a single timeline */
-import { FrontendTimelineBook } from "@/types/timeline"
 import { Button } from "@nextui-org/button"
 import { Chip } from "@nextui-org/chip"
 import { Tooltip } from "@nextui-org/tooltip"
@@ -10,11 +8,16 @@ import { useCallback } from "react"
 import { FaCircleMinus, FaCirclePlus } from "react-icons/fa6"
 import { MdStickyNote2 } from "react-icons/md"
 import { RiLightbulbFlashFill } from "react-icons/ri"
+
 import {
   TimelineDispatchActionType,
   useTimelineContext,
 } from "../context-timeline"
+
 import ActualTimeline from "./actual-timeline"
+
+import { FrontendTimelineBook } from "@/types/timeline"
+import BookCover from "@/components/book-cover"
 
 const MIN_ZOOM = 1
 const MAX_ZOOM = 4
@@ -100,10 +103,10 @@ export default function TimelineContainer({
         className={`border-4 z-20 relative !border-b-8 ${border} bg-white mt-10  rounded-t-lg w-full min-h-40 flex`}
       >
         <BookCover
-          id={book.book_id}
-          title={book.title}
           author={book.author}
           customClass="rounded-tl"
+          id={book.book_id}
+          title={book.title}
         />
         <ActualTimeline bookDetails={book} />
       </div>
@@ -111,22 +114,22 @@ export default function TimelineContainer({
         <div
           className={`${bg} tab-author relative ml-8 text-white px-2 pb-2 w-1/5 flex justify-between items-center`}
         >
-          <div className={`tab-diagonal z-0 left ${bg}`}></div>
+          <div className={`tab-diagonal z-0 left ${bg}`} />
           <div className="flex grow flex-col justify-center">
             <p className="font-title z-10 text-bold">{displayTitle}</p>
             <p className="text-xs z-10">by {byline}</p>
           </div>
-          <div className="w-1/5 flex justify-end"></div>
-          <div className={`tab-diagonal z-0 ${bg} right`}></div>
+          <div className="w-1/5 flex justify-end" />
+          <div className={`tab-diagonal z-0 ${bg} right`} />
         </div>
-        <div className="w-1/2 flex justify-center"></div>
+        <div className="w-1/2 flex justify-center" />
         <div className="bg-white border-4 border-zinc-300 !border-t-0 rounded-b-lg px-4 py-2 w-1/4 grow flex justify-between items-center">
           <div className="flex justify-start gap-2">
             <Tooltip content={`${book.insights.length} insights for this book`}>
               <Chip
                 color="primary"
-                size="sm"
                 endContent={<RiLightbulbFlashFill size={18} />}
+                size="sm"
               >
                 {book.insights.length}&nbsp;
               </Chip>
@@ -134,32 +137,32 @@ export default function TimelineContainer({
             <Tooltip content={`0 notes for this book`}>
               <Chip
                 color="default"
-                size="sm"
                 endContent={<MdStickyNote2 size={18} />}
+                size="sm"
               >
                 0
               </Chip>
             </Tooltip>
           </div>
           <div className="flex justify-end items-center">
-            <div className="vertical-rule bg-zinc-200 w-1 h-3/4"></div>
+            <div className="vertical-rule bg-zinc-200 w-1 h-3/4" />
             <Tooltip content="Zoom in (show more events)">
               <Button
-                onPress={() => handleZoom(bookContext.currentZoom + 1)}
-                isDisabled={bookContext.currentZoom >= MAX_ZOOM}
                 isIconOnly
-                variant="ghost"
                 className="border-0"
+                isDisabled={bookContext.currentZoom >= MAX_ZOOM}
+                variant="ghost"
+                onPress={() => handleZoom(bookContext.currentZoom + 1)}
               >
                 <FaCirclePlus size={20} />
               </Button>
             </Tooltip>
             <Tooltip content="Zoom out (show fewer events)">
               <Button
-                isDisabled={bookContext.currentZoom <= MIN_ZOOM}
                 isIconOnly
-                variant="ghost"
                 className="border-0"
+                isDisabled={bookContext.currentZoom <= MIN_ZOOM}
+                variant="ghost"
                 onPress={() => handleZoom(bookContext.currentZoom - 1)}
               >
                 <FaCircleMinus size={20} />

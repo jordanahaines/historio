@@ -1,8 +1,10 @@
 import { parse } from "date-fns/parse"
+import _ from "lodash"
+
 import { PromptGeneratorFunction } from "./research-coordinator"
+
 import { SelectBook } from "@/db/schema/book"
 import { SelectInsight } from "@/db/schema/insight"
-import _ from "lodash"
 
 export type ParsedInsightDate = {
   date: Date | null

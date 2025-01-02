@@ -1,8 +1,9 @@
 "use server"
 
+import { eq } from "drizzle-orm"
+
 import { db } from "@/db"
 import { SelectTimeline, timelines } from "@/db/schema/timeline"
-import { eq } from "drizzle-orm"
 
 // This file contains our server actions. To break apart oce there are too many functions in this file
 export async function updateTimelineTitle(

@@ -1,13 +1,15 @@
 // Our main researcher class. Pulls in filter functions from other researchers
 
+import { eq } from "drizzle-orm"
+import OpenAI from "openai"
+
+import { ParseSignificantEvents } from "./significant-events"
+import { ParseMinorEvents } from "./minor-events"
+
 import { db } from "@/db"
 import { books, SelectBook } from "@/db/schema/book"
 import { insights, SelectInsight } from "@/db/schema/insight"
 import { InsertResearcherRun, researcherRuns } from "@/db/schema/research"
-import { eq } from "drizzle-orm"
-import OpenAI from "openai"
-import { ParseSignificantEvents } from "./significant-events"
-import { ParseMinorEvents } from "./minor-events"
 
 export type PromptGeneratorFunction = (
   book: SelectBook,

@@ -1,13 +1,15 @@
 /* eslint-disable no-console */
-import { db } from "@/db"
-import { books, SelectBook } from "@/db/schema/book"
-import { InsertInsight, SelectInsight } from "@/db/schema/insight"
-import { SignificantEventsReturn } from "@/types/researcher"
 import { config } from "dotenv"
 import { eq } from "drizzle-orm"
 import _ from "lodash"
+
 import { ResearcherConfiguration } from "./research-coordinator"
 import { generateGenericPrompt, parseDate } from "./utils"
+
+import { SignificantEventsReturn } from "@/types/researcher"
+import { InsertInsight, SelectInsight } from "@/db/schema/insight"
+import { books, SelectBook } from "@/db/schema/book"
+import { db } from "@/db"
 
 config({ path: "local.env" })
 

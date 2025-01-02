@@ -22,7 +22,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="flex gap-3"></div>
+      <div className="flex gap-3" />
 
       <div className="mt-8">
         <Snippet hideCopyButton hideSymbol variant="bordered">

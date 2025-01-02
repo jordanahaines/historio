@@ -6,7 +6,6 @@
 
 import { Button } from "@nextui-org/button"
 import {
-  Divider,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -23,6 +22,7 @@ import _ from "lodash"
 import { useCallback } from "react"
 import { IoColorPaletteOutline } from "react-icons/io5"
 import { MdOutlineDisplaySettings } from "react-icons/md"
+
 import {
   TimelineBarsMode,
   TimelineContextBook,
@@ -71,7 +71,7 @@ export default function TimelineDisplaySettings() {
         <div className="flex justify-start items-center">
           <div
             className={`${tailwindTimelineColors[color]} rounded-full w-2 h-2 mr-4`}
-          ></div>
+          />
           <span>{_.capitalize(color)}</span>
         </div>
       </DropdownItem>
@@ -84,15 +84,15 @@ export default function TimelineDisplaySettings() {
         <Dropdown className="grow">
           <DropdownTrigger>
             <Button
-              className={`${tailwindTimelineColors[book.currentColor]} text-white`}
               isIconOnly
+              className={`${tailwindTimelineColors[book.currentColor]} text-white`}
             >
               <IoColorPaletteOutline size={30} />
             </Button>
           </DropdownTrigger>
           <DropdownMenu
-            onAction={(k) => updateColor(k.toString(), book.bookID)}
             aria-label="Timeline Colors"
+            onAction={(k) => updateColor(k.toString(), book.bookID)}
           >
             {
               // @ts-ignore
@@ -126,20 +126,20 @@ export default function TimelineDisplaySettings() {
           }
         >
           <Radio
-            value={TimelineBarsMode.fullBook}
             description="Overlap bars represent the full duration of other timelines"
+            value={TimelineBarsMode.fullBook}
           >
             Full Timeline
           </Radio>
           <Radio
-            value={TimelineBarsMode.currentView}
             description="Overlap bars represent the current view of other timelines"
+            value={TimelineBarsMode.currentView}
           >
             Current View Only
           </Radio>
           <Radio
-            value={TimelineBarsMode.hidden}
             description="Hide overlap bars"
+            value={TimelineBarsMode.hidden}
           >
             Hide Bars
           </Radio>
@@ -151,9 +151,9 @@ export default function TimelineDisplaySettings() {
   return (
     <>
       <Button
-        onPress={onOpen}
         color="primary"
         endContent={<MdOutlineDisplaySettings />}
+        onPress={onOpen}
       >
         Timeline Display Settings
       </Button>

@@ -1,10 +1,12 @@
 /* eslint-disable no-console */
+import { config } from "dotenv"
+
+import { ResearcherConfiguration } from "./research-coordinator"
+import { generateGenericPrompt, parseDate } from "./utils"
+
 import { SelectBook } from "@/db/schema/book"
 import { InsertInsight, SelectInsight } from "@/db/schema/insight"
 import { MinorEventsReturn } from "@/types/researcher"
-import { config } from "dotenv"
-import { ResearcherConfiguration } from "./research-coordinator"
-import { generateGenericPrompt, parseDate } from "./utils"
 
 config({ path: "local.env" })
 

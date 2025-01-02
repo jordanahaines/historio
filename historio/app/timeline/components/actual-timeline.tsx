@@ -1,14 +1,18 @@
 import { SelectInsight } from "@/db/schema/insight"
+
 import "@/styles/timeline.scss"
-import { FrontendTimelineBook } from "@/types/timeline"
 import { add, differenceInDays, formatDate, parse } from "date-fns"
 import _ from "lodash"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+
 import {
   TimelineDispatchActionType,
   useTimelineContext,
 } from "../context-timeline"
+
 import TimelineOverlapBar from "./timeline-overlap-bars"
+
+import { FrontendTimelineBook } from "@/types/timeline"
 
 const INSIGHT_WIDTH = 120
 const INSIGHTS_PER_BUCKET = {
@@ -112,7 +116,7 @@ export default function ActualTimeline({
   // 1) Adjust the static year label
   // 2) Adjust current start/end in context
   const handleScroll = useCallback(
-    (e?: any) => {
+    (_: any) => {
       if (!timelineRef.current) return
       const timelineDiv: HTMLDivElement = timelineRef.current as HTMLDivElement
       // Adjust years
@@ -186,17 +190,18 @@ export default function ActualTimeline({
         {yearDisplay}
       </div>
       <div
+        ref={timelineRef}
         className="actualTimeline timelineViewport"
         onScroll={handleScroll}
-        ref={timelineRef}
       >
         <div className="timelineInner">
           <div className="timelineBars" style={{ width: totalWidth }}>
             {otherBooks.map((b) => (
               <TimelineOverlapBar
-                parentStartDate={bookDetails.start}
-                parentEndDate={bookDetails.end}
+                key={b.bookID}
                 barBookID={b.bookID}
+                parentEndDate={bookDetails.end}
+                parentStartDate={bookDetails.start}
                 onHover={(h) => handleHighlight(b.bookID, h)}
               />
             ))}

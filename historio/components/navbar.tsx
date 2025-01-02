@@ -5,15 +5,14 @@ import {
   NavbarItem,
   Navbar as NextUINavbar,
 } from "@nextui-org/navbar"
-import { Avatar, Button, Image } from "@nextui-org/react"
+import { Avatar, Image } from "@nextui-org/react"
 import NextLink from "next/link"
-import { BsSubstack } from "react-icons/bs"
 
 export const Navbar = () => {
   return (
     <NextUINavbar
-      maxWidth="2xl"
       className="bg-slate-950 text-white text-2xl"
+      maxWidth="2xl"
       position="sticky"
     >
       <NavbarBrand>
@@ -22,10 +21,10 @@ export const Navbar = () => {
           href="/"
         >
           <Image
-            width={65}
-            src="/img/logo/logo_transparent.png"
-            alt="Historio"
             isZoomed
+            alt="Historio"
+            src="/img/logo/logo_transparent.png"
+            width={65}
           />
           <h1 className="font-bold ml-3 text-3xl font-serif">Historio</h1>
         </NextLink>
@@ -46,9 +45,9 @@ export const Navbar = () => {
           <div className="flex items-center">
             <span className="opacity-50">by&nbsp;</span>
             <NextLink
+              className="border-b-4 border-transparent hover:border-blue-400 flex items-center px-1 mx-2"
               href="https://www.linkedin.com/in/jordanahaines"
               target="_blank"
-              className="border-b-4 border-transparent hover:border-blue-400 flex items-center px-1 mx-2"
             >
               <Avatar
                 size="sm"

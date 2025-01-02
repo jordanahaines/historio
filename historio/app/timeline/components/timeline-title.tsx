@@ -1,13 +1,15 @@
 "use client"
-import { SelectTimeline } from "@/db/schema/timeline"
 import { Button } from "@nextui-org/button"
 import { Input } from "@nextui-org/input"
 import { FaCheckCircle } from "react-icons/fa"
 import { FiEdit } from "react-icons/fi"
-
 import { useState } from "react"
+
 import { updateTimelineTitle } from "../actions"
+
 import TimelineDisplaySettings from "./drawer-timeline-display-settings"
+
+import { SelectTimeline } from "@/db/schema/timeline"
 
 export type TimelinePageTitleProps = {
   timeline: SelectTimeline
@@ -57,12 +59,12 @@ export default function TimelinePageTitle({
                 onChange={(e) => setTitle(e.target.value)}
               />
               <Button
-                onPress={updateTitle}
-                isLoading={saving}
-                className="ml-2"
                 isIconOnly
-                variant="faded"
+                className="ml-2"
                 color="success"
+                isLoading={saving}
+                variant="faded"
+                onPress={updateTitle}
               >
                 <FaCheckCircle />
               </Button>

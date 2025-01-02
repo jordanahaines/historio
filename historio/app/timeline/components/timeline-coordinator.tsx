@@ -6,15 +6,18 @@
  *
  * Put  suspense boundary around this component as those items load
  */
-import { FrontendTimelineBook } from "@/types/timeline"
-import { TimelineContextProvider } from "../context-timeline"
-import TimelineContainer from "./timeline-container"
-import TimelinePageTitle from "./timeline-title"
-import { SelectTimeline } from "@/db/schema/timeline"
 import { useMemo } from "react"
 import _ from "lodash"
-import TimelineMinimap from "./timeline-minimap"
 import { parse } from "date-fns"
+
+import { TimelineContextProvider } from "../context-timeline"
+
+import TimelineContainer from "./timeline-container"
+import TimelinePageTitle from "./timeline-title"
+import TimelineMinimap from "./timeline-minimap"
+
+import { SelectTimeline } from "@/db/schema/timeline"
+import { FrontendTimelineBook } from "@/types/timeline"
 
 export default function TimelineCoordinator({
   timelineBooks,
@@ -42,7 +45,7 @@ export default function TimelineCoordinator({
       <div className="timeline-outer-container">
         <TimelinePageTitle timeline={timeline} />
         {timelineBooks.map((book) => (
-          <TimelineContainer book={book} key={book.book_id} />
+          <TimelineContainer key={book.book_id} book={book} />
         ))}
         <TimelineMinimap events={events} />
       </div>

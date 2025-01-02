@@ -1,9 +1,11 @@
-import { SelectInsight } from "@/db/schema/insight"
-import { GroupedInsights } from "@/types/timeline"
 import _ from "lodash"
 import stats from "stats-lite"
-import { parseDate } from "../researchers/utils"
 import { differenceInDays, add, format } from "date-fns"
+
+import { parseDate } from "../researchers/utils"
+
+import { GroupedInsights } from "@/types/timeline"
+import { SelectInsight } from "@/db/schema/insight"
 
 const GROUP_INSIGHTS_BUCKETS = 10
 const DATE_FORMAT = "yyyy-MM-dd"

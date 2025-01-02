@@ -1,6 +1,5 @@
 import {
   Fira_Code as FontMono,
-  Inter as FontSans,
   Rosarivo,
   Outfit,
   Gaegu,

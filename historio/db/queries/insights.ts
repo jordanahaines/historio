@@ -1,6 +1,7 @@
+import { eq, and } from "drizzle-orm"
+
 import { db } from ".."
 import { insights } from "../schema/insight"
-import { eq, and } from "drizzle-orm"
 
 export async function fetchInsightsNotesforTimelineBook(bookID: string) {
   const bookInsights = await db

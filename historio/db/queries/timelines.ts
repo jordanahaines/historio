@@ -1,3 +1,10 @@
+import { and, eq, inArray } from "drizzle-orm"
+import _ from "lodash"
+
+import { books, SelectBook } from "../schema/book"
+import { insights } from "../schema/insight"
+import { SelectTimeline, timelineBooks, timelines } from "../schema/timeline"
+
 import { db } from "@/db"
 import colors, { tailwindTimelineColors } from "@/lib/colors"
 import { parseDate } from "@/lib/researchers/utils"
@@ -7,11 +14,6 @@ import {
   GroupedInsights,
   ZoomLevel,
 } from "@/types/timeline"
-import { and, eq, inArray } from "drizzle-orm"
-import _ from "lodash"
-import { books, SelectBook } from "../schema/book"
-import { insights } from "../schema/insight"
-import { SelectTimeline, timelineBooks, timelines } from "../schema/timeline"
 
 /**
  * Helper function to create a new timeline, given a list of books
@@ -88,15 +90,6 @@ export async function fetchTimelineAndBooks(
     )
 
   const keyedInsights = _.groupBy(tinsights, "book_id")
-
-  const earliestStart = _.minBy(
-    _.filter(tbooks, "tb.default_start"),
-    "tb.default_start",
-  )?.tb.default_start
-  const latestEnd = _.maxBy(
-    _.filter(tbooks, "tb.default_end"),
-    "tb.default_end",
-  )?.tb.default_end
 
   const usedColors = new Set<string>()
   const flattenedBooks: FrontendTimelineBook[] = tbooks.map((t) => {

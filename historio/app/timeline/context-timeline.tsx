@@ -1,4 +1,3 @@
-import { FrontendTimelineBook, ZoomLevel } from "@/types/timeline"
 import _ from "lodash"
 import {
   createContext,
@@ -7,6 +6,8 @@ import {
   useContext,
   useReducer,
 } from "react"
+
+import { FrontendTimelineBook } from "@/types/timeline"
 
 const DEFAULT_ZOOM = 2
 

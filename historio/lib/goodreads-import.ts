@@ -35,7 +35,7 @@ export default async function goodreadsImport(
     }
   })
 
-  console.log(mappedData.map((d) => d.isbn))
+  // console.log(mappedData.map((d) => d.isbn))
   // Insert the books and then return them
   const result = await db
     .insert(books)

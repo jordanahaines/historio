@@ -1,6 +1,6 @@
 import { differenceInDays, parseISO } from "date-fns"
+
 import { TimelineBarsMode, useTimelineContext } from "../context-timeline"
-import { Tooltip } from "@nextui-org/tooltip"
 
 export type TimelineOverlapBarProps = {
   parentStartDate: Date
@@ -62,10 +62,10 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
 
   return (
     <div
-      onMouseEnter={() => props.onHover(true)}
-      onMouseLeave={() => props.onHover(false)}
       className={colorClass}
       style={style}
-    ></div>
+      onMouseEnter={() => props.onHover(true)}
+      onMouseLeave={() => props.onHover(false)}
+    />
   )
 }

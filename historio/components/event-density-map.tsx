@@ -144,8 +144,8 @@ export default function EventDensityMap(props: EventDensityMapProps) {
   return (
     <div
       className="relative bg-white event-density-map rounded-t-lg w-full flex justify-center items-center"
-      onClick={handleClick}
       role="presentation"
+      onClick={handleClick}
     >
       <p className="px-4 font-bold font-serif">{start.getFullYear()}</p>
       <div

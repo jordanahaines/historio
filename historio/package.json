@@ -6,6 +6,7 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
+    "lint-frontend": "eslint app/** components/** actions/** --ext .ts,.tsx -c .eslintrc.frontend.json --fix",
     "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
   },
   "dependencies": {

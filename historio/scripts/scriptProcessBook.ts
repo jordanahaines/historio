@@ -148,7 +148,10 @@ async function processToInsightGoal() {
 }
 
 async function start() {
-  const insightCount = await db.select({ c: count(insights.id) }).from(insights)
+  const insightCount = await db
+    .select({ c: count(insights.id) })
+    .from(insights)
+    .where(eq(insights.archived, false))
   console.log(`Total insights: ${insightCount[0].c}`)
   console.log("1: Choose Books")
   console.log("2: Process to Goal")

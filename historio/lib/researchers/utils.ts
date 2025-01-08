@@ -1,10 +1,12 @@
 import { parse } from "date-fns/parse"
+import levenshtein from "fast-levenshtein"
 import _ from "lodash"
 
 import { PromptGeneratorFunction } from "./research-coordinator"
 
 import { SelectBook } from "@/db/schema/book"
 import { SelectInsight } from "@/db/schema/insight"
+import { differenceInDays } from "date-fns"
 
 export type ParsedInsightDate = {
   date: Date | null
@@ -65,4 +67,38 @@ export const generateGenericPrompt: PromptGeneratorFunction = (
     _.map(existingInsights, "name").forEach((e) => (msg += `\n- ${e}`))
   }
   return msg
+}
+
+/** Helper function to filter out duplicate events */
+const LEVENSHTEIN_THRESHOLD = 0.15
+const LEVENSHTEIN_THRESHOLD_SAME_DATE = 0.6
+
+export const isDuplicateEvent = (
+  name: string,
+  existing: SelectInsight[],
+  date?: Date,
+) => {
+  const lname = name.toLowerCase()
+  // Eliminated if:
+  // - One event name contains the other OR
+  // - Levenshtein similarity is > 80% OR
+  // - Levenshtein similarity is > 50% and within 1 day
+  const dupe = existing.find((e) => {
+    const ename = e.name?.toLowerCase() || ""
+    if ((ename && ename.includes(lname)) || lname.includes(ename)) return true
+    const lev =
+      levenshtein.get(ename, lname) / Math.max(ename.length, lname.length)
+    if (lev < LEVENSHTEIN_THRESHOLD) return true
+    if (date && e.date) {
+      const edate = parseDate(e.date).date
+      if (
+        edate &&
+        Math.abs(differenceInDays(date, edate)) <= 1 &&
+        lev < LEVENSHTEIN_THRESHOLD_SAME_DATE
+      )
+        return true
+    }
+    return false
+  })
+  return dupe
 }

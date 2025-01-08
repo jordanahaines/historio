@@ -1,29 +1,48 @@
 import { db } from "@/db"
-import { books, SelectBook } from "@/db/schema/book"
-import { insights } from "@/db/schema/insight"
-import { inArray, eq } from "drizzle-orm"
+import { insights, SelectInsight } from "@/db/schema/insight"
+import { isDuplicateEvent } from "@/lib/researchers/utils"
+import { eq, inArray, and } from "drizzle-orm"
 import _ from "lodash"
 
-async function cleanupInsights() {
+async function cleanupInsights(bookID?: string) {
   console.debug("Start cleanup insights")
   // Look for duplicate insights per book. Just delete them
-  const allInsights = await db
-    .select()
-    .from(insights)
-    .where(eq(insights.archived, false))
+  let query = db.select().from(insights).$dynamic()
+  if (bookID) {
+    query = query.where(
+      and(eq(insights.book_id, bookID), eq(insights.archived, false)),
+    )
+  } else {
+    query = query.where(eq(insights.archived, false))
+  }
+  const allInsights = await query
   const groupedInsights = _.groupBy(allInsights, (i) => i.book_id)
   // Loop through insights, find IDs of duplicates
   const toArchive = new Set<string>()
-  _.forEach(groupedInsights, (insights, bookID) => {
-    const orderedInsights = _.sortBy(insights, (i) => i.date)
-    const names = new Set<string>()
+  _.forEach(groupedInsights, (insights) => {
+    const insightsToKeep: SelectInsight[] = []
     insights.forEach((i) => {
       if (!i.name) return
-      if (names.has(i.name.toLowerCase())) {
+      const dupe = isDuplicateEvent(
+        i.name,
+        insightsToKeep,
+        i.date ? new Date(i.date) : undefined,
+      )
+      if (dupe) {
         toArchive.add(i.id)
-        console.log("Archive", i.name)
+        // const hasSameWikiLink = i.wikipedia_link == dupe.wikipedia_link
+        // console.log(
+        //   "Archive",
+        //   i.name,
+        //   i.date,
+        //   " DUPE:",
+        //   dupe.name,
+        //   dupe.date,
+        //   " Same wiki link:",
+        //   hasSameWikiLink,
+        // )
       } else {
-        names.add(i.name.toLowerCase())
+        insightsToKeep.push(i)
       }
     })
   })
@@ -33,7 +52,7 @@ async function cleanupInsights() {
     .update(insights)
     .set({ archived: true })
     .where(inArray(insights.id, toArchiveArr))
-  console.log("Updated!")
+  console.log("Updated!", result)
   return true
 }
 cleanupInsights()

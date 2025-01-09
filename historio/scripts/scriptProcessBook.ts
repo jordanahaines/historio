@@ -95,11 +95,7 @@ async function processSingleBook() {
   }
   // Instead of forEach, use a for...of loop for sequential async/await
   for (let i = 0; i < iterations; i++) {
-    const [run, insights, updatedBook] = await doResearch(
-      book,
-      researcherConfig,
-      true,
-    ) // Wait for researcher to finish
+    const [_, __, updatedBook] = await doResearch(book, researcherConfig, true) // Wait for researcher to finish
     if (updatedBook) book = updatedBook
     if (updatedBook?.completed_researchers.includes(researcherKey)) {
       // Yay we're done early. No need to waste OpenAI $$!

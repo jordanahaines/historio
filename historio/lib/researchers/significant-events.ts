@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm"
 import _ from "lodash"
 
 import { ResearcherConfiguration } from "./research-coordinator"
-import { generateGenericPrompt, parseDate } from "./utils"
+import { generateGenericPrompt, isDuplicateEvent, parseDate } from "./utils"
 
 import { SignificantEventsReturn } from "@/types/researcher"
 import { InsertInsight, SelectInsight } from "@/db/schema/insight"
@@ -39,8 +39,10 @@ const parseSignificantEvents = async (
   const filteredInsights = data.insights.filter((e) => {
     // No matching wiki link OR matching name and year from date
     if (existingWikiLinks.includes(e.wikipedia_link)) return false
-    return !existingInsights.find((i) =>
-      i.name?.toLowerCase().includes(e.name.toLowerCase()),
+    return !isDuplicateEvent(
+      e.name,
+      existingInsights,
+      parseDate(e.date).date || undefined,
     )
   })
 

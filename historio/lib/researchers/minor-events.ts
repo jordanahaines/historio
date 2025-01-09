@@ -2,7 +2,7 @@
 import { config } from "dotenv"
 
 import { ResearcherConfiguration } from "./research-coordinator"
-import { generateGenericPrompt, parseDate } from "./utils"
+import { generateGenericPrompt, isDuplicateEvent, parseDate } from "./utils"
 
 import { SelectBook } from "@/db/schema/book"
 import { InsertInsight, SelectInsight } from "@/db/schema/insight"
@@ -22,8 +22,10 @@ export const parseMinorEvents = async (
   // The only filtering we do is to remove events with the same name and date
   // also events must havea  date
   const filteredEvents = data.insights.filter((e) => {
-    return !existingInsights.find((i) =>
-      i.name?.toLowerCase().includes(e.name.toLowerCase()),
+    return !isDuplicateEvent(
+      e.name,
+      existingInsights,
+      parseDate(e.date).date || undefined,
     )
   })
 

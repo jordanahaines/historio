@@ -80,7 +80,7 @@ export default function ActualTimeline({
     if (insight.date)
       return (
         <div key={insight.id} className="insight">
-          <p className="font-title font-bold text-blue-400 mb-2 border-b-2 border-blue-100">
+          <p className="font-title mb-2 border-b-2 border-blue-100 font-bold text-blue-400">
             {insight.year}
           </p>
           {insight.name}
@@ -97,7 +97,7 @@ export default function ActualTimeline({
     const bucketYear = date.split("-")[0]
 
     const bucketYearDisplay = (
-      <div className="insightBucketYear bg-zinc-400 text-white font-bold font-xl font-title px-2 py-1 rounded absolute">
+      <div className="insightBucketYear font-xl font-title absolute rounded bg-zinc-400 px-2 py-1 font-bold text-white">
         {bucketYear}
       </div>
     )
@@ -105,7 +105,7 @@ export default function ActualTimeline({
     return (
       <div className="insightBucket relative">
         <div
-          className="insightsContainer flex justify-center items-start pt-2 pb-1 h-[170] even:bg-zinc-200"
+          className="insightsContainer flex h-[170] items-start justify-center pb-1 pt-2 even:bg-zinc-200"
           style={{ width }}
         >
           {insights.map((i) => renderInsight(i))}
@@ -200,7 +200,7 @@ export default function ActualTimeline({
   if (!bookContext || !updateTimelineContext) return
   return (
     <div className="timelineWrapper">
-      <div className="currentYear z-20 insightBucketYear bg-zinc-600 text-white font-bold font-xl font-title px-2 py-1 rounded absolute">
+      <div className="currentYear insightBucketYear font-xl font-title absolute z-20 rounded bg-zinc-600 px-2 py-1 font-bold text-white">
         {yearDisplay}
       </div>
       <div
@@ -220,7 +220,7 @@ export default function ActualTimeline({
               />
             ))}
           </div>
-          <div className="timelineContents px-2 flex items-center">
+          <div className="timelineContents flex items-center px-2">
             {orderedInsights.map((oi, index) =>
               renderBucket(oi[1], oi[0], index),
             )}

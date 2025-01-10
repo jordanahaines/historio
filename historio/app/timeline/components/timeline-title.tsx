@@ -33,14 +33,14 @@ export default function TimelinePageTitle({
 
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <div className="editable-title-container flex justify-beginning items-center mb-4">
+      <div className="flex items-center justify-between">
+        <div className="editable-title-container justify-beginning mb-4 flex items-center">
           <h1 className="timelineTitle text-6xl ${fontSerif.className">
             Timelines <span className="opacity-40">\\</span>
           </h1>
           {!editing && (
             <>
-              <p className="text-3xl mr-6">{title}</p>
+              <p className="mr-6 text-3xl">{title}</p>
               {editable && (
                 <Button
                   isIconOnly

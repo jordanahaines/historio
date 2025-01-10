@@ -108,7 +108,7 @@ export default function EventDensityMap(properties: EventDensityMapProps) {
     const zIndex = BASE_Z_INDEX + _.findIndex(viewportSizes, (s) => s === days)
     return (
       <div
-        className={`${bg} ${border} border-2 timeline-viewport absolute`}
+        className={`${bg} ${border} timeline-viewport absolute border-2`}
         style={{
           left: `${leftPercent * 100}%`,
           width: `${widthPercent * 100}%`,
@@ -144,20 +144,20 @@ export default function EventDensityMap(properties: EventDensityMapProps) {
 
   return (
     <div
-      className="relative bg-white event-density-map rounded-t-lg w-full flex justify-center items-center"
+      className="event-density-map relative flex w-full items-center justify-center rounded-t-lg bg-white"
       role="presentation"
       onClick={handleClick}
     >
-      <p className="px-4 font-bold font-serif">{start?.getFullYear()}</p>
+      <p className="px-4 font-serif font-bold">{start?.getFullYear()}</p>
       <div
         ref={divReference}
-        className="bubble-container relative grow flex justify-between items-center h-full w-full"
+        className="bubble-container relative flex size-full grow items-center justify-between"
       >
         {bubbles.map((b, i) => renderBubble(b, i))}
         {properties.viewports?.map(renderViewport)}
       </div>
 
-      <p className="px-4 font-bold font-serif">{end.getFullYear()}</p>
+      <p className="px-4 font-serif font-bold">{end.getFullYear()}</p>
       <div className="line" />
     </div>
   )

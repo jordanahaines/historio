@@ -11,13 +11,13 @@ import NextLink from "next/link"
 export const Navbar = () => {
   return (
     <NextUINavbar
-      className="bg-slate-950 text-white text-2xl"
+      className="bg-slate-950 text-2xl text-white"
       maxWidth="2xl"
       position="sticky"
     >
       <NavbarBrand>
         <NextLink
-          className="flex justify-start mr-2 items-center gap-1"
+          className="mr-2 flex items-center justify-start gap-1"
           href="/"
         >
           <Image
@@ -26,13 +26,13 @@ export const Navbar = () => {
             src="/img/logo/logo_transparent.png"
             width={65}
           />
-          <h1 className="font-bold ml-3 text-3xl font-serif">Historio</h1>
+          <h1 className="ml-3 font-serif text-3xl font-bold">Historio</h1>
         </NextLink>
       </NavbarBrand>
       <NavbarContent justify="center">
         <NavbarItem>
           <NextLink
-            className="underline decoration-4 decoration-green-500 text-2xl underline-offset-4"
+            className="text-2xl underline decoration-green-500 decoration-4 underline-offset-4"
             color="white"
             href="/"
           >
@@ -45,7 +45,7 @@ export const Navbar = () => {
           <div className="flex items-center">
             <span className="opacity-50">by&nbsp;</span>
             <NextLink
-              className="border-b-4 border-transparent hover:border-blue-400 flex items-center px-1 mx-2"
+              className="mx-2 flex items-center border-b-4 border-transparent px-1 hover:border-blue-400"
               href="https://www.linkedin.com/in/jordanahaines"
               target="_blank"
             >
@@ -60,7 +60,7 @@ export const Navbar = () => {
         </NavbarItem>
         <NavbarItem>
           <NextLink
-            className="bg-black text-white hover:text-green-500 text-xl"
+            className="bg-black text-xl text-white hover:text-green-500"
             href="https://learnbuildteach.substack.com/p/building-historio-episode-0"
             target="_blank"
           >

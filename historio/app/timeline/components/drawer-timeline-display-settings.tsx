@@ -71,9 +71,9 @@ export default function TimelineDisplaySettings() {
   const renderColorMenuItem = (color: keyof typeof tailwindTimelineColors) => {
     return (
       <DropdownItem key={color}>
-        <div className="flex justify-start items-center">
+        <div className="flex items-center justify-start">
           <div
-            className={`${tailwindTimelineColors[color]} rounded-full w-2 h-2 mr-4`}
+            className={`${tailwindTimelineColors[color]} mr-4 size-2 rounded-full`}
           />
           <span>{_.capitalize(color)}</span>
         </div>
@@ -85,7 +85,7 @@ export default function TimelineDisplaySettings() {
       tailwindTimelineColors,
     ) as TailwindTimelineColors[]
     return (
-      <div className="py-2 flex justify-between items-center border-b-1 border-slate-100 last:border-b-0">
+      <div className="flex items-center justify-between border-b-1 border-slate-100 py-2 last:border-b-0">
         <p className="pr-4">{book.bookTitle}</p>
         <Dropdown className="grow">
           <DropdownTrigger>
@@ -166,14 +166,14 @@ export default function TimelineDisplaySettings() {
           <DrawerHeader>Timeline Display Settings</DrawerHeader>
           <DrawerBody>
             <div className="pt-4">
-              <h3 className="font-serif font-bold text-center">Book Colors</h3>
+              <h3 className="text-center font-serif font-bold">Book Colors</h3>
               <p className="help text-center">
                 Adjust the color for each book on the timeline
               </p>
               {timelineContext.books.map((b) => renderBookSelect(b))}
             </div>
-            <div className="pt-4 mt-2 border-t-3 border-t-zinc-500">
-              <h3 className="font-serif font-bold text-center">Overlap Bars</h3>
+            <div className="mt-2 border-t-3 border-t-zinc-500 pt-4">
+              <h3 className="text-center font-serif font-bold">Overlap Bars</h3>
               <p className="help text-center">
                 The background of each timeline has colored bars to visualize
                 overlap with other timelines. Hover over one of these bars to

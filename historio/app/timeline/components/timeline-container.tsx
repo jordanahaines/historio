@@ -104,7 +104,7 @@ export default function TimelineContainer({
   return (
     <>
       <div
-        className={`border-4 z-20 relative !border-b-8 ${border} bg-white mt-10  rounded-t-lg w-full min-h-40 flex`}
+        className={`relative z-20 border-4 !border-b-8 ${border} mt-10 flex  min-h-40 w-full rounded-t-lg bg-white`}
       >
         <BookCover
           author={book.author}
@@ -114,20 +114,20 @@ export default function TimelineContainer({
         />
         <ActualTimeline bookDetails={book} />
       </div>
-      <div className="w-full flex">
+      <div className="flex w-full">
         <div
-          className={`${bg} tab-author relative ml-8 text-white px-2 pb-2 w-1/5 flex justify-between items-center`}
+          className={`${bg} tab-author relative ml-8 flex w-1/5 items-center justify-between px-2 pb-2 text-white`}
         >
-          <div className={`tab-diagonal z-0 left ${bg}`} />
+          <div className={`tab-diagonal left z-0 ${bg}`} />
           <div className="flex grow flex-col justify-center">
-            <p className="font-title z-10 text-bold">{displayTitle}</p>
-            <p className="text-xs z-10">by {byline}</p>
+            <p className="font-title text-bold z-10">{displayTitle}</p>
+            <p className="z-10 text-xs">by {byline}</p>
           </div>
-          <div className="w-1/5 flex justify-end" />
+          <div className="flex w-1/5 justify-end" />
           <div className={`tab-diagonal z-0 ${bg} right`} />
         </div>
-        <div className="w-1/2 flex justify-center" />
-        <div className="bg-white border-4 border-zinc-300 !border-t-0 rounded-b-lg px-4 py-2 w-1/4 grow flex justify-between items-center">
+        <div className="flex w-1/2 justify-center" />
+        <div className="flex w-1/4 grow items-center justify-between rounded-b-lg border-4 !border-t-0 border-zinc-300 bg-white px-4 py-2">
           <div className="flex justify-start gap-2">
             <Tooltip content={`${book.insights.length} insights for this book`}>
               <Chip
@@ -148,8 +148,8 @@ export default function TimelineContainer({
               </Chip>
             </Tooltip>
           </div>
-          <div className="flex justify-end items-center">
-            <div className="vertical-rule bg-zinc-200 w-1 h-3/4" />
+          <div className="flex items-center justify-end">
+            <div className="vertical-rule h-3/4 w-1 bg-zinc-200" />
             <Tooltip content="Zoom in (show more events)">
               <Button
                 isIconOnly

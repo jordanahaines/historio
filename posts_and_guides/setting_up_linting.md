@@ -1,7 +1,10 @@
 # Setting Up Linting
 
 1. `npm init @eslint/config`
-2.
+2. ...
+3. Import `next` config using flat util
+4. Had to update most of the eslint plugins that came with nextjs because they weren't compaitble with the version of typescript I had installed or weren't compatible w/each other once I started upgrading:
+   `npm i eslint@latest eslint-config-next@latest eslint-plugin-react-hooks@latest @typescript-eslint/parser@latest @typescript-eslint/eslint-plugin@latest --save
 
 ## Outstanding Issues
 

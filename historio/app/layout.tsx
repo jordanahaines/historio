@@ -43,6 +43,7 @@ export default function RootLayout({
           fontHandwriting.variable,
         )}
       >
+        <img src="test" />
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="relative flex flex-col h-screen">
             <Navbar />

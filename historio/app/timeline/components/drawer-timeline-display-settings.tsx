@@ -33,21 +33,22 @@ import {
 export default function TimelineDisplaySettings() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const { timelineContext, updateTimelineContext } = useTimelineContext()
-  if (!updateTimelineContext) return
 
+  const bookIDS = timelineContext.books.map((b) => b.bookID).toString()
   const updateColor = useCallback(
     (color: string, bookID: string) => {
       const bookContext = _.find(
         timelineContext.books,
         (b) => b.bookID === bookID,
       )
-      if (!bookContext) return
+      if (!bookContext || !updateTimelineContext) return
       updateTimelineContext({
         type: TimelineDispatchActionType.updateBook,
         payload: { ...bookContext, currentColor: color },
       })
     },
-    [updateTimelineContext],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [updateTimelineContext, bookIDS],
   )
 
   // These have to be defined here to be picked up by tailwind
@@ -108,6 +109,7 @@ export default function TimelineDisplaySettings() {
 
   const handleChangeBarMode = useCallback(
     (val: TimelineBarsMode) => {
+      if (!updateTimelineContext) return
       updateTimelineContext({
         type: TimelineDispatchActionType.updateSettings,
         payload: { barsMode: val },

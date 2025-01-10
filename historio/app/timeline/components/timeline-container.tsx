@@ -32,7 +32,6 @@ export default function TimelineContainer({
     timelineContext.books,
     (b) => b.bookID === book.book_id,
   )
-  if (!bookContext) return
   // Another book is highlighted; adjust our opacity down
   const antiHighlighted =
     !bookContext.highlighted && _.some(timelineContext.books, "highlighted")
@@ -76,12 +75,9 @@ export default function TimelineContainer({
     violet: "border-violet-500",
   }
 
-  let bg =
-    tailwindTimelineColors[bookContext.currentColor as TailwindTimelineColors]
-  if (antiHighlighted) bg = "bg-zinc-300"
-
   const handleZoom = useCallback(
     (newZoom: number) => {
+      if (!bookContext) return
       if (newZoom < MIN_ZOOM || newZoom > MAX_ZOOM) return
       if (updateTimelineContext) {
         updateTimelineContext({
@@ -90,8 +86,14 @@ export default function TimelineContainer({
         })
       }
     },
-    [bookContext, updateTimelineContext],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [bookContext?.bookID, updateTimelineContext],
   )
+
+  if (!bookContext) return
+  let bg =
+    tailwindTimelineColors[bookContext.currentColor as TailwindTimelineColors]
+  if (antiHighlighted) bg = "bg-zinc-300"
 
   let border = "border-zinc-300"
   if (bookContext.highlighted) {

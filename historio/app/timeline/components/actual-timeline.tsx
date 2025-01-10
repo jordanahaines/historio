@@ -30,6 +30,7 @@ export default function ActualTimeline({
 }) {
   const orderedInsights = useMemo(
     () => _.sortBy(_.toPairs(bookDetails.grouped_insights), (p) => p[0]),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [bookDetails.book_id],
   )
   const { timelineContext, updateTimelineContext } = useTimelineContext()
@@ -38,12 +39,10 @@ export default function ActualTimeline({
     (b) => b.bookID === bookDetails.book_id,
   )
 
-  if (!bookContext || !updateTimelineContext) return
-
   const timelineRef = useRef<HTMLDivElement>(null)
   const numInsights =
     INSIGHTS_PER_BUCKET[
-      Math.floor(bookContext.currentZoom) as INSIGHTS_PER_BUCKET_KEY
+      Math.floor(bookContext?.currentZoom || 1) as INSIGHTS_PER_BUCKET_KEY
     ] // TODO: Calculate based on zoom level
   const bucketWidth = numInsights * INSIGHT_WIDTH
   const totalWidth = bucketWidth * orderedInsights.length
@@ -71,7 +70,8 @@ export default function ActualTimeline({
       }
       return display
     })
-  }, [JSON.stringify(orderedInsightYears)])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(orderedInsightYears), bookDetails.book_id])
 
   // First date that is displayed
   const [yearDisplay, setYearDisplay] = useState(displayYears[0])
@@ -119,6 +119,7 @@ export default function ActualTimeline({
   // 1) Adjust the static year label
   // 2) Adjust current start/end in context
   const handleScroll = useCallback(() => {
+    if (!updateTimelineContext || !bookContext) return
     if (!timelineRef.current) return
     const timelineDiv: HTMLDivElement = timelineRef.current as HTMLDivElement
     // Adjust years
@@ -143,13 +144,21 @@ export default function ActualTimeline({
         currentEnd: end.toISOString(),
       },
     })
-  }, [timelineRef, yearDisplay, bookContext])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    timelineRef,
+    yearDisplay,
+    bookContext,
+    bookDetails.end,
+    bookDetails.start,
+    bucketWidth,
+  ])
 
   // Set initial current start/end so we don't get jitter when scrolling
   // Also do this on zoom so minimap updates
   useEffect(() => {
     handleScroll()
-  }, [bookContext.currentZoom, handleScroll])
+  }, [bookContext?.currentZoom, handleScroll])
 
   // React to scroll events from context
   useEffect(() => {
@@ -171,6 +180,7 @@ export default function ActualTimeline({
   /** Update context to indicate a book has been highlighted */
   const handleHighlight = useCallback(
     (id: string, highlighted: boolean) => {
+      if (!updateTimelineContext) return
       updateTimelineContext({
         type: TimelineDispatchActionType.updateBook,
         payload: { bookID: id, highlighted },
@@ -184,6 +194,7 @@ export default function ActualTimeline({
     (b) => b.bookID !== bookDetails.book_id,
   )
 
+  if (!bookContext || !updateTimelineContext) return
   return (
     <div className="timelineWrapper">
       <div className="currentYear z-20 insightBucketYear bg-zinc-600 text-white font-bold font-xl font-title px-2 py-1 rounded absolute">

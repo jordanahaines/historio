@@ -38,7 +38,8 @@ export default function TimelineCoordinator({
     )
     const insightDates = _.filter(allInsightDates, (d) => d !== null)
     return _.map(insightDates, (d) => parse(d, "yyyy-MM-dd", new Date()))
-  }, [eventCount])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventCount, timelineBooks.length])
 
   return (
     <TimelineContextProvider books={timelineBooks}>

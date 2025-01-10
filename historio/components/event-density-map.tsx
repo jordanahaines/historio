@@ -66,6 +66,7 @@ export default function EventDensityMap(props: EventDensityMapProps) {
       result[idx] += 1
     })
     return result
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events.length, bucketSize, events.length, start])
 
   // Render one of our timeline bubbles, to scale
@@ -124,6 +125,7 @@ export default function EventDensityMap(props: EventDensityMapProps) {
       if (!props.onHoverViewport || !props.viewports) return
       props.onHoverViewport(hovered, idx)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [props.viewports?.length],
   )
 

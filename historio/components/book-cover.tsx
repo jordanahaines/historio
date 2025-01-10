@@ -21,11 +21,11 @@ export default function BookCover({
   return (
     <div className="bookCover">
       <Image
-        width={width}
-        height={height}
-        src={`${BASE_URL}${id}.jpeg`}
         alt={`${title} by ${author}`}
         className={customClass}
+        height={height}
+        src={`${BASE_URL}${id}.jpeg`}
+        width={width}
       />
     </div>
   )

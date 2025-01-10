@@ -1,13 +1,15 @@
 // Our main researcher class. Pulls in filter functions from other researchers
 
+import { eq } from "drizzle-orm"
+import OpenAI from "openai"
+
+import { ParseSignificantEvents } from "./significant-events"
+import { ParseMinorEvents } from "./minor-events"
+
 import { db } from "@/db"
 import { books, SelectBook } from "@/db/schema/book"
 import { insights, SelectInsight } from "@/db/schema/insight"
 import { InsertResearcherRun, researcherRuns } from "@/db/schema/research"
-import { eq } from "drizzle-orm"
-import OpenAI from "openai"
-import { ParseSignificantEvents } from "./significant-events"
-import { ParseMinorEvents } from "./minor-events"
 
 export type PromptGeneratorFunction = (
   book: SelectBook,
@@ -41,7 +43,7 @@ export default async function doResearch(
     `Start researcher ${researcherConfiguration.key} for ${book.title}`,
   )
   // Start by creating our researcher run
-  const run = (
+  const [run] = 
     await db
       .insert(researcherRuns)
       .values({
@@ -49,7 +51,7 @@ export default async function doResearch(
         book_id: book.id,
       })
       .returning()
-  )[0]
+  
   console.debug(`ResearcherRun ID: ${run.id}`)
 
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -93,13 +95,13 @@ export default async function doResearch(
     book,
     existingInsights,
   )
-  insightsToInsert.forEach((i) => (i.researcher_run = run.id))
+  for (const index of insightsToInsert) (index.researcher_run = run.id)
 
   let newInsights: SelectInsight[] = []
 
   // Insights without a date are filtered out
   const filteredInsightsToInsert = insightsToInsert.filter(
-    (i) => i.date || i.year,
+    (index) => index.date || index.year,
   )
   if (filteredInsightsToInsert.length < insightsToInsert.length) {
     console.warn(
@@ -109,7 +111,7 @@ export default async function doResearch(
 
   // Insert our new insights
   let newInsightCount = 0
-  if (filteredInsightsToInsert.length) {
+  if (filteredInsightsToInsert.length > 0) {
     newInsights = await db
       .insert(insights)
       .values(filteredInsightsToInsert)
@@ -121,7 +123,7 @@ export default async function doResearch(
   }
 
   // The run worked! We get to update the run object
-  const duration = new Date().getTime() - startTime.getTime() // Miliseconds
+  const duration = Date.now() - startTime.getTime() // Miliseconds
   const runUpdate: InsertResearcherRun = {
     new_insights: newInsightCount.toString(),
     duration_ms: duration.toString(),

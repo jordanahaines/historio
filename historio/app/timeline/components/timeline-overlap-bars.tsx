@@ -1,6 +1,6 @@
 import { differenceInDays, parseISO } from "date-fns"
+
 import { TimelineBarsMode, useTimelineContext } from "../context-timeline"
-import { Tooltip } from "@nextui-org/tooltip"
 
 export type TimelineOverlapBarProps = {
   parentStartDate: Date
@@ -9,8 +9,8 @@ export type TimelineOverlapBarProps = {
   onHover: (hovered: boolean) => void // So that we can highlight other books
 }
 
-export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
-  const { parentStartDate, parentEndDate, barBookID } = props
+export default function TimelineOverlapBar(properties: TimelineOverlapBarProps) {
+  const { parentStartDate, parentEndDate, barBookID } = properties
   const { timelineContext } = useTimelineContext()
   const renderBook = timelineContext.books.find((b) => b.bookID === barBookID)
   if (
@@ -29,8 +29,8 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
 
   const parentDurationDays = differenceInDays(parentEndDate, parentStartDate)
   const barDurationDays = differenceInDays(
-    endDate < parentEndDate ? endDate : parentEndDate,
-    startDate > parentStartDate ? startDate : parentStartDate,
+    Math.min(endDate, parentEndDate),
+    Math.max(startDate, parentStartDate),
   )
 
   let left = 0
@@ -57,15 +57,15 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
 
   const style = { width: `${width}%`, left: `${left}%` }
 
-  // @ts-ignore
+  // @ts-expect-error current color will be key of timeline color
   const colorClass = `timelineBar ${tailwindTimelineColors[renderBook.currentColor]}`
 
   return (
     <div
-      onMouseEnter={() => props.onHover(true)}
-      onMouseLeave={() => props.onHover(false)}
       className={colorClass}
       style={style}
-    ></div>
+      onMouseEnter={() => properties.onHover(true)}
+      onMouseLeave={() => properties.onHover(false)}
+    />
   )
 }

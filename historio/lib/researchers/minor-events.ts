@@ -1,10 +1,11 @@
-/* eslint-disable no-console */
+import { config } from "dotenv"
+
+import { ResearcherConfiguration } from "./research-coordinator"
+import { generateGenericPrompt, parseDate } from "./utils"
+
 import { SelectBook } from "@/db/schema/book"
 import { InsertInsight, SelectInsight } from "@/db/schema/insight"
 import { MinorEventsReturn } from "@/types/researcher"
-import { config } from "dotenv"
-import { ResearcherConfiguration } from "./research-coordinator"
-import { generateGenericPrompt, parseDate } from "./utils"
 
 config({ path: "local.env" })
 
@@ -20,8 +21,8 @@ export const parseMinorEvents = async (
   // The only filtering we do is to remove events with the same name and date
   // also events must havea  date
   const filteredEvents = data.insights.filter((e) => {
-    return !existingInsights.find((i) =>
-      i.name?.toLowerCase().includes(e.name.toLowerCase()),
+    return !existingInsights.some((index) =>
+      index.name?.toLowerCase().includes(e.name.toLowerCase()),
     )
   })
 

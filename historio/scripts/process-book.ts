@@ -13,12 +13,13 @@ import _ from "lodash"
 
 config({ path: "local.env" })
 
-import readline from "readline"
+import readline from "node:readline"
 
 const RESEARCHERS = {
   significant: significantEventResearcherConfig,
   minor: minorEventResearcherConfig,
 }
+type ResearcherKeys = keyof typeof RESEARCHERS
 const PARALLELISM = 10
 
 const rl = readline.createInterface({
@@ -52,25 +53,29 @@ async function getBooksWithFewestInsights(researcherKey: string) {
 
 async function processSingleBook() {
   const researcherKeys = Object.keys(RESEARCHERS)
-  researcherKeys.map((r, idx) => console.log(`${idx}: ${r}`))
-  let researcherIdx = "0"
+  researcherKeys.map((r, index) => console.log(`${index}: ${r}`))
+  let researcherIndex = "0"
   if (researcherKeys.length > 1) {
-    researcherIdx = await promptForInput("Which researcher?")
+    researcherIndex = await promptForInput("Which researcher?")
   }
-  const researcherKey = researcherKeys[parseInt(researcherIdx)]
+  const researcherKey = researcherKeys[
+    Number.parseInt(researcherIndex)
+  ] as ResearcherKeys
   const researcherConfig: ResearcherConfiguration = RESEARCHERS[researcherKey]
 
   // console log all them books
   const booksWithLeastInsights = await getBooksWithFewestInsights(researcherKey)
-  booksWithLeastInsights.map((b, idx) => {
-    console.log(`${idx}: ${b.book.title}. ${b.insightCount} insights`)
+  booksWithLeastInsights.map((b, index) => {
+    console.log(`${index}: ${b.book.title}. ${b.insightCount} insights`)
   })
   console.log(`${booksWithLeastInsights.length}: All the books!`)
   // And provide an option to do all books
-  let bookPromptResult = await promptForInput(
+  const bookPromptResult = await promptForInput(
     "Which book? You can also enter a book ID",
   )
-  const iterations = parseInt(await promptForInput("How many iterations?"))
+  const iterations = Number.parseInt(
+    await promptForInput("How many iterations?"),
+  )
   let book: SelectBook
   if (bookPromptResult.length > 3) {
     const bookFetch = await db
@@ -78,28 +83,27 @@ async function processSingleBook() {
       .from(books)
       .where(eq(books.id, bookPromptResult))
       .limit(1)
-    if (!bookFetch.length) throw new Error("No book found for id")
+    if (bookFetch.length === 0) throw new Error("No book found for id")
     book = bookFetch[0]
-  } else if (parseInt(bookPromptResult) === booksWithLeastInsights.length) {
+  } else if (
+    Number.parseInt(bookPromptResult) === booksWithLeastInsights.length
+  ) {
     // Process all books a single time
     const results = Promise.all(
       booksWithLeastInsights.map((b) =>
         doResearch(b.book, researcherConfig, true),
       ),
     )
+    await results
     processSingleBook()
     return
   } else {
-    book = booksWithLeastInsights[parseInt(bookPromptResult)].book
+    book = booksWithLeastInsights[Number.parseInt(bookPromptResult)].book
     console.debug(`Chose book ${book.title} with ID: ${book.id}`)
   }
   // Instead of forEach, use a for...of loop for sequential async/await
-  for (let i = 0; i < iterations; i++) {
-    const [run, insights, updatedBook] = await doResearch(
-      book,
-      researcherConfig,
-      true,
-    ) // Wait for researcher to finish
+  for (let index = 0; index < iterations; index++) {
+    const [_, __, updatedBook] = await doResearch(book, researcherConfig, true) // Wait for researcher to finish
     if (updatedBook) book = updatedBook
     if (updatedBook?.completed_researchers.includes(researcherKey)) {
       // Yay we're done early. No need to waste OpenAI $$!
@@ -111,32 +115,37 @@ async function processSingleBook() {
   processSingleBook()
 }
 
+// Helper function to process a single book
+async function processBooks() {
+  // Execute researcher on three of them
+  const books = await getBooksWithFewestInsights("bad")
+  let index = 0
+  const promises: ReturnType<typeof doResearch>[] = []
+  while (index < books.length && promises.length <= PARALLELISM) {
+    const book = books[index]
+    const randomResearchers = _.shuffle(_.keys(RESEARCHERS))
+    const researcherKey = _.find(
+      randomResearchers,
+      (r) => !book.book.completed_researchers.includes(r),
+    )
+    if (!researcherKey) {
+      index += 1
+      continue
+    }
+    promises.push(
+      doResearch(book.book, RESEARCHERS[researcherKey as ResearcherKeys]),
+    )
+    index += 1
+  }
+  console.log("Returning Promises. Length:", promises.length)
+  return Promise.all(promises)
+}
+
 /** Randomly chooose books and unfinished researchers to achieve some fixed insight count */
 async function processToInsightGoal() {
-  const goal = parseInt(await promptForInput("How many more insights we want?"))
-
-  async function processBooks() {
-    // Execute researcher on three of them
-    const books = await getBooksWithFewestInsights("bad")
-    let idx = 0
-    let promises: ReturnType<typeof doResearch>[] = []
-    while (idx < books.length && promises.length <= PARALLELISM) {
-      const book = books[idx]
-      const randomResearchers = _.shuffle(_.keys(RESEARCHERS))
-      const researcherKey = _.find(
-        randomResearchers,
-        (r) => !book.book.completed_researchers.includes(r),
-      )
-      if (!researcherKey) {
-        idx += 1
-        continue
-      }
-      promises.push(doResearch(book.book, RESEARCHERS[researcherKey]))
-      idx += 1
-    }
-    console.log("Returning Promises. Length: ", promises.length)
-    return Promise.all(promises)
-  }
+  const goal = Number.parseInt(
+    await promptForInput("How many more insights we want?"),
+  )
 
   let newInsightCount = 0
   while (newInsightCount < goal) {
@@ -163,4 +172,4 @@ async function start() {
   }
 }
 
-start()
+await start()

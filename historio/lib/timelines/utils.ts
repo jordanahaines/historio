@@ -1,9 +1,11 @@
-import { SelectInsight } from "@/db/schema/insight"
-import { GroupedInsights } from "@/types/timeline"
 import _ from "lodash"
 import stats from "stats-lite"
-import { parseDate } from "../researchers/utils"
 import { differenceInDays, add, format } from "date-fns"
+
+import { parseDate } from "../researchers/utils"
+
+import { GroupedInsights } from "@/types/timeline"
+import { SelectInsight } from "@/db/schema/insight"
 
 const GROUP_INSIGHTS_BUCKETS = 10
 const DATE_FORMAT = "yyyy-MM-dd"
@@ -14,10 +16,10 @@ export function GroupInsights(
 ): [GroupedInsights, boolean, boolean] {
   // First we determine outliers using IQR
   const sortedInsights = _.sortBy(
-    _.filter(insights, (i) => !!i.date),
+    _.filter(insights, (index) => !!index.date),
     "date",
   )
-  if (!sortedInsights.length) throw new TypeError("Invalid insights. Empty!")
+  if (sortedInsights.length === 0) throw new TypeError("Invalid insights. Empty!")
   const firstDate = parseDate(sortedInsights[0].date as string).date as Date
   const dateDayCount = _.map(sortedInsights, (insight) => {
     return differenceInDays(
@@ -42,15 +44,15 @@ export function GroupInsights(
   // Total number of days on our timeline
   const totalDuration = dateDayCount[upperBound] - dateDayCount[lowerBound]
   const bucketSize = totalDuration / GROUP_INSIGHTS_BUCKETS
-  const dateIndices = _.map(_.range(GROUP_INSIGHTS_BUCKETS), (i) => {
-    const di = add(lowerBoundDate, { days: bucketSize * i })
+  const dateIndices = _.map(_.range(GROUP_INSIGHTS_BUCKETS), (index) => {
+    const di = add(lowerBoundDate, { days: bucketSize * index })
     return di
   })
 
   // Build the buckets
   // Includes putting lower outliers in first bucket; later outliers in last
-  const buckets = _.groupBy(sortedInsights, (i) => {
-    const insightDate = parseDate(i.date as string).date as Date
+  const buckets = _.groupBy(sortedInsights, (index) => {
+    const insightDate = parseDate(index.date as string).date as Date
     const d = _.findLast(dateIndices, (di) => insightDate >= di)
     if (!d) return format(lowerBoundDate, DATE_FORMAT)
     return format(d, DATE_FORMAT)

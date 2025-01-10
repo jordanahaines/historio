@@ -1,4 +1,3 @@
-import { FrontendTimelineBook, ZoomLevel } from "@/types/timeline"
 import _ from "lodash"
 import {
   createContext,
@@ -7,6 +6,8 @@ import {
   useContext,
   useReducer,
 } from "react"
+
+import { FrontendTimelineBook } from "@/types/timeline"
 
 const DEFAULT_ZOOM = 2
 
@@ -56,7 +57,7 @@ export type TimelineDispatchAction =
 export type HistorioTimelineContext = {
   settings: TimelineContextSettings
   books: TimelineContextBook[]
-  scrollTo: Date | null
+  scrollTo?: Date
 }
 
 /**
@@ -67,49 +68,54 @@ const historioContextReducer = (
   update: TimelineDispatchAction,
 ): HistorioTimelineContext => {
   const newState = { ...state }
+
   switch (update.type) {
-    case TimelineDispatchActionType.updateBook:
-      const bookIdx = _.findIndex(
+    case TimelineDispatchActionType.updateBook: {
+      const bookIndex = _.findIndex(
         state.books,
         (b) => b.bookID === update.payload.bookID,
       )
-      newState.books[bookIdx] = {
-        ...newState.books[bookIdx],
+      newState.books[bookIndex] = {
+        ...newState.books[bookIndex],
         ...update.payload,
       }
       break
-    case TimelineDispatchActionType.updateSettings:
+    }
+    case TimelineDispatchActionType.updateSettings: {
       newState.settings = { ...newState.settings, ...update.payload }
       break
-    case TimelineDispatchActionType.updateScrollTo:
-      newState.scrollTo = update.payload as Date | null
+    }
+    case TimelineDispatchActionType.updateScrollTo: {
+      newState.scrollTo = update.payload as Date | undefined
       break
+    }
   }
   return newState
 }
 
-type TimelinexContextProviderProps = {
+type TimelinexContextProviderProperties = {
   books: FrontendTimelineBook[]
   children: ReactNode
 }
 
 const baseContext: HistorioTimelineContext = {
   settings: { showMiniMap: true, barsMode: TimelineBarsMode.fullBook },
-  scrollTo: null,
+  scrollTo: undefined,
   books: [],
 }
 export const TimelineContext =
   createContext<HistorioTimelineContext>(baseContext)
-export const UpdateTimelineContext =
-  createContext<Dispatch<TimelineDispatchAction> | null>(null)
+export const UpdateTimelineContext = createContext<
+  Dispatch<TimelineDispatchAction> | undefined
+>(undefined)
 
 export function TimelineContextProvider({
   books,
   children,
-}: TimelinexContextProviderProps) {
+}: TimelinexContextProviderProperties) {
   const initialContext: HistorioTimelineContext = {
     settings: { showMiniMap: true, barsMode: TimelineBarsMode.fullBook },
-    scrollTo: null,
+    scrollTo: undefined,
     books: books.map((b) => ({
       bookID: b.book_id,
       bookTitle: b.title,
@@ -123,11 +129,14 @@ export function TimelineContextProvider({
       highlighted: false,
     })),
   }
-  const [ctx, updateCtx] = useReducer(historioContextReducer, initialContext)
+  const [context, updateContext] = useReducer(
+    historioContextReducer,
+    initialContext,
+  )
 
   return (
-    <TimelineContext.Provider value={ctx}>
-      <UpdateTimelineContext.Provider value={updateCtx}>
+    <TimelineContext.Provider value={context}>
+      <UpdateTimelineContext.Provider value={updateContext}>
         {children}
       </UpdateTimelineContext.Provider>
     </TimelineContext.Provider>

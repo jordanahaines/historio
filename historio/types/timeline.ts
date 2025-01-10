@@ -23,7 +23,7 @@ export type FrontendTimelineBook = {
   book_id: string
   title: string
   author: string
-  color: string
+  color: string | undefined
   order: number
   default_start: Date
   default_end: Date

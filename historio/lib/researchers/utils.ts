@@ -40,16 +40,16 @@ export function parseDate(
   const isValidDate = (d: Date) => d instanceof Date && !isNaN(d)
 
   // Remove commas, which sometimes appear in years
-  dateString = dateString.replace(/,/g, "")
+  dateString = dateString.replaceAll(',', "")
   dateString = dateString.replaceAll("-", "/").trim()
-  let dateObj: Date | undefined = undefined
+  let dateObject: Date | undefined = undefined
   for (const format of DATE_FORMATS) {
-    dateObj = parse(dateString, format, referenceDate || new Date())
-    if (dateObj && isValidDate(dateObj)) {
+    dateObject = parse(dateString, format, referenceDate || new Date())
+    if (dateObject && isValidDate(dateObject)) {
       // If year is BC, we just return year
-      if (dateObj.getFullYear() < 0)
-        return { date: null, year: dateObj.getFullYear() }
-      return { date: dateObj, year: dateObj.getFullYear() }
+      if (dateObject.getFullYear() < 0)
+        return { date: null, year: dateObject.getFullYear() }
+      return { date: dateObject, year: dateObject.getFullYear() }
     }
   }
   return { date: null, year: null }
@@ -59,10 +59,10 @@ export const generateGenericPrompt: PromptGeneratorFunction = (
   book: SelectBook,
   existingInsights?: SelectInsight[],
 ) => {
-  let msg = `Title: ${book.title}\nAuthor: ${book.author}`
+  let message = `Title: ${book.title}\nAuthor: ${book.author}`
   if (existingInsights?.length) {
-    msg += "\n\n Do not include these events in your results:"
-    _.map(existingInsights, "name").forEach((e) => (msg += `\n- ${e}`))
+    message += "\n\n Do not include these events in your results:"
+    for (const e of _.map(existingInsights, "name")) (message += `\n- ${e}`)
   }
-  return msg
+  return message
 }

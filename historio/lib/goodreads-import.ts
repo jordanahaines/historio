@@ -46,7 +46,7 @@ export default async function goodreadsImport(
 
   // Helper function
   const cleanISBN = (isbn: string) => {
-    return isbn.replace(/[^0-9]/g, "")
+    return isbn.replaceAll(/[^0-9]/g, "")
   }
 
   // Clean up the data a bit so that we can do inserts

@@ -2,6 +2,7 @@ import globals from "globals"
 import pluginJs from "@eslint/js"
 import tseslint from "typescript-eslint"
 import pluginReact from "eslint-plugin-react"
+import eslintPluginUnicorn from "eslint-plugin-unicorn"
 import { FlatCompat } from "@eslint/eslintrc"
 
 const compat = new FlatCompat({
@@ -17,6 +18,7 @@ const config = [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
+  eslintPluginUnicorn.configs["flat/recommended"],
   ...compat.config({
     extends: ["next"],
     settings: {
@@ -28,6 +30,15 @@ const config = [
   ...compat.config({
     extends: ["plugin:drizzle/all"],
   }),
+  // {
+  //   plugins: {
+  //     unicorn: eslintPluginUnicorn,
+  //     rules: {
+  //       "unicorn/better-regex": "error",
+  //       "unicorn/…": "error",
+  //     },
+  //   },
+  // },
   {
     rules: {
       // "no-unused-vars": "error",

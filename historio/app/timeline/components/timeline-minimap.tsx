@@ -35,9 +35,9 @@ export default function TimelineMinimap({ events }: TimelineMinimapProps) {
     }))
 
   // Highlight book when its viewport on minimap is hovered
-  const handleHover = (hovered: boolean, idx: number) => {
+  const handleHover = (hovered: boolean, index: number) => {
     if (!updateTimelineContext) return
-    const book = timelineContext.books[idx]
+    const book = timelineContext.books[index]
     updateTimelineContext({
       type: TimelineDispatchActionType.updateBook,
       payload: { ...book, highlighted: hovered },

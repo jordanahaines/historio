@@ -108,11 +108,11 @@ export default function TimelineDisplaySettings() {
   }
 
   const handleChangeBarMode = useCallback(
-    (val: TimelineBarsMode) => {
+    (value: TimelineBarsMode) => {
       if (!updateTimelineContext) return
       updateTimelineContext({
         type: TimelineDispatchActionType.updateSettings,
-        payload: { barsMode: val },
+        payload: { barsMode: value },
       })
     },
     [updateTimelineContext],

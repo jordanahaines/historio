@@ -28,13 +28,13 @@ export default function TimelineCoordinator({
 }) {
   // Extract all dated events to pass to minimap
   const eventCount = _.sum(
-    _.flatten(timelineBooks.map((b) => b.insights.length)),
+    timelineBooks.flatMap((b) => b.insights.length),
   )
 
   // Dates for all of our events
   const events = useMemo(() => {
     const allInsightDates = _.flattenDeep(
-      timelineBooks.map((b) => b.insights.map((i) => i.date)),
+      timelineBooks.map((b) => b.insights.map((index) => index.date)),
     )
     const insightDates = _.filter(allInsightDates, (d) => d !== null)
     return _.map(insightDates, (d) => parse(d, "yyyy-MM-dd", new Date()))

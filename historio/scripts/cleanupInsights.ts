@@ -10,27 +10,27 @@ async function cleanupInsights() {
     .select()
     .from(insights)
     .where(eq(insights.archived, false))
-  const groupedInsights = _.groupBy(allInsights, (i) => i.book_id)
+  const groupedInsights = _.groupBy(allInsights, (index) => index.book_id)
   // Loop through insights, find IDs of duplicates
   const toArchive = new Set<string>()
   _.forEach(groupedInsights, (insights, _) => {
     const names = new Set<string>()
-    insights.forEach((i) => {
-      if (!i.name) return
-      if (names.has(i.name.toLowerCase())) {
-        toArchive.add(i.id)
-        console.log("Archive", i.name)
+    for (const index of insights) {
+      if (!index.name) continue
+      if (names.has(index.name.toLowerCase())) {
+        toArchive.add(index.id)
+        console.log("Archive", index.name)
       } else {
-        names.add(i.name.toLowerCase())
+        names.add(index.name.toLowerCase())
       }
-    })
+    }
   })
   console.log(`${toArchive.size} insights to archive`)
-  const toArchiveArr: string[] = Array.from(toArchive)
+  const toArchiveArray: string[] = [...toArchive]
   await db
     .update(insights)
     .set({ archived: true })
-    .where(inArray(insights.id, toArchiveArr))
+    .where(inArray(insights.id, toArchiveArray))
   console.log("Updated!")
   return true
 }

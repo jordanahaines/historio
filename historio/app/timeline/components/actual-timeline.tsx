@@ -39,12 +39,12 @@ export default function ActualTimeline({
     (b) => b.bookID === bookDetails.book_id,
   )
 
-  const timelineRef = useRef<HTMLDivElement>(null)
-  const numInsights =
+  const timelineReference = useRef<HTMLDivElement>(null)
+  const numberInsights =
     INSIGHTS_PER_BUCKET[
       Math.floor(bookContext?.currentZoom || 1) as INSIGHTS_PER_BUCKET_KEY
     ] // TODO: Calculate based on zoom level
-  const bucketWidth = numInsights * INSIGHT_WIDTH
+  const bucketWidth = numberInsights * INSIGHT_WIDTH
   const totalWidth = bucketWidth * orderedInsights.length
 
   // Whether or not there are duplicate years. If so, we have to put month on those years
@@ -54,16 +54,16 @@ export default function ActualTimeline({
     const oiyDates = orderedInsightYears.map((y) =>
       parse(y, "yyyy-MM-dd", new Date()),
     )
-    const counts = _.countBy(oiyDates, (i) => i.getFullYear())
-    return _.map(oiyDates, (y, idx) => {
+    const counts = _.countBy(oiyDates, (index) => index.getFullYear())
+    return _.map(oiyDates, (y, index) => {
       let display =
         counts[y.getFullYear()] > 1
           ? formatDate(y, "MMM yyyy")
           : formatDate(y, "yyyy")
-      if (idx === 0 && bookDetails.has_earlier_insight) {
+      if (index === 0 && bookDetails.has_earlier_insight) {
         display = `${display} and prior`
       } else if (
-        idx === orderedInsights.length - 1 &&
+        index === orderedInsights.length - 1 &&
         bookDetails.has_later_insight
       ) {
         display = `${display} and later`
@@ -90,8 +90,8 @@ export default function ActualTimeline({
 
   const renderBucket = (bucket: SelectInsight[], date: string, _: number) => {
     let insights = bucket
-    if (insights.length > numInsights) {
-      insights = insights.slice(0, numInsights)
+    if (insights.length > numberInsights) {
+      insights = insights.slice(0, numberInsights)
     }
     const width = `${bucketWidth}px`
     const bucketYear = date.split("-")[0]
@@ -110,7 +110,7 @@ export default function ActualTimeline({
         >
           {insights.map(renderInsight)}
         </div>
-        {parseInt(yearDisplay) < parseInt(bucketYear) ? bucketYearDisplay : ""}
+        {Number.parseInt(yearDisplay) < Number.parseInt(bucketYear) ? bucketYearDisplay : ""}
       </div>
     )
   }
@@ -120,13 +120,13 @@ export default function ActualTimeline({
   // 2) Adjust current start/end in context
   const handleScroll = useCallback(() => {
     if (!updateTimelineContext || !bookContext) return
-    if (!timelineRef.current) return
-    const timelineDiv: HTMLDivElement = timelineRef.current as HTMLDivElement
+    if (!timelineReference.current) return
+    const timelineDiv: HTMLDivElement = timelineReference.current as HTMLDivElement
     // Adjust years
     const left = timelineDiv.scrollLeft
     const right = left + timelineDiv.clientWidth
-    const currentBucketIdx = timelineDiv ? Math.floor(left / bucketWidth) : 0
-    setYearDisplay(displayYears[currentBucketIdx])
+    const currentBucketIndex = timelineDiv ? Math.floor(left / bucketWidth) : 0
+    setYearDisplay(displayYears[currentBucketIndex])
 
     const leftPct = left / timelineDiv.scrollWidth
     const rightPct = right / timelineDiv.scrollWidth
@@ -146,7 +146,7 @@ export default function ActualTimeline({
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    timelineRef,
+    timelineReference,
     yearDisplay,
     bookContext,
     bookDetails.end,
@@ -163,15 +163,15 @@ export default function ActualTimeline({
   // React to scroll events from context
   useEffect(() => {
     const to = timelineContext.scrollTo
-    if (!to || !timelineRef.current) return
+    if (!to || !timelineReference.current) return
     // We gotta scroll!
     let scrollPercent =
       (to.getTime() - bookDetails.start.getTime()) /
       (bookDetails.end.getTime() - bookDetails.start.getTime())
     scrollPercent = Math.max(0, Math.min(1, scrollPercent))
-    const left = scrollPercent * timelineRef.current.scrollWidth
+    const left = scrollPercent * timelineReference.current.scrollWidth
 
-    timelineRef.current.scrollTo({
+    timelineReference.current.scrollTo({
       left,
       behavior: "smooth",
     })
@@ -201,7 +201,7 @@ export default function ActualTimeline({
         {yearDisplay}
       </div>
       <div
-        ref={timelineRef}
+        ref={timelineReference}
         className="actualTimeline timelineViewport"
         onScroll={handleScroll}
       >
@@ -218,7 +218,7 @@ export default function ActualTimeline({
             ))}
           </div>
           <div className="timelineContents px-2 flex items-center">
-            {orderedInsights.map((oi, idx) => renderBucket(oi[1], oi[0], idx))}
+            {orderedInsights.map((oi, index) => renderBucket(oi[1], oi[0], index))}
           </div>
         </div>
       </div>

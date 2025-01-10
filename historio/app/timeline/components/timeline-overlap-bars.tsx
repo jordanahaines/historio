@@ -9,8 +9,8 @@ export type TimelineOverlapBarProps = {
   onHover: (hovered: boolean) => void // So that we can highlight other books
 }
 
-export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
-  const { parentStartDate, parentEndDate, barBookID } = props
+export default function TimelineOverlapBar(properties: TimelineOverlapBarProps) {
+  const { parentStartDate, parentEndDate, barBookID } = properties
   const { timelineContext } = useTimelineContext()
   const renderBook = timelineContext.books.find((b) => b.bookID === barBookID)
   if (
@@ -29,8 +29,8 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
 
   const parentDurationDays = differenceInDays(parentEndDate, parentStartDate)
   const barDurationDays = differenceInDays(
-    endDate < parentEndDate ? endDate : parentEndDate,
-    startDate > parentStartDate ? startDate : parentStartDate,
+    Math.min(endDate, parentEndDate),
+    Math.max(startDate, parentStartDate),
   )
 
   let left = 0
@@ -64,8 +64,8 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
     <div
       className={colorClass}
       style={style}
-      onMouseEnter={() => props.onHover(true)}
-      onMouseLeave={() => props.onHover(false)}
+      onMouseEnter={() => properties.onHover(true)}
+      onMouseLeave={() => properties.onHover(false)}
     />
   )
 }

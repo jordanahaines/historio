@@ -71,27 +71,29 @@ const historioContextReducer = (
 
   switch (update.type) {
     case TimelineDispatchActionType.updateBook: {
-      const bookIdx = _.findIndex(
+      const bookIndex = _.findIndex(
         state.books,
         (b) => b.bookID === update.payload.bookID,
       )
-      newState.books[bookIdx] = {
-        ...newState.books[bookIdx],
+      newState.books[bookIndex] = {
+        ...newState.books[bookIndex],
         ...update.payload,
       }
       break
     }
-    case TimelineDispatchActionType.updateSettings:
+    case TimelineDispatchActionType.updateSettings: {
       newState.settings = { ...newState.settings, ...update.payload }
       break
-    case TimelineDispatchActionType.updateScrollTo:
+    }
+    case TimelineDispatchActionType.updateScrollTo: {
       newState.scrollTo = update.payload as Date | null
       break
+    }
   }
   return newState
 }
 
-type TimelinexContextProviderProps = {
+type TimelinexContextProviderProperties = {
   books: FrontendTimelineBook[]
   children: ReactNode
 }
@@ -109,7 +111,7 @@ export const UpdateTimelineContext =
 export function TimelineContextProvider({
   books,
   children,
-}: TimelinexContextProviderProps) {
+}: TimelinexContextProviderProperties) {
   const initialContext: HistorioTimelineContext = {
     settings: { showMiniMap: true, barsMode: TimelineBarsMode.fullBook },
     scrollTo: null,
@@ -126,11 +128,11 @@ export function TimelineContextProvider({
       highlighted: false,
     })),
   }
-  const [ctx, updateCtx] = useReducer(historioContextReducer, initialContext)
+  const [context, updateContext] = useReducer(historioContextReducer, initialContext)
 
   return (
-    <TimelineContext.Provider value={ctx}>
-      <UpdateTimelineContext.Provider value={updateCtx}>
+    <TimelineContext.Provider value={context}>
+      <UpdateTimelineContext.Provider value={updateContext}>
         {children}
       </UpdateTimelineContext.Provider>
     </TimelineContext.Provider>

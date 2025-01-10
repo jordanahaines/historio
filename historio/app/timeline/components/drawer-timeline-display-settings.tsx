@@ -65,6 +65,8 @@ export default function TimelineDisplaySettings() {
     yellow: "bg-yellow-500",
     violet: "bg-violet-500",
   }
+  type TailwindTimelineColors = keyof typeof tailwindTimelineColors
+
   const renderColorMenuItem = (color: keyof typeof tailwindTimelineColors) => {
     return (
       <DropdownItem key={color}>
@@ -78,6 +80,9 @@ export default function TimelineDisplaySettings() {
     )
   }
   const renderBookSelect = (book: TimelineContextBook) => {
+    const keys: TailwindTimelineColors[] = Object.keys(
+      tailwindTimelineColors,
+    ) as TailwindTimelineColors[]
     return (
       <div className="py-2 flex justify-between items-center border-b-1 border-slate-100 last:border-b-0">
         <p className="pr-4">{book.bookTitle}</p>
@@ -85,7 +90,7 @@ export default function TimelineDisplaySettings() {
           <DropdownTrigger>
             <Button
               isIconOnly
-              className={`${tailwindTimelineColors[book.currentColor]} text-white`}
+              className={`${tailwindTimelineColors[book.currentColor as TailwindTimelineColors]} text-white`}
             >
               <IoColorPaletteOutline size={30} />
             </Button>
@@ -94,10 +99,7 @@ export default function TimelineDisplaySettings() {
             aria-label="Timeline Colors"
             onAction={(k) => updateColor(k.toString(), book.bookID)}
           >
-            {
-              // @ts-ignore
-              Object.keys(tailwindTimelineColors).map(renderColorMenuItem)
-            }
+            {keys.map(renderColorMenuItem)}
           </DropdownMenu>
         </Dropdown>
       </div>

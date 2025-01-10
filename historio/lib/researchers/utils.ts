@@ -44,7 +44,7 @@ export function parseDate(
   dateString = dateString.replaceAll("-", "/").trim()
   let dateObj: Date | undefined = undefined
   for (const format of DATE_FORMATS) {
-    dateObj = parse(dateString, format, new Date())
+    dateObj = parse(dateString, format, referenceDate || new Date())
     if (dateObj && isValidDate(dateObj)) {
       // If year is BC, we just return year
       if (dateObj.getFullYear() < 0)

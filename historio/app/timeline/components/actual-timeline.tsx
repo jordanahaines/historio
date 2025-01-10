@@ -21,6 +21,7 @@ const INSIGHTS_PER_BUCKET = {
   3: 7,
   4: 9,
 }
+type INSIGHTS_PER_BUCKET_KEY = keyof typeof INSIGHTS_PER_BUCKET
 
 export default function ActualTimeline({
   bookDetails,
@@ -40,8 +41,10 @@ export default function ActualTimeline({
   if (!bookContext || !updateTimelineContext) return
 
   const timelineRef = useRef<HTMLDivElement>(null)
-  // @ts-ignore
-  const numInsights = INSIGHTS_PER_BUCKET[Math.floor(bookContext.currentZoom)] // TODO: Calculate based on zoom level
+  const numInsights =
+    INSIGHTS_PER_BUCKET[
+      Math.floor(bookContext.currentZoom) as INSIGHTS_PER_BUCKET_KEY
+    ] // TODO: Calculate based on zoom level
   const bucketWidth = numInsights * INSIGHT_WIDTH
   const totalWidth = bucketWidth * orderedInsights.length
 
@@ -73,7 +76,7 @@ export default function ActualTimeline({
   // First date that is displayed
   const [yearDisplay, setYearDisplay] = useState(displayYears[0])
 
-  const renderInsight = (insight: SelectInsight, idx: number) => {
+  const renderInsight = (insight: SelectInsight, _: number) => {
     if (insight.date)
       return (
         <div key={insight.id} className="insight">
@@ -85,7 +88,7 @@ export default function ActualTimeline({
       )
   }
 
-  const renderBucket = (bucket: SelectInsight[], date: string, idx: number) => {
+  const renderBucket = (bucket: SelectInsight[], date: string, _: number) => {
     let insights = bucket
     if (insights.length > numInsights) {
       insights = insights.slice(0, numInsights)
@@ -115,35 +118,32 @@ export default function ActualTimeline({
   // On Scroll:
   // 1) Adjust the static year label
   // 2) Adjust current start/end in context
-  const handleScroll = useCallback(
-    (_: any) => {
-      if (!timelineRef.current) return
-      const timelineDiv: HTMLDivElement = timelineRef.current as HTMLDivElement
-      // Adjust years
-      const left = timelineDiv.scrollLeft
-      const right = left + timelineDiv.clientWidth
-      const currentBucketIdx = timelineDiv ? Math.floor(left / bucketWidth) : 0
-      setYearDisplay(displayYears[currentBucketIdx])
+  const handleScroll = useCallback(() => {
+    if (!timelineRef.current) return
+    const timelineDiv: HTMLDivElement = timelineRef.current as HTMLDivElement
+    // Adjust years
+    const left = timelineDiv.scrollLeft
+    const right = left + timelineDiv.clientWidth
+    const currentBucketIdx = timelineDiv ? Math.floor(left / bucketWidth) : 0
+    setYearDisplay(displayYears[currentBucketIdx])
 
-      const leftPct = left / timelineDiv.scrollWidth
-      const rightPct = right / timelineDiv.scrollWidth
-      const start = add(bookDetails.start, {
-        days: leftPct * differenceInDays(bookDetails.end, bookDetails.start),
-      })
-      const end = add(bookDetails.start, {
-        days: rightPct * differenceInDays(bookDetails.end, bookDetails.start),
-      })
-      updateTimelineContext({
-        type: TimelineDispatchActionType.updateBook,
-        payload: {
-          ...bookContext,
-          currentStart: start.toISOString(),
-          currentEnd: end.toISOString(),
-        },
-      })
-    },
-    [timelineRef, yearDisplay, bookContext],
-  )
+    const leftPct = left / timelineDiv.scrollWidth
+    const rightPct = right / timelineDiv.scrollWidth
+    const start = add(bookDetails.start, {
+      days: leftPct * differenceInDays(bookDetails.end, bookDetails.start),
+    })
+    const end = add(bookDetails.start, {
+      days: rightPct * differenceInDays(bookDetails.end, bookDetails.start),
+    })
+    updateTimelineContext({
+      type: TimelineDispatchActionType.updateBook,
+      payload: {
+        ...bookContext,
+        currentStart: start.toISOString(),
+        currentEnd: end.toISOString(),
+      },
+    })
+  }, [timelineRef, yearDisplay, bookContext])
 
   // Set initial current start/end so we don't get jitter when scrolling
   // Also do this on zoom so minimap updates

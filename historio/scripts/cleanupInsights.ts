@@ -1,7 +1,6 @@
 import { db } from "@/db"
-import { books, SelectBook } from "@/db/schema/book"
 import { insights } from "@/db/schema/insight"
-import { inArray, eq } from "drizzle-orm"
+import { eq, inArray } from "drizzle-orm"
 import _ from "lodash"
 
 async function cleanupInsights() {
@@ -14,8 +13,7 @@ async function cleanupInsights() {
   const groupedInsights = _.groupBy(allInsights, (i) => i.book_id)
   // Loop through insights, find IDs of duplicates
   const toArchive = new Set<string>()
-  _.forEach(groupedInsights, (insights, bookID) => {
-    const orderedInsights = _.sortBy(insights, (i) => i.date)
+  _.forEach(groupedInsights, (insights, _) => {
     const names = new Set<string>()
     insights.forEach((i) => {
       if (!i.name) return
@@ -29,7 +27,7 @@ async function cleanupInsights() {
   })
   console.log(`${toArchive.size} insights to archive`)
   const toArchiveArr: string[] = Array.from(toArchive)
-  const result = await db
+  await db
     .update(insights)
     .set({ archived: true })
     .where(inArray(insights.id, toArchiveArr))

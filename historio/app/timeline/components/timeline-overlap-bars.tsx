@@ -57,7 +57,7 @@ export default function TimelineOverlapBar(props: TimelineOverlapBarProps) {
 
   const style = { width: `${width}%`, left: `${left}%` }
 
-  // @ts-ignore
+  // @ts-expect-error current color will be key of timeline color
   const colorClass = `timelineBar ${tailwindTimelineColors[renderBook.currentColor]}`
 
   return (

@@ -1,3 +1,4 @@
+import React from "react"
 import "@/styles/globals.scss"
 import clsx from "clsx"
 import { Metadata, Viewport } from "next"

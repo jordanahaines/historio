@@ -60,7 +60,8 @@ export default function TimelineContainer({
     yellow: "bg-yellow-500",
     violet: "bg-violet-500",
   }
-  const tailwindBorderColors = {
+  type TailwindTimelineColors = keyof typeof tailwindTimelineColors
+  const tailwindBorderColors: { [key in TailwindTimelineColors]: string } = {
     red: "border-red-500",
     amber: "border-amber-500",
     lime: "border-lime-500",
@@ -75,8 +76,8 @@ export default function TimelineContainer({
     violet: "border-violet-500",
   }
 
-  // @ts-ignore
-  let bg = tailwindTimelineColors[bookContext.currentColor]
+  let bg =
+    tailwindTimelineColors[bookContext.currentColor as TailwindTimelineColors]
   if (antiHighlighted) bg = "bg-zinc-300"
 
   const handleZoom = useCallback(
@@ -94,7 +95,8 @@ export default function TimelineContainer({
 
   let border = "border-zinc-300"
   if (bookContext.highlighted) {
-    border = tailwindBorderColors[bookContext.currentColor]
+    border =
+      tailwindBorderColors[bookContext.currentColor as TailwindTimelineColors]
   }
 
   return (

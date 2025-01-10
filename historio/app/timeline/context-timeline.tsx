@@ -68,8 +68,9 @@ const historioContextReducer = (
   update: TimelineDispatchAction,
 ): HistorioTimelineContext => {
   const newState = { ...state }
+
   switch (update.type) {
-    case TimelineDispatchActionType.updateBook:
+    case TimelineDispatchActionType.updateBook: {
       const bookIdx = _.findIndex(
         state.books,
         (b) => b.bookID === update.payload.bookID,
@@ -79,6 +80,7 @@ const historioContextReducer = (
         ...update.payload,
       }
       break
+    }
     case TimelineDispatchActionType.updateSettings:
       newState.settings = { ...newState.settings, ...update.payload }
       break

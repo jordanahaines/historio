@@ -19,6 +19,7 @@ const RESEARCHERS = {
   significant: significantEventResearcherConfig,
   minor: minorEventResearcherConfig,
 }
+type ResearcherKeys = keyof typeof RESEARCHERS
 const PARALLELISM = 10
 
 const rl = readline.createInterface({
@@ -57,7 +58,9 @@ async function processSingleBook() {
   if (researcherKeys.length > 1) {
     researcherIdx = await promptForInput("Which researcher?")
   }
-  const researcherKey = researcherKeys[parseInt(researcherIdx)]
+  const researcherKey = researcherKeys[
+    parseInt(researcherIdx)
+  ] as ResearcherKeys
   const researcherConfig: ResearcherConfiguration = RESEARCHERS[researcherKey]
 
   // console log all them books
@@ -67,7 +70,7 @@ async function processSingleBook() {
   })
   console.log(`${booksWithLeastInsights.length}: All the books!`)
   // And provide an option to do all books
-  let bookPromptResult = await promptForInput(
+  const bookPromptResult = await promptForInput(
     "Which book? You can also enter a book ID",
   )
   const iterations = parseInt(await promptForInput("How many iterations?"))
@@ -87,6 +90,7 @@ async function processSingleBook() {
         doResearch(b.book, researcherConfig, true),
       ),
     )
+    await results
     processSingleBook()
     return
   } else {
@@ -95,11 +99,7 @@ async function processSingleBook() {
   }
   // Instead of forEach, use a for...of loop for sequential async/await
   for (let i = 0; i < iterations; i++) {
-    const [run, insights, updatedBook] = await doResearch(
-      book,
-      researcherConfig,
-      true,
-    ) // Wait for researcher to finish
+    const [_, __, updatedBook] = await doResearch(book, researcherConfig, true) // Wait for researcher to finish
     if (updatedBook) book = updatedBook
     if (updatedBook?.completed_researchers.includes(researcherKey)) {
       // Yay we're done early. No need to waste OpenAI $$!
@@ -119,7 +119,7 @@ async function processToInsightGoal() {
     // Execute researcher on three of them
     const books = await getBooksWithFewestInsights("bad")
     let idx = 0
-    let promises: ReturnType<typeof doResearch>[] = []
+    const promises: ReturnType<typeof doResearch>[] = []
     while (idx < books.length && promises.length <= PARALLELISM) {
       const book = books[idx]
       const randomResearchers = _.shuffle(_.keys(RESEARCHERS))
@@ -131,7 +131,9 @@ async function processToInsightGoal() {
         idx += 1
         continue
       }
-      promises.push(doResearch(book.book, RESEARCHERS[researcherKey]))
+      promises.push(
+        doResearch(book.book, RESEARCHERS[researcherKey as ResearcherKeys]),
+      )
       idx += 1
     }
     console.log("Returning Promises. Length: ", promises.length)

@@ -72,7 +72,7 @@ const parseSignificantEvents = async (
       book_id: book.id,
       wikipedia_link: i.wikipedia_link,
     }
-    let eventDate = parseDate(i.date)
+    const eventDate = parseDate(i.date)
     insight.year = eventDate.year?.toString()
     insight.date = eventDate.date?.toISOString()
 

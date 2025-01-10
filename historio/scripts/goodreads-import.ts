@@ -14,8 +14,6 @@ const main = async () => {
   const goodreadsFile = await fs.readFile(pth, "utf8")
   const books = await goodreadsImport(goodreadsFile)
   console.log(`End: Goodreads import script. ${books.length} books imported!`)
-
-  process.exit()
 }
 
-main()
+await main()

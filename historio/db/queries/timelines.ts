@@ -24,14 +24,14 @@ export async function createTimeline(
 ): Promise<SelectTimeline> {
   const title = "Timeline for: " + _.map(books, "title").join(", ")
   const description = title
-  const [newTimeline] = 
-    await db.insert(timelines).values({ title, description }).returning()
-  
+  const [newTimeline] = await db
+    .insert(timelines)
+    .values({ title, description })
+    .returning()
 
   // Create our timelinebooks
   const insertTimelineBooks = books.map((b, index) => {
-    let defaultStart,
-      defaultEnd = null
+    let defaultStart, defaultEnd
     if (b.start_year) {
       defaultStart = new Date(Number.parseInt(b.start_year), 0, 1)
     }
@@ -59,13 +59,11 @@ export async function createTimeline(
 export async function fetchTimelineAndBooks(
   timelineID: string,
 ): Promise<[SelectTimeline, FrontendTimelineBook[]]> {
-  const [timeline] = 
-    await db
-      .select()
-      .from(timelines)
-      .where(eq(timelines.id, timelineID))
-      .limit(1)
-  
+  const [timeline] = await db
+    .select()
+    .from(timelines)
+    .where(eq(timelines.id, timelineID))
+    .limit(1)
 
   if (!timeline) {
     throw new Error(`Timeline not found: ${timelineID}`)
@@ -97,7 +95,7 @@ export async function fetchTimelineAndBooks(
       _.keys(tailwindTimelineColors),
       (c) => !usedColors.has(c),
     )
-    usedColors.add(color)
+    if (color) usedColors.add(color)
     const bookInsights = t.tb.book_id ? keyedInsights[t.tb.book_id] : []
     const [groupedInsights, hasEarlier, hasLater] = GroupInsights(bookInsights)
     const insightKeys = _.keys(groupedInsights).filter((k) => !!k)

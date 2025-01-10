@@ -76,7 +76,7 @@ export default function ActualTimeline({
   // First date that is displayed
   const [yearDisplay, setYearDisplay] = useState(displayYears[0])
 
-  const renderInsight = (insight: SelectInsight, _: number) => {
+  const renderInsight = (insight: SelectInsight, _?: number) => {
     if (insight.date)
       return (
         <div key={insight.id} className="insight">
@@ -88,7 +88,7 @@ export default function ActualTimeline({
       )
   }
 
-  const renderBucket = (bucket: SelectInsight[], date: string, _: number) => {
+  const renderBucket = (bucket: SelectInsight[], date: string, _?: number) => {
     let insights = bucket
     if (insights.length > numberInsights) {
       insights = insights.slice(0, numberInsights)
@@ -108,9 +108,11 @@ export default function ActualTimeline({
           className="insightsContainer flex justify-center items-start pt-2 pb-1 h-[170] even:bg-zinc-200"
           style={{ width }}
         >
-          {insights.map(renderInsight)}
+          {insights.map((i) => renderInsight(i))}
         </div>
-        {Number.parseInt(yearDisplay) < Number.parseInt(bucketYear) ? bucketYearDisplay : ""}
+        {Number.parseInt(yearDisplay) < Number.parseInt(bucketYear)
+          ? bucketYearDisplay
+          : ""}
       </div>
     )
   }
@@ -121,7 +123,8 @@ export default function ActualTimeline({
   const handleScroll = useCallback(() => {
     if (!updateTimelineContext || !bookContext) return
     if (!timelineReference.current) return
-    const timelineDiv: HTMLDivElement = timelineReference.current as HTMLDivElement
+    const timelineDiv: HTMLDivElement =
+      timelineReference.current as HTMLDivElement
     // Adjust years
     const left = timelineDiv.scrollLeft
     const right = left + timelineDiv.clientWidth
@@ -218,7 +221,9 @@ export default function ActualTimeline({
             ))}
           </div>
           <div className="timelineContents px-2 flex items-center">
-            {orderedInsights.map((oi, index) => renderBucket(oi[1], oi[0], index))}
+            {orderedInsights.map((oi, index) =>
+              renderBucket(oi[1], oi[0], index),
+            )}
           </div>
         </div>
       </div>

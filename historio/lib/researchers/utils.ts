@@ -7,8 +7,8 @@ import { SelectBook } from "@/db/schema/book"
 import { SelectInsight } from "@/db/schema/insight"
 
 export type ParsedInsightDate = {
-  date: Date | null
-  year: number | null
+  date: Date | undefined
+  year: number | undefined
 }
 
 // Note that hyphens are replaced with / in dates, so we don't need any formats with hyphens
@@ -37,10 +37,10 @@ export function parseDate(
   referenceDate: Date | undefined = undefined,
 ): ParsedInsightDate {
   // Helper
-  const isValidDate = (d: Date) => d instanceof Date && !isNaN(d)
+  const isValidDate = (d: Date) => d instanceof Date && !Number.isNaN(d)
 
   // Remove commas, which sometimes appear in years
-  dateString = dateString.replaceAll(',', "")
+  dateString = dateString.replaceAll(",", "")
   dateString = dateString.replaceAll("-", "/").trim()
   let dateObject: Date | undefined = undefined
   for (const format of DATE_FORMATS) {
@@ -48,11 +48,11 @@ export function parseDate(
     if (dateObject && isValidDate(dateObject)) {
       // If year is BC, we just return year
       if (dateObject.getFullYear() < 0)
-        return { date: null, year: dateObject.getFullYear() }
+        return { date: undefined, year: dateObject.getFullYear() }
       return { date: dateObject, year: dateObject.getFullYear() }
     }
   }
-  return { date: null, year: null }
+  return { date: undefined, year: undefined }
 }
 
 export const generateGenericPrompt: PromptGeneratorFunction = (
@@ -62,7 +62,7 @@ export const generateGenericPrompt: PromptGeneratorFunction = (
   let message = `Title: ${book.title}\nAuthor: ${book.author}`
   if (existingInsights?.length) {
     message += "\n\n Do not include these events in your results:"
-    for (const e of _.map(existingInsights, "name")) (message += `\n- ${e}`)
+    for (const e of _.map(existingInsights, "name")) message += `\n- ${e}`
   }
   return message
 }

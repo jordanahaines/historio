@@ -73,7 +73,9 @@ async function processSingleBook() {
   const bookPromptResult = await promptForInput(
     "Which book? You can also enter a book ID",
   )
-  const iterations = Number.parseInt(await promptForInput("How many iterations?"))
+  const iterations = Number.parseInt(
+    await promptForInput("How many iterations?"),
+  )
   let book: SelectBook
   if (bookPromptResult.length > 3) {
     const bookFetch = await db
@@ -83,7 +85,9 @@ async function processSingleBook() {
       .limit(1)
     if (bookFetch.length === 0) throw new Error("No book found for id")
     book = bookFetch[0]
-  } else if (Number.parseInt(bookPromptResult) === booksWithLeastInsights.length) {
+  } else if (
+    Number.parseInt(bookPromptResult) === booksWithLeastInsights.length
+  ) {
     // Process all books a single time
     const results = Promise.all(
       booksWithLeastInsights.map((b) =>
@@ -111,34 +115,37 @@ async function processSingleBook() {
   processSingleBook()
 }
 
+// Helper function to process a single book
+async function processBooks() {
+  // Execute researcher on three of them
+  const books = await getBooksWithFewestInsights("bad")
+  let index = 0
+  const promises: ReturnType<typeof doResearch>[] = []
+  while (index < books.length && promises.length <= PARALLELISM) {
+    const book = books[index]
+    const randomResearchers = _.shuffle(_.keys(RESEARCHERS))
+    const researcherKey = _.find(
+      randomResearchers,
+      (r) => !book.book.completed_researchers.includes(r),
+    )
+    if (!researcherKey) {
+      index += 1
+      continue
+    }
+    promises.push(
+      doResearch(book.book, RESEARCHERS[researcherKey as ResearcherKeys]),
+    )
+    index += 1
+  }
+  console.log("Returning Promises. Length:", promises.length)
+  return Promise.all(promises)
+}
+
 /** Randomly chooose books and unfinished researchers to achieve some fixed insight count */
 async function processToInsightGoal() {
-  const goal = Number.parseInt(await promptForInput("How many more insights we want?"))
-
-  async function processBooks() {
-    // Execute researcher on three of them
-    const books = await getBooksWithFewestInsights("bad")
-    let index = 0
-    const promises: ReturnType<typeof doResearch>[] = []
-    while (index < books.length && promises.length <= PARALLELISM) {
-      const book = books[index]
-      const randomResearchers = _.shuffle(_.keys(RESEARCHERS))
-      const researcherKey = _.find(
-        randomResearchers,
-        (r) => !book.book.completed_researchers.includes(r),
-      )
-      if (!researcherKey) {
-        index += 1
-        continue
-      }
-      promises.push(
-        doResearch(book.book, RESEARCHERS[researcherKey as ResearcherKeys]),
-      )
-      index += 1
-    }
-    console.log("Returning Promises. Length:", promises.length)
-    return Promise.all(promises)
-  }
+  const goal = Number.parseInt(
+    await promptForInput("How many more insights we want?"),
+  )
 
   let newInsightCount = 0
   while (newInsightCount < goal) {
@@ -165,4 +172,4 @@ async function start() {
   }
 }
 
-start()
+await start()

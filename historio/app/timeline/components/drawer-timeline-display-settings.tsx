@@ -100,7 +100,7 @@ export default function TimelineDisplaySettings() {
             aria-label="Timeline Colors"
             onAction={(k) => updateColor(k.toString(), book.bookID)}
           >
-            {keys.map(renderColorMenuItem)}
+            {keys.map((k) => renderColorMenuItem(k))}
           </DropdownMenu>
         </Dropdown>
       </div>
@@ -170,7 +170,7 @@ export default function TimelineDisplaySettings() {
               <p className="help text-center">
                 Adjust the color for each book on the timeline
               </p>
-              {timelineContext.books.map(renderBookSelect)}
+              {timelineContext.books.map((b) => renderBookSelect(b))}
             </div>
             <div className="pt-4 mt-2 border-t-3 border-t-zinc-500">
               <h3 className="font-serif font-bold text-center">Overlap Bars</h3>

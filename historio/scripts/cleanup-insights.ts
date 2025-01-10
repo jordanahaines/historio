@@ -13,7 +13,8 @@ async function cleanupInsights() {
   const groupedInsights = _.groupBy(allInsights, (index) => index.book_id)
   // Loop through insights, find IDs of duplicates
   const toArchive = new Set<string>()
-  _.forEach(groupedInsights, (insights, _) => {
+  for (const bookID in groupedInsights) {
+    const insights = groupedInsights[bookID]
     const names = new Set<string>()
     for (const index of insights) {
       if (!index.name) continue
@@ -24,7 +25,7 @@ async function cleanupInsights() {
         names.add(index.name.toLowerCase())
       }
     }
-  })
+  }
   console.log(`${toArchive.size} insights to archive`)
   const toArchiveArray: string[] = [...toArchive]
   await db
@@ -34,4 +35,4 @@ async function cleanupInsights() {
   console.log("Updated!")
   return true
 }
-cleanupInsights()
+await cleanupInsights()

@@ -40,7 +40,6 @@ export default function EventDensityMap(properties: EventDensityMapProps) {
     yellow: "bg-yellow-500/30",
     violet: "bg-violet-500/30",
   }
-  document.cookie = "test"
 
   const events = _.sortBy([...properties.events]).toReversed()
   const end = properties.end ?? events[0]
@@ -61,7 +60,7 @@ export default function EventDensityMap(properties: EventDensityMapProps) {
     const dateIndices = _.range(NUM_BUCKETS).map((index) =>
       add(start, { days: index * bucketSize }),
     )
-    const result = _.fill(Array.from({length: NUM_BUCKETS}), 0)
+    const result = _.fill(Array.from({ length: NUM_BUCKETS }), 0)
     _.each(events, (e) => {
       const index = _.findIndex(dateIndices, (d) => differenceInDays(d, e) >= 0)
       result[index] += 1
@@ -149,12 +148,12 @@ export default function EventDensityMap(properties: EventDensityMapProps) {
       role="presentation"
       onClick={handleClick}
     >
-      <p className="px-4 font-bold font-serif">{start.getFullYear()}</p>
+      <p className="px-4 font-bold font-serif">{start?.getFullYear()}</p>
       <div
         ref={divReference}
         className="bubble-container relative grow flex justify-between items-center h-full w-full"
       >
-        {bubbles.map(renderBubble)}
+        {bubbles.map((b, i) => renderBubble(b, i))}
         {properties.viewports?.map(renderViewport)}
       </div>
 

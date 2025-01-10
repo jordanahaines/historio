@@ -30,6 +30,11 @@ type GoodreadsCSVRow = {
   "Owned Copies": string
 }
 
+// Helper function
+const cleanISBN = (isbn: string) => {
+  return isbn.replaceAll(/[^0-9]/g, "")
+}
+
 /**
  * Given a goodreads import file, add all of the books in it to our database as books
  * @param goodreadsFile
@@ -44,11 +49,6 @@ export default async function goodreadsImport(
     trim: true,
   })) as GoodreadsCSVRow[]
 
-  // Helper function
-  const cleanISBN = (isbn: string) => {
-    return isbn.replaceAll(/[^0-9]/g, "")
-  }
-
   // Clean up the data a bit so that we can do inserts
   const mappedData: InsertBook[] = goodreadsFileData.map(
     (d: GoodreadsCSVRow) => {
@@ -57,8 +57,8 @@ export default async function goodreadsImport(
       return {
         title: d.Title,
         author: d.Author,
-        isbn: isbn || null,
-        amazon_id: d["Book Id"] ? Number(d["Book Id"]).toString() : null,
+        isbn: isbn || undefined,
+        amazon_id: d["Book Id"] ? Number(d["Book Id"]).toString() : undefined,
         last_import: new Date(),
       }
     },

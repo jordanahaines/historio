@@ -57,7 +57,7 @@ export type TimelineDispatchAction =
 export type HistorioTimelineContext = {
   settings: TimelineContextSettings
   books: TimelineContextBook[]
-  scrollTo: Date | null
+  scrollTo?: Date
 }
 
 /**
@@ -86,7 +86,7 @@ const historioContextReducer = (
       break
     }
     case TimelineDispatchActionType.updateScrollTo: {
-      newState.scrollTo = update.payload as Date | null
+      newState.scrollTo = update.payload as Date | undefined
       break
     }
   }
@@ -100,13 +100,14 @@ type TimelinexContextProviderProperties = {
 
 const baseContext: HistorioTimelineContext = {
   settings: { showMiniMap: true, barsMode: TimelineBarsMode.fullBook },
-  scrollTo: null,
+  scrollTo: undefined,
   books: [],
 }
 export const TimelineContext =
   createContext<HistorioTimelineContext>(baseContext)
-export const UpdateTimelineContext =
-  createContext<Dispatch<TimelineDispatchAction> | null>(null)
+export const UpdateTimelineContext = createContext<
+  Dispatch<TimelineDispatchAction> | undefined
+>(undefined)
 
 export function TimelineContextProvider({
   books,
@@ -114,7 +115,7 @@ export function TimelineContextProvider({
 }: TimelinexContextProviderProperties) {
   const initialContext: HistorioTimelineContext = {
     settings: { showMiniMap: true, barsMode: TimelineBarsMode.fullBook },
-    scrollTo: null,
+    scrollTo: undefined,
     books: books.map((b) => ({
       bookID: b.book_id,
       bookTitle: b.title,
@@ -128,7 +129,10 @@ export function TimelineContextProvider({
       highlighted: false,
     })),
   }
-  const [context, updateContext] = useReducer(historioContextReducer, initialContext)
+  const [context, updateContext] = useReducer(
+    historioContextReducer,
+    initialContext,
+  )
 
   return (
     <TimelineContext.Provider value={context}>

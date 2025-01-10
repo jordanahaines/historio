@@ -52,6 +52,7 @@ const config = [
           caughtErrorsIgnorePattern: "^_",
         },
       ],
+      "unicorn/prevent-abbreviations": "off",
     },
   },
 ]

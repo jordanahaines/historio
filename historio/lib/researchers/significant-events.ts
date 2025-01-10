@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { config } from "dotenv"
 import { eq } from "drizzle-orm"
 import _ from "lodash"

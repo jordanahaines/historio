@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { config } from "dotenv"
 
 import { ResearcherConfiguration } from "./research-coordinator"

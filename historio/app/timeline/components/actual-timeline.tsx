@@ -149,7 +149,7 @@ export default function ActualTimeline({
   // Also do this on zoom so minimap updates
   useEffect(() => {
     handleScroll()
-  }, [bookContext.currentZoom])
+  }, [bookContext.currentZoom, handleScroll])
 
   // React to scroll events from context
   useEffect(() => {
@@ -166,7 +166,7 @@ export default function ActualTimeline({
       left,
       behavior: "smooth",
     })
-  }, [timelineContext.scrollTo])
+  }, [timelineContext.scrollTo, bookDetails.start, bookDetails.end])
 
   /** Update context to indicate a book has been highlighted */
   const handleHighlight = useCallback(

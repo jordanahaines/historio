@@ -42,7 +42,6 @@ export default function EventDensityMap(props: EventDensityMapProps) {
   }
 
   const events = _.sortBy([...props.events]).toReversed()
-  if (events.length === 0) return "No Events" // TODO: Better handling of this case
   const end = props.end ?? events[0]
   const start = props.start ?? events[events.length - 1]
   const durationDays = differenceInDays(end, start)
@@ -67,7 +66,7 @@ export default function EventDensityMap(props: EventDensityMapProps) {
       result[idx] += 1
     })
     return result
-  }, [events.length])
+  }, [events.length, bucketSize, events.length, start])
 
   // Render one of our timeline bubbles, to scale
   const renderBubble = (eventCount: number, idx: number) => {

@@ -33,6 +33,7 @@
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.36.3",
+    "eslint-plugin-drizzle": "^0.2.3",
     "framer-motion": "^11.15.0",
     "intl-messageformat": "^10.5.0",
     "lodash": "^4.17.21",

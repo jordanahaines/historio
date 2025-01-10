@@ -25,6 +25,9 @@ const config = [
       },
     },
   }),
+  ...compat.config({
+    extends: ["plugin:drizzle/all"],
+  }),
   {
     rules: {
       // "no-unused-vars": "error",

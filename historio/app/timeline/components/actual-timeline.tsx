@@ -139,7 +139,6 @@ export default function ActualTimeline({
     const end = add(bookDetails.start, {
       days: rightPct * differenceInDays(bookDetails.end, bookDetails.start),
     })
-    console.log("Actually Handle Scroll")
     updateTimelineContext({
       type: TimelineDispatchActionType.updateBook,
       payload: {
@@ -166,7 +165,7 @@ export default function ActualTimeline({
   // Also do this on zoom so minimap updates
   useEffect(() => {
     handleScroll()
-  }, [bookContext?.currentZoom])
+  }, [bookContext?.currentZoom, handleScroll])
 
   // React to scroll events from context
   useEffect(() => {

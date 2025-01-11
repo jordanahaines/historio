@@ -35,13 +35,15 @@ const DATE_FORMATS = [
  *  negative if the date is actually BC.
  */
 export function parseDate(
-  dateString: string,
+  ds: string,
   referenceDate: Date | undefined = undefined,
 ): ParsedInsightDate {
   // Helper
-  const isValidDate = (d: Date) => d instanceof Date && !Number.isNaN(d)
+  const isValidDate = (d: Date) =>
+    d instanceof Date && !Number.isNaN(d.getTime())
 
   // Remove commas, which sometimes appear in years
+  let dateString = ds
   dateString = dateString.replaceAll(",", "")
   dateString = dateString.replaceAll("-", "/").trim()
   let dateObject: Date | undefined = undefined
@@ -51,6 +53,7 @@ export function parseDate(
       // If year is BC, we just return year
       if (dateObject.getFullYear() < 0)
         return { date: undefined, year: dateObject.getFullYear() }
+      console.log({ dateObject, dateString, format })
       return { date: dateObject, year: dateObject.getFullYear() }
     }
   }

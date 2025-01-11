@@ -45,11 +45,7 @@ export const Navbar = () => {
           <div className="flex items-center">
             <span className="opacity-50">by&nbsp;</span>
             <NextLink
-<<<<<<< HEAD
-              className="border-b-4 border-transparent hover:border-blue-400 flex items-center px-1 mx-2"
-=======
               className="mx-2 flex items-center border-b-4 border-transparent px-1 hover:border-blue-400"
->>>>>>> main
               href="https://www.linkedin.com/in/jordanahaines"
               target="_blank"
             >

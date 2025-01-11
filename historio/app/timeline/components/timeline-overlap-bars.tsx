@@ -9,7 +9,9 @@ export type TimelineOverlapBarProps = {
   onHover: (hovered: boolean) => void // So that we can highlight other books
 }
 
-export default function TimelineOverlapBar(properties: TimelineOverlapBarProps) {
+export default function TimelineOverlapBar(
+  properties: TimelineOverlapBarProps,
+) {
   const { parentStartDate, parentEndDate, barBookID } = properties
   const { timelineContext } = useTimelineContext()
   const renderBook = timelineContext.books.find((b) => b.bookID === barBookID)

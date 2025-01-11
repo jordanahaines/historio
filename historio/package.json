@@ -6,8 +6,7 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint-frontend": "eslint app/** components/** actions/** --ext .ts,.tsx -c .eslintrc.frontend.json --fix",
-    "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
+    "lint": "npx eslint . --fix"
   },
   "dependencies": {
     "@nextui-org/button": "^2.2.7",
@@ -34,6 +33,7 @@
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.36.3",
     "eslint-plugin-drizzle": "^0.2.3",
+    "fast-levenshtein": "^3.0.0",
     "framer-motion": "^11.15.0",
     "intl-messageformat": "^10.5.0",
     "lodash": "^4.17.21",
@@ -51,6 +51,7 @@
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@next/eslint-plugin-next": "^15.0.3",
+    "@types/fast-levenshtein": "^0.0.4",
     "@types/lodash": "^4.17.13",
     "@types/node": "20.5.7",
     "@types/pg": "^8.11.10",

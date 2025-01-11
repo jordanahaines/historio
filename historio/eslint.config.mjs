@@ -48,5 +48,11 @@ const config = [
       "unicorn/prevent-abbreviations": "off",
     },
   },
+  {
+    files: ["**/*.{jsx,tsx}"],
+    rules: {
+      "no-console": "warn",
+    },
+  },
 ]
 export default config

@@ -151,7 +151,11 @@ export default function ActualTimeline({
   }, [
     timelineReference,
     yearDisplay,
-    bookContext,
+    // TODO: Should this actually be a useCallback? What if we add more properties to bookContext then need to account for them here
+    // Should we just create a new updateContext method just to change start/end?
+    bookContext?.currentColor,
+    bookContext?.highlighted,
+    bookContext?.currentZoom,
     bookDetails.end,
     bookDetails.start,
     bucketWidth,

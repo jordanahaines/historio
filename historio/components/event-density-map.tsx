@@ -44,6 +44,9 @@ export default function EventDensityMap(properties: EventDensityMapProps) {
   const events = _.sortBy([...properties.events]).toReversed()
   const end = properties.end ?? events[0]
   const start = properties.start ?? events.at(-1)
+  if (!start || !end) {
+    throw new Error("Event Density Map Requires Start and End Date.")
+  }
   const durationDays = differenceInDays(end, start)
   const bucketSize = durationDays / NUM_BUCKETS
   const showMonths = bucketSize < MONTH_THRESHOLD
@@ -138,6 +141,7 @@ export default function EventDensityMap(properties: EventDensityMapProps) {
     const diff = Math.max(0, clickX - divLeft)
     const diffPercent = diff / (rect.right - rect.left)
     const days = Math.round(diffPercent * durationDays)
+    if (!start) return
     const clickDate = add(start, { days })
     properties.onPress(clickDate)
   }

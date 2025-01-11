@@ -139,6 +139,7 @@ export default function ActualTimeline({
     const end = add(bookDetails.start, {
       days: rightPct * differenceInDays(bookDetails.end, bookDetails.start),
     })
+    console.log("Actually Handle Scroll")
     updateTimelineContext({
       type: TimelineDispatchActionType.updateBook,
       payload: {
@@ -151,7 +152,11 @@ export default function ActualTimeline({
   }, [
     timelineReference,
     yearDisplay,
-    bookContext,
+    // TODO: Should this actually be a useCallback? What if we add more properties to bookContext then need to account for them here
+    // Should we just create a new updateContext method just to change start/end?
+    bookContext?.currentColor,
+    bookContext?.highlighted,
+    bookContext?.currentZoom,
     bookDetails.end,
     bookDetails.start,
     bucketWidth,
@@ -161,7 +166,7 @@ export default function ActualTimeline({
   // Also do this on zoom so minimap updates
   useEffect(() => {
     handleScroll()
-  }, [bookContext?.currentZoom, handleScroll])
+  }, [bookContext?.currentZoom])
 
   // React to scroll events from context
   useEffect(() => {

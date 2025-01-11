@@ -17,7 +17,7 @@ export type EventDensityMapProps = {
   showLine?: boolean
   viewports?: DensityMapViewport[]
   onPress: (ts: Date) => void
-  onHoverViewport?: (hovered: boolean, viewportIdx: number) => void
+  onHoverViewport?: (hovered: boolean, viewportIndex: number) => void
 }
 
 const NUM_BUCKETS = 25 // Number of distinct bubbles to show
@@ -25,7 +25,7 @@ const SCALE_FACTOR = 1.8
 const MONTH_THRESHOLD = 300
 const BASE_Z_INDEX = 23
 
-export default function EventDensityMap(props: EventDensityMapProps) {
+export default function EventDensityMap(properties: EventDensityMapProps) {
   const BG_COLORS = {
     red: "bg-red-500/30",
     amber: "bg-amber-500/30",
@@ -41,50 +41,53 @@ export default function EventDensityMap(props: EventDensityMapProps) {
     violet: "bg-violet-500/30",
   }
 
-  const events = _.sortBy([...props.events]).toReversed()
-  if (events.length === 0) return "No Events" // TODO: Better handling of this case
-  const end = props.end ?? events[0]
-  const start = props.start ?? events[events.length - 1]
+  const events = _.sortBy([...properties.events]).toReversed()
+  const end = properties.end ?? events[0]
+  const start = properties.start ?? events.at(-1)
+  if (!start || !end) {
+    throw new Error("Event Density Map Requires Start and End Date.")
+  }
   const durationDays = differenceInDays(end, start)
   const bucketSize = durationDays / NUM_BUCKETS
   const showMonths = bucketSize < MONTH_THRESHOLD
-  const divRef = useRef<HTMLDivElement>(null)
+  const divReference = useRef<HTMLDivElement>(null)
 
   // This is used to determine Z-index of viewports so that smallest is on top
   const viewportSizes = _.sortBy(
-    props.viewports?.map((v) => differenceInDays(v.end, v.start)),
+    properties.viewports?.map((v) => differenceInDays(v.end, v.start)),
   ).toReversed()
 
   // number[] of length NUM_BUCKETS where each elt is number of events in that bucket
   const bubbles = useMemo(() => {
     // for each event, we find first bucket the date is greater than
-    const dateIndices = _.range(NUM_BUCKETS).map((i) =>
-      add(start, { days: i * bucketSize }),
+    const dateIndices = _.range(NUM_BUCKETS).map((index) =>
+      add(start, { days: index * bucketSize }),
     )
-    const result = _.fill(Array(NUM_BUCKETS), 0)
+    const result = _.fill(Array.from({ length: NUM_BUCKETS }), 0)
     _.each(events, (e) => {
-      const idx = _.findIndex(dateIndices, (d) => differenceInDays(d, e) >= 0)
-      result[idx] += 1
+      const index = _.findIndex(dateIndices, (d) => differenceInDays(d, e) >= 0)
+      result[index] += 1
     })
     return result
-  }, [events.length])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [events.length, bucketSize, events.length, start])
 
   // Render one of our timeline bubbles, to scale
-  const renderBubble = (eventCount: number, idx: number) => {
+  const renderBubble = (eventCount: number, index: number) => {
     let scale = Math.min(50 + eventCount * SCALE_FACTOR * 5, 200)
     if (eventCount === 0) scale = 0
     const style = {
       transform: `scale(${scale}%)`,
     }
-    const startDate = add(start, { days: idx * bucketSize })
+    const startDate = add(start, { days: index * bucketSize })
     const endDate = add(startDate, { days: bucketSize })
-    const formatStr = showMonths ? "MM yyyy" : "yyyy"
+    const formatString = showMonths ? "MM yyyy" : "yyyy"
     return (
       <Tooltip
-        key={idx}
+        key={index}
         content={
           <span>
-            <b>{`${format(startDate, formatStr)} - ${format(endDate, formatStr)}:`}</b>
+            <b>{`${format(startDate, formatString)} - ${format(endDate, formatString)}:`}</b>
             {` ${eventCount} insights`}
           </span>
         }
@@ -95,8 +98,8 @@ export default function EventDensityMap(props: EventDensityMapProps) {
   }
 
   // Render one viewport overlay on top of density map (represents one book)
-  const renderViewport = (viewport: DensityMapViewport, idx: number) => {
-    if (!divRef.current) return
+  const renderViewport = (viewport: DensityMapViewport, index: number) => {
+    if (!divReference.current) return
     const days = differenceInDays(viewport.end, viewport.start)
     const leftPercent = Math.max(
       differenceInDays(viewport.start, start) / durationDays,
@@ -108,55 +111,57 @@ export default function EventDensityMap(props: EventDensityMapProps) {
     const zIndex = BASE_Z_INDEX + _.findIndex(viewportSizes, (s) => s === days)
     return (
       <div
-        className={`${bg} ${border} border-2 timeline-viewport absolute`}
+        className={`${bg} ${border} timeline-viewport absolute border-2`}
         style={{
           left: `${leftPercent * 100}%`,
           width: `${widthPercent * 100}%`,
           zIndex,
         }}
-        onMouseEnter={() => handleViewportHover(true, idx)}
-        onMouseLeave={() => handleViewportHover(false, idx)}
+        onMouseEnter={() => handleViewportHover(true, index)}
+        onMouseLeave={() => handleViewportHover(false, index)}
       />
     )
   }
 
   const handleViewportHover = useCallback(
-    (hovered: boolean, idx: number) => {
-      if (!props.onHoverViewport || !props.viewports) return
-      props.onHoverViewport(hovered, idx)
+    (hovered: boolean, index: number) => {
+      if (!properties.onHoverViewport || !properties.viewports) return
+      properties.onHoverViewport(hovered, index)
     },
-    [props.viewports?.length],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [properties.viewports?.length],
   )
 
   // When someone clicks timeline, calculate date and pass up to parent
   const handleClick = (e: SyntheticEvent) => {
-    if (!divRef.current) return
-    const rect = divRef.current.getBoundingClientRect()
+    if (!divReference.current) return
+    const rect = divReference.current.getBoundingClientRect()
     const divLeft = rect.left
     const clickX = e.pageX as number
     const diff = Math.max(0, clickX - divLeft)
     const diffPercent = diff / (rect.right - rect.left)
     const days = Math.round(diffPercent * durationDays)
+    if (!start) return
     const clickDate = add(start, { days })
-    props.onPress(clickDate)
+    properties.onPress(clickDate)
   }
 
   return (
     <div
-      className="relative bg-white event-density-map rounded-t-lg w-full flex justify-center items-center"
+      className="event-density-map relative flex w-full items-center justify-center rounded-t-lg bg-white"
       role="presentation"
       onClick={handleClick}
     >
-      <p className="px-4 font-bold font-serif">{start.getFullYear()}</p>
+      <p className="px-4 font-serif font-bold">{start?.getFullYear()}</p>
       <div
-        ref={divRef}
-        className="bubble-container relative grow flex justify-between items-center h-full w-full"
+        ref={divReference}
+        className="bubble-container relative flex size-full grow items-center justify-between"
       >
-        {bubbles.map(renderBubble)}
-        {props.viewports?.map(renderViewport)}
+        {bubbles.map((b, i) => renderBubble(b, i))}
+        {properties.viewports?.map(renderViewport)}
       </div>
 
-      <p className="px-4 font-bold font-serif">{end.getFullYear()}</p>
+      <p className="px-4 font-serif font-bold">{end.getFullYear()}</p>
       <div className="line" />
     </div>
   )

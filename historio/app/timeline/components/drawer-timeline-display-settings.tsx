@@ -33,21 +33,22 @@ import {
 export default function TimelineDisplaySettings() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const { timelineContext, updateTimelineContext } = useTimelineContext()
-  if (!updateTimelineContext) return
 
+  const bookIDS = timelineContext.books.map((b) => b.bookID).toString()
   const updateColor = useCallback(
     (color: string, bookID: string) => {
       const bookContext = _.find(
         timelineContext.books,
         (b) => b.bookID === bookID,
       )
-      if (!bookContext) return
+      if (!bookContext || !updateTimelineContext) return
       updateTimelineContext({
         type: TimelineDispatchActionType.updateBook,
         payload: { ...bookContext, currentColor: color },
       })
     },
-    [updateTimelineContext],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [updateTimelineContext, bookIDS],
   )
 
   // These have to be defined here to be picked up by tailwind
@@ -65,12 +66,14 @@ export default function TimelineDisplaySettings() {
     yellow: "bg-yellow-500",
     violet: "bg-violet-500",
   }
+  type TailwindTimelineColors = keyof typeof tailwindTimelineColors
+
   const renderColorMenuItem = (color: keyof typeof tailwindTimelineColors) => {
     return (
       <DropdownItem key={color}>
-        <div className="flex justify-start items-center">
+        <div className="flex items-center justify-start">
           <div
-            className={`${tailwindTimelineColors[color]} rounded-full w-2 h-2 mr-4`}
+            className={`${tailwindTimelineColors[color]} mr-4 size-2 rounded-full`}
           />
           <span>{_.capitalize(color)}</span>
         </div>
@@ -78,14 +81,17 @@ export default function TimelineDisplaySettings() {
     )
   }
   const renderBookSelect = (book: TimelineContextBook) => {
+    const keys: TailwindTimelineColors[] = Object.keys(
+      tailwindTimelineColors,
+    ) as TailwindTimelineColors[]
     return (
-      <div className="py-2 flex justify-between items-center border-b-1 border-slate-100 last:border-b-0">
+      <div className="flex items-center justify-between border-b-1 border-slate-100 py-2 last:border-b-0">
         <p className="pr-4">{book.bookTitle}</p>
         <Dropdown className="grow">
           <DropdownTrigger>
             <Button
               isIconOnly
-              className={`${tailwindTimelineColors[book.currentColor]} text-white`}
+              className={`${tailwindTimelineColors[book.currentColor as TailwindTimelineColors]} text-white`}
             >
               <IoColorPaletteOutline size={30} />
             </Button>
@@ -94,10 +100,7 @@ export default function TimelineDisplaySettings() {
             aria-label="Timeline Colors"
             onAction={(k) => updateColor(k.toString(), book.bookID)}
           >
-            {
-              // @ts-ignore
-              Object.keys(tailwindTimelineColors).map(renderColorMenuItem)
-            }
+            {keys.map((k) => renderColorMenuItem(k))}
           </DropdownMenu>
         </Dropdown>
       </div>
@@ -105,10 +108,11 @@ export default function TimelineDisplaySettings() {
   }
 
   const handleChangeBarMode = useCallback(
-    (val: TimelineBarsMode) => {
+    (value: TimelineBarsMode) => {
+      if (!updateTimelineContext) return
       updateTimelineContext({
         type: TimelineDispatchActionType.updateSettings,
-        payload: { barsMode: val },
+        payload: { barsMode: value },
       })
     },
     [updateTimelineContext],
@@ -162,14 +166,14 @@ export default function TimelineDisplaySettings() {
           <DrawerHeader>Timeline Display Settings</DrawerHeader>
           <DrawerBody>
             <div className="pt-4">
-              <h3 className="font-serif font-bold text-center">Book Colors</h3>
+              <h3 className="text-center font-serif font-bold">Book Colors</h3>
               <p className="help text-center">
                 Adjust the color for each book on the timeline
               </p>
-              {timelineContext.books.map(renderBookSelect)}
+              {timelineContext.books.map((b) => renderBookSelect(b))}
             </div>
-            <div className="pt-4 mt-2 border-t-3 border-t-zinc-500">
-              <h3 className="font-serif font-bold text-center">Overlap Bars</h3>
+            <div className="mt-2 border-t-3 border-t-zinc-500 pt-4">
+              <h3 className="text-center font-serif font-bold">Overlap Bars</h3>
               <p className="help text-center">
                 The background of each timeline has colored bars to visualize
                 overlap with other timelines. Hover over one of these bars to

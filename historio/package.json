@@ -6,8 +6,7 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint-frontend": "eslint app/** components/** actions/** --ext .ts,.tsx -c .eslintrc.frontend.json --fix",
-    "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
+    "lint": "npx eslint . --fix"
   },
   "dependencies": {
     "@nextui-org/button": "^2.2.7",
@@ -29,9 +28,11 @@
     "@react-aria/ssr": "3.9.4",
     "@react-aria/visually-hidden": "3.8.12",
     "clsx": "2.1.1",
+    "csv-parse": "^5.6.0",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.36.3",
+    "eslint-plugin-drizzle": "^0.2.3",
     "fast-levenshtein": "^3.0.0",
     "framer-motion": "^11.15.0",
     "intl-messageformat": "^10.5.0",
@@ -57,19 +58,21 @@
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
     "@types/stats-lite": "^2.2.2",
-    "@typescript-eslint/eslint-plugin": "8.11.0",
-    "@typescript-eslint/parser": "8.11.0",
+    "@typescript-eslint/eslint-plugin": "^8.19.1",
+    "@typescript-eslint/parser": "^8.19.1",
     "autoprefixer": "^10.4.19",
     "drizzle-kit": "^0.28.1",
-    "eslint": "^8.57.1",
-    "eslint-config-next": "14.2.1",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.1.4",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "5.2.1",
     "eslint-plugin-react": "^7.37.3",
-    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-tailwindcss": "^3.17.5",
+    "eslint-plugin-unicorn": "^56.0.1",
     "eslint-plugin-unused-imports": "4.1.4",
     "globals": "^15.14.0",
     "postcss": "^8.4.38",
@@ -77,6 +80,6 @@
     "sass": "^1.81.0",
     "tailwindcss": "^3.4.15",
     "typescript": "5.6.3",
-    "typescript-eslint": "^8.19.0"
+    "typescript-eslint": "^8.19.1"
   }
 }

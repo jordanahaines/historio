@@ -35,9 +35,9 @@ export default function TimelineMinimap({ events }: TimelineMinimapProps) {
     }))
 
   // Highlight book when its viewport on minimap is hovered
-  const handleHover = (hovered: boolean, idx: number) => {
+  const handleHover = (hovered: boolean, index: number) => {
     if (!updateTimelineContext) return
-    const book = timelineContext.books[idx]
+    const book = timelineContext.books[index]
     updateTimelineContext({
       type: TimelineDispatchActionType.updateBook,
       payload: { ...book, highlighted: hovered },
@@ -48,7 +48,7 @@ export default function TimelineMinimap({ events }: TimelineMinimapProps) {
   const end = _.max(timelineContext.books.map((b) => b.end))
 
   return (
-    <div className="hover:scale-110 hover:bottom-1 transition-transform border-4 border-zinc-300 timeline-minimap fixed bottom-0 left-4 rounded-t-lg p">
+    <div className="timeline-minimap p fixed bottom-0 left-4 rounded-t-lg border-4 border-zinc-300 transition-transform hover:bottom-1 hover:scale-110">
       <EventDensityMap
         end={end}
         events={events}

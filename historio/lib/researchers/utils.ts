@@ -1,16 +1,16 @@
 import { parse } from "date-fns/parse"
-import levenshtein from "fast-levenshtein"
 import _ from "lodash"
 
 import { PromptGeneratorFunction } from "./research-coordinator"
 
 import { SelectBook } from "@/db/schema/book"
 import { SelectInsight } from "@/db/schema/insight"
+import levenshtein from "fast-levenshtein"
 import { differenceInDays } from "date-fns"
 
 export type ParsedInsightDate = {
-  date: Date | null
-  year: number | null
+  date: Date | undefined
+  year: number | undefined
 }
 
 // Note that hyphens are replaced with / in dates, so we don't need any formats with hyphens
@@ -39,34 +39,34 @@ export function parseDate(
   referenceDate: Date | undefined = undefined,
 ): ParsedInsightDate {
   // Helper
-  const isValidDate = (d: Date) => d instanceof Date && !isNaN(d)
+  const isValidDate = (d: Date) => d instanceof Date && !Number.isNaN(d)
 
   // Remove commas, which sometimes appear in years
-  dateString = dateString.replace(/,/g, "")
+  dateString = dateString.replaceAll(",", "")
   dateString = dateString.replaceAll("-", "/").trim()
-  let dateObj: Date | undefined = undefined
+  let dateObject: Date | undefined = undefined
   for (const format of DATE_FORMATS) {
-    dateObj = parse(dateString, format, new Date())
-    if (dateObj && isValidDate(dateObj)) {
+    dateObject = parse(dateString, format, referenceDate || new Date())
+    if (dateObject && isValidDate(dateObject)) {
       // If year is BC, we just return year
-      if (dateObj.getFullYear() < 0)
-        return { date: null, year: dateObj.getFullYear() }
-      return { date: dateObj, year: dateObj.getFullYear() }
+      if (dateObject.getFullYear() < 0)
+        return { date: undefined, year: dateObject.getFullYear() }
+      return { date: dateObject, year: dateObject.getFullYear() }
     }
   }
-  return { date: null, year: null }
+  return { date: undefined, year: undefined }
 }
 
 export const generateGenericPrompt: PromptGeneratorFunction = (
   book: SelectBook,
   existingInsights?: SelectInsight[],
 ) => {
-  let msg = `Title: ${book.title}\nAuthor: ${book.author}`
+  let message = `Title: ${book.title}\nAuthor: ${book.author}`
   if (existingInsights?.length) {
-    msg += "\n\n Do not include these events in your results:"
-    _.map(existingInsights, "name").forEach((e) => (msg += `\n- ${e}`))
+    message += "\n\n Do not include these events in your results:"
+    for (const e of _.map(existingInsights, "name")) message += `\n- ${e}`
   }
-  return msg
+  return message
 }
 
 /** Helper function to filter out duplicate events */

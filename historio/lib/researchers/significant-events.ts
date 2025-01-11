@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { config } from "dotenv"
 import { eq } from "drizzle-orm"
 import _ from "lodash"
@@ -35,14 +34,14 @@ const parseSignificantEvents = async (
   }
 
   // Next we return filtered set of significant events that aren't already in DB
-  const existingWikiLinks = _.map(existingInsights, "wikipedia_link")
-  const filteredInsights = data.insights.filter((e) => {
+  const existingWikiLinks = new Set(_.map(existingInsights, "wikipedia_link"))
+  const filteredInsights = data.insights.filter((insight) => {
     // No matching wiki link OR matching name and year from date
-    if (existingWikiLinks.includes(e.wikipedia_link)) return false
+    if (existingWikiLinks.has(insight.wikipedia_link)) return false
     return !isDuplicateEvent(
-      e.name,
+      insight.name,
       existingInsights,
-      parseDate(e.date).date || undefined,
+      parseDate(insight.date).date || undefined,
     )
   })
 
@@ -51,14 +50,14 @@ const parseSignificantEvents = async (
   // Validation -- Wikipedia links required
   const missingWikiLinkCount = _.filter(
     filteredInsights,
-    (i) => !i.wikipedia_link,
+    (index) => !index.wikipedia_link,
   ).length
 
   if (missingWikiLinkCount) {
     console.debug(`Missing wiki links: ${missingWikiLinkCount}`)
     console.debug(JSON.stringify(data))
 
-    throw Error(
+    throw new Error(
       `Missing ${missingWikiLinkCount} links for significatn researcher on book ${book.title}`,
     )
   }
@@ -67,20 +66,20 @@ const parseSignificantEvents = async (
     console.debug(`Filtered out ${filteredCount} existing insights`)
   }
 
-  const filteredDatedResults = _.map(filteredInsights, (i, idx) => {
+  const filteredDatedResults = _.map(filteredInsights, (index, index_) => {
     const insight: InsertInsight = {
-      name: i.name,
-      description: i.description,
+      name: index.name,
+      description: index.description,
       book_id: book.id,
-      wikipedia_link: i.wikipedia_link,
+      wikipedia_link: index.wikipedia_link,
     }
-    let eventDate = parseDate(i.date)
+    const eventDate = parseDate(index.date)
     insight.year = eventDate.year?.toString()
     insight.date = eventDate.date?.toISOString()
 
     if (!(insight.year || insight.date)) {
       console.warn("Missing Date! Data from AI below:")
-      console.debug(JSON.stringify(data.insights[idx]))
+      console.debug(JSON.stringify(data.insights[index_]))
     }
 
     return insight

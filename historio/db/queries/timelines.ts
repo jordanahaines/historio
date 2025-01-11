@@ -24,25 +24,25 @@ export async function createTimeline(
 ): Promise<SelectTimeline> {
   const title = "Timeline for: " + _.map(books, "title").join(", ")
   const description = title
-  const newTimeline = (
-    await db.insert(timelines).values({ title, description }).returning()
-  )[0]
+  const [newTimeline] = await db
+    .insert(timelines)
+    .values({ title, description })
+    .returning()
 
   // Create our timelinebooks
-  const insertTimelineBooks = books.map((b, idx) => {
-    let defaultStart,
-      defaultEnd = null
+  const insertTimelineBooks = books.map((b, index) => {
+    let defaultStart, defaultEnd
     if (b.start_year) {
-      defaultStart = new Date(parseInt(b.start_year), 0, 1)
+      defaultStart = new Date(Number.parseInt(b.start_year), 0, 1)
     }
     if (b.end_year) {
-      defaultEnd = new Date(parseInt(b.end_year), 0, 1)
+      defaultEnd = new Date(Number.parseInt(b.end_year), 0, 1)
     }
 
     return {
       timeline_id: newTimeline.id,
       book_id: b.id,
-      order: idx,
+      order: index,
       color: colors[_.random(0, colors.length - 1)],
       default_start: defaultStart,
       default_end: defaultEnd,
@@ -59,13 +59,11 @@ export async function createTimeline(
 export async function fetchTimelineAndBooks(
   timelineID: string,
 ): Promise<[SelectTimeline, FrontendTimelineBook[]]> {
-  const timeline = (
-    await db
-      .select()
-      .from(timelines)
-      .where(eq(timelines.id, timelineID))
-      .limit(1)
-  )[0]
+  const [timeline] = await db
+    .select()
+    .from(timelines)
+    .where(eq(timelines.id, timelineID))
+    .limit(1)
 
   if (!timeline) {
     throw new Error(`Timeline not found: ${timelineID}`)
@@ -93,11 +91,11 @@ export async function fetchTimelineAndBooks(
 
   const usedColors = new Set<string>()
   const flattenedBooks: FrontendTimelineBook[] = tbooks.map((t) => {
-    const color = _.filter(
+    const color = _.find(
       _.keys(tailwindTimelineColors),
       (c) => !usedColors.has(c),
-    )[0]
-    usedColors.add(color)
+    )
+    if (color) usedColors.add(color)
     const bookInsights = t.tb.book_id ? keyedInsights[t.tb.book_id] : []
     const [groupedInsights, hasEarlier, hasLater] = GroupInsights(bookInsights)
     const insightKeys = _.keys(groupedInsights).filter((k) => !!k)
@@ -117,7 +115,7 @@ export async function fetchTimelineAndBooks(
       zoom: ZoomLevel.One,
       locked: false,
       insights: bookInsights,
-      grouped_insights: (bookInsights.length
+      grouped_insights: (bookInsights.length > 0
         ? groupedInsights
         : []) as GroupedInsights,
       has_earlier_insight: hasEarlier,

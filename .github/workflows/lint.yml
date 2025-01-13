@@ -26,9 +26,13 @@ jobs:
 
       # ESLint and Prettier must be in `package.json`
       - name: Install Node.js dependencies
-        run: npm ci
+        run: cd historio && npm ci
 
       - name: Run linters
         uses: wearerequired/lint-action@v2
         with:
           eslint: true
+          eslint_dir: historio/
+
+      - name: npm audit action
+        uses: oke-py/npm-audit-action@v2.4.4

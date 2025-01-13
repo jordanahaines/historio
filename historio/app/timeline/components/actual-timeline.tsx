@@ -28,7 +28,6 @@ export default function ActualTimeline({
 }: {
   bookDetails: FrontendTimelineBook
 }) {
-  console.log("Test")
   const orderedInsights = useMemo(
     () => _.sortBy(_.toPairs(bookDetails.grouped_insights), (p) => p[0]),
     // eslint-disable-next-line react-hooks/exhaustive-deps

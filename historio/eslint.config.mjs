@@ -51,7 +51,7 @@ const config = [
   {
     files: ["**/*.{jsx,tsx}"],
     rules: {
-      "no-console": "warn",
+      "no-console": "error",
     },
   },
 ]

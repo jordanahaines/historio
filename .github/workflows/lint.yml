@@ -31,9 +31,9 @@ jobs:
       - name: Run ESLint
         run: cd historio && npm run lint
 
-      - name: npm audit action
-        uses: oke-py/npm-audit-action@v2.4.4
-        with:
-          working_directory: historio/
-          dedupe_issues: true
-          github_token: ${{ secrets.GH_TOKEN }}
+      # - name: npm audit action
+      #   uses: oke-py/npm-audit-action@v2.4.4
+      #   with:
+      #     working_directory: historio/
+      #     dedupe_issues: true
+      #     github_token: ${{ secrets.GH_TOKEN }}

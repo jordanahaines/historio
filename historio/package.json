@@ -6,7 +6,8 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "npx eslint . --fix"
+    "lint": "npx eslint .",
+    "lint-fix": "npx eslint . --fix"
   },
   "dependencies": {
     "@nextui-org/button": "^2.2.7",
@@ -37,7 +38,7 @@
     "framer-motion": "^11.15.0",
     "intl-messageformat": "^10.5.0",
     "lodash": "^4.17.21",
-    "next": "14.2.4",
+    "next": "^15.1.4",
     "next-themes": "^0.2.1",
     "openai": "^4.77.0",
     "pg": "^8.13.1",

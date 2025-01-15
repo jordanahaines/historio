@@ -1,4 +1,4 @@
-//  npx tsx scripts/scriptProcessBook.ts
+//  npx tsx scripts/process-books.ts
 import { db } from "@/db"
 import { books, SelectBook } from "@/db/schema/book"
 import { insights } from "@/db/schema/insight"
@@ -161,7 +161,7 @@ async function start() {
     .select({ c: count(insights.id) })
     .from(insights)
     .where(eq(insights.archived, false))
-  console.log(`Total insights: ${insightCount[0].c}`)
+  console.log(`Total insights (active): ${insightCount[0].c}`)
   console.log("1: Choose Books")
   console.log("2: Process to Goal")
   const choice = await promptForInput("What do you want to do?")
@@ -175,4 +175,4 @@ async function start() {
   }
 }
 
-await start()
+start()

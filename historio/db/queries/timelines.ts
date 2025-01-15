@@ -21,8 +21,10 @@ import {
  */
 export async function createTimeline(
   books: SelectBook[],
+  timelineTitle?: string,
 ): Promise<SelectTimeline> {
-  const title = "Timeline for: " + _.map(books, "title").join(", ")
+  const title =
+    timelineTitle || "Timeline for: " + _.map(books, "title").join(", ")
   const description = title
   const [newTimeline] = await db
     .insert(timelines)

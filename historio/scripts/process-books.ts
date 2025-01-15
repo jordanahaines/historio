@@ -27,7 +27,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 })
 
-async function promptForInput(question: string): Promise<string> {
+export async function promptForInput(question: string): Promise<string> {
   return new Promise((resolve) => {
     rl.question(question, (answer) => {
       resolve(answer)

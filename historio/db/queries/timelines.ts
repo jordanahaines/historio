@@ -72,7 +72,12 @@ export async function fetchTimelineAndBooks(
   }
 
   const tbooks = await db
-    .select({ tb: timelineBooks, title: books.title, author: books.author })
+    .select({
+      tb: timelineBooks,
+      title: books.title,
+      author: books.author,
+      image_url: books.image_url,
+    })
     .from(timelineBooks)
     .innerJoin(books, eq(timelineBooks.book_id, books.id))
     .where(eq(timelineBooks.timeline_id, timelineID))
@@ -106,6 +111,7 @@ export async function fetchTimelineAndBooks(
     return {
       timeline_book_id: t.tb.id,
       book_id: t.tb.book_id as string,
+      image_url: t.image_url as string,
       title: t.title || "",
       author: t.author || "",
       color,

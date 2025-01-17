@@ -110,6 +110,7 @@ export default function TimelineContainer({
           author={book.author}
           customClass="rounded-tl"
           id={book.book_id}
+          src={book.image_url}
           title={book.title}
         />
         <ActualTimeline bookDetails={book} />

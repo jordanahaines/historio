@@ -5,26 +5,29 @@ const BASE_URL =
 
 export default function BookCover({
   id,
+  src,
   title,
   author,
   width = 120,
   height = 200,
   customClass = "",
 }: {
-  id: string
+  id?: string
+  src?: string
   title: string
   author: string
   width?: number
   height?: number
   customClass?: string
 }) {
+  const source = src || `${BASE_URL}${id}.jpeg`
   return (
     <div className="bookCover">
       <Image
         alt={`${title} by ${author}`}
         className={customClass}
         height={height}
-        src={`${BASE_URL}${id}.jpeg`}
+        src={source}
         width={width}
       />
     </div>

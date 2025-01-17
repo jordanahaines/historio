@@ -10,6 +10,8 @@ import { updateTimelineTitle } from "../actions"
 import TimelineDisplaySettings from "./drawer-timeline-display-settings"
 
 import { SelectTimeline } from "@/db/schema/timeline"
+import { Link } from "@nextui-org/link"
+import { FaArrowLeft } from "react-icons/fa6"
 
 export type TimelinePageTitleProps = {
   timeline: SelectTimeline
@@ -30,6 +32,8 @@ export default function TimelinePageTitle({
     setSaving(false)
     setEditing(false)
   }
+
+  const backText = timeline.is_demo ? "Demo Timelines" : "Timeline Library"
 
   return (
     <div>
@@ -72,6 +76,21 @@ export default function TimelinePageTitle({
           )}
         </div>
         <TimelineDisplaySettings />
+      </div>
+      <div className="title-sub-button-container flex justify-end">
+        <Button
+          as={Link}
+          size="sm"
+          color="primary"
+          variant="bordered"
+          className="mb-3"
+          href={
+            timeline.is_demo ? "/library/demo-timelines" : "/library/timelines/"
+          }
+        >
+          <FaArrowLeft />
+          {backText}
+        </Button>
       </div>
       <hr />
     </div>

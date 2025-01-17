@@ -1,15 +1,15 @@
-import { SelectTimeline } from "@/db/schema/timeline"
+"use client"
+import { TimelineSummary } from "@/db/queries/timelines"
 import {
   Button,
+  Link,
   Table,
   TableBody,
   TableCell,
   TableColumn,
-  TableColumnProps,
   TableHeader,
   TableRow,
 } from "@nextui-org/react"
-import React from "react"
 
 export const cols = [
   { name: "covers" },
@@ -21,10 +21,8 @@ export const cols = [
 export default function TimelineListTable({
   timelines,
 }: {
-  timelines: SelectTimeline[]
+  timelines: TimelineSummary[]
 }) {
-  // const renderCovers =
-
   return (
     <div className="timelines-table">
       <Table>
@@ -35,12 +33,14 @@ export default function TimelineListTable({
         </TableHeader>
         <TableBody items={timelines}>
           {(item) => (
-            <TableRow>
+            <TableRow key={item.timeline.id}>
               <TableCell>Covers</TableCell>
-              <TableCell>{item.title}</TableCell>
+              <TableCell>{item.timeline.title}</TableCell>
               <TableCell>Minimap</TableCell>
               <TableCell>
-                <Button href={`timeline/${item.id}`}>Open</Button>
+                <Button as={Link} href={`/timeline/${item.timeline.id}`}>
+                  Open
+                </Button>
               </TableCell>
             </TableRow>
           )}

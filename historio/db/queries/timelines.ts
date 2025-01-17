@@ -1,4 +1,4 @@
-import { and, eq, inArray } from "drizzle-orm"
+import { and, eq, inArray, isNotNull } from "drizzle-orm"
 import _ from "lodash"
 
 import { books, SelectBook } from "../schema/book"
@@ -126,4 +126,49 @@ export async function fetchTimelineAndBooks(
   })
 
   return [timeline, flattenedBooks]
+}
+
+export type TimelineSummary = {
+  timeline: SelectTimeline
+  eventDates: Date[]
+}
+
+export async function fetchTimelinesSummary(
+  timelineID: string,
+): Promise<TimelineSummary> {
+  const timeline = await db
+    .select()
+    .from(timelines)
+    .where(eq(timelines.id, timelineID))
+    .limit(1)
+  if (timeline.length === 0) throw new Error("Timeline not found")
+  const dates = await db
+    .select({ d: insights.date })
+    .from(insights)
+    .innerJoin(timelineBooks, eq(insights.book_id, timelineBooks.book_id))
+    .where(
+      and(eq(timelineBooks.timeline_id, timelineID), isNotNull(insights.date)),
+    )
+
+  const eventDates = _.filter(
+    _.map(dates, (d) => parseDate(d.d as string).date),
+    (d) => d !== undefined,
+  )
+
+  return {
+    timeline: timeline[0],
+    eventDates,
+  }
+}
+
+export async function fetchDemoTimelines(): Promise<TimelineSummary[]> {
+  const demoTimelines = await db
+    .select()
+    .from(timelines)
+    .where(eq(timelines.is_demo, true))
+
+  const summaries = await Promise.all(
+    demoTimelines.map((dt) => fetchTimelinesSummary(dt.id)),
+  )
+  return summaries
 }

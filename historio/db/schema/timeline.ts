@@ -29,6 +29,7 @@ export const timelineBooks = pgTable("timeline_books", {
   default_end: timestamp("default_end"),
   color: varchar("color"),
   order: integer("order"),
+  is_demo: boolean("is_demo").default(false),
 })
 
 export type InsertTimelineBook = typeof timelineBooks.$inferInsert

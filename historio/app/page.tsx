@@ -1,16 +1,12 @@
 import { Code } from "@nextui-org/code"
 import { Snippet } from "@nextui-org/snippet"
 
-import styles from "./page.module.scss"
-
 import { subtitle, title } from "@/components/primitives"
 
 export default function Home() {
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div
-        className={`inline-block max-w-xl justify-center text-center ${styles.pageRed}`}
-      >
+      <div className={`inline-block max-w-xl justify-center text-center`}>
         <span className={title()}>Make&nbsp;</span>
         <span className={title({ color: "violet" })}>beautiful&nbsp;</span>
         <br />

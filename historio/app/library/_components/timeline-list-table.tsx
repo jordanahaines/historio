@@ -67,7 +67,7 @@ export default function TimelineListTable({
           <Alert endContent={createButton} color="primary">
             <div className="text-center">
               Below are demo timelines to demonstrate Historio&apos;s feature
-              set. Feel free to explore or&nbsp;
+              set. Have fun exploring!
             </div>
           </Alert>
         </div>

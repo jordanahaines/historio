@@ -1,5 +1,7 @@
 "use client"
-import { TimelineSummary } from "@/db/queries/timelines"
+import BookCover from "@/components/book-cover"
+import EventDensityMap from "@/components/event-density-map"
+import { BookSummary, TimelineSummary } from "@/db/queries/timelines"
 import {
   Alert,
   Button,
@@ -16,8 +18,8 @@ import { FaArrowRight } from "react-icons/fa6"
 
 export const cols = [
   { name: "books", title: "Books" },
-  { name: "title", title: "Timeline Name" },
-  { name: "minimap", title: "Events" },
+  { name: "title", title: "Title" },
+  { name: "minimap", title: "Timeline" },
   { name: "actions", title: "" },
 ]
 
@@ -27,6 +29,31 @@ const createButton = (
     Create your own Timeline
   </Button>
 )
+
+// Render list of book covers
+const renderCover = (b: BookSummary) => {
+  if (!b.title && b.author && b.image_url) return ""
+  return (
+    <BookCover
+      customClass="border-b-3 border-b-yellow-800 pb-1"
+      width={60}
+      height={90}
+      title={b.title as string}
+      author={b.author as string}
+      src={b.image_url as string}
+    />
+  )
+}
+
+const renderMinimap = (dates: Date[]) => {
+  return (
+    <div className="flex items-center justify-center">
+      <div className="library-minimap-container">
+        <EventDensityMap showLine events={dates} />
+      </div>
+    </div>
+  )
+}
 
 export default function TimelineListTable({
   timelines,
@@ -45,7 +72,7 @@ export default function TimelineListTable({
           </Alert>
         </div>
       </div>
-      <Table>
+      <Table isStriped>
         <TableHeader columns={cols}>
           {cols.map((c) => (
             <TableColumn key={c.name}>{c.title}</TableColumn>
@@ -54,10 +81,14 @@ export default function TimelineListTable({
         <TableBody items={timelines}>
           {(item) => (
             <TableRow key={item.timeline.id}>
-              <TableCell>Covers</TableCell>
+              <TableCell>
+                <div className="book-covers-container flex flex-wrap justify-start">
+                  {item.books.map((b) => renderCover(b))}
+                </div>
+              </TableCell>
               <TableCell>{item.timeline.title}</TableCell>
-              <TableCell>Minimap</TableCell>
-              <TableCell className="flex justify-end">
+              <TableCell>{renderMinimap(item.eventDates)}</TableCell>
+              <TableCell>
                 <Button
                   variant="bordered"
                   color="primary"

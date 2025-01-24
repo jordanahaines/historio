@@ -3,24 +3,31 @@ import { db } from ".."
 import { books, SelectBook } from "../schema/book"
 import { insights } from "../schema/insight"
 
+export type fetchOverlapParams = {
+  book?: SelectBook
+  start?: Date
+  end?: Date
+  limit?: number
+}
+
 /**
  * Helper function to get books with most overlapping insights given initial book
  * @param book
  */
-export async function fetchOverlappingBooks(
-  book: SelectBook,
-  limit: number = 5,
-): Promise<SelectBook[]> {
-  const startDate = new Date(
-    Number.parseInt(book.start_year as string),
-    0,
-    1,
-  ).toDateString()
-  const endDate = new Date(
-    Number.parseInt(book.end_year as string),
-    12,
-    31,
-  ).toDateString()
+export async function fetchOverlappingBooks({
+  book,
+  start,
+  end,
+  limit = 5,
+}: fetchOverlapParams): Promise<SelectBook[]> {
+  if (!book && (!start || !end))
+    throw new Error("Either Book or start/end must be specified")
+  const startDate =
+    start?.toDateString() ||
+    new Date(Number.parseInt(book?.start_year as string), 0, 1).toDateString()
+  const endDate =
+    end?.toDateString() ||
+    new Date(Number.parseInt(book?.end_year as string), 12, 31).toDateString()
   const annotatedBooks = await db
     .select({
       book: books,
@@ -33,7 +40,7 @@ export async function fetchOverlappingBooks(
         gt(insights.date, startDate),
         lt(insights.date, endDate),
         not(insights.archived),
-        not(eq(books.id, book.id)),
+        book?.id ? not(eq(books.id, book?.id)) : undefined,
       ),
     )
     .groupBy(books.id)

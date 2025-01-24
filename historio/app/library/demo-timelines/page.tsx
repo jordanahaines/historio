@@ -1,8 +1,8 @@
 "use server"
 
 import { fetchDemoTimelines } from "@/db/queries/timelines"
+import "@/styles/library.scss" // TODO Move to layout?
 import TimelineListTable from "../_components/timeline-list-table"
-import { Alert, Button } from "@nextui-org/react"
 
 export default async function Page() {
   const timelineSummaries = await fetchDemoTimelines()

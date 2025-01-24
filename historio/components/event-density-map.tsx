@@ -16,7 +16,7 @@ export type EventDensityMapProps = {
   events: Date[] // timestamps
   showLine?: boolean
   viewports?: DensityMapViewport[]
-  onPress: (ts: Date) => void
+  onPress?: (ts: Date) => void
   onHoverViewport?: (hovered: boolean, viewportIndex: number) => void
 }
 
@@ -134,6 +134,7 @@ export default function EventDensityMap(properties: EventDensityMapProps) {
 
   // When someone clicks timeline, calculate date and pass up to parent
   const handleClick = (e: SyntheticEvent) => {
+    if (!properties.onPress) return
     if (!divReference.current) return
     const rect = divReference.current.getBoundingClientRect()
     const divLeft = rect.left
@@ -148,7 +149,7 @@ export default function EventDensityMap(properties: EventDensityMapProps) {
 
   return (
     <div
-      className="event-density-map relative flex w-full items-center justify-center rounded-t-lg bg-white"
+      className="event-density-map relative flex w-full items-center justify-center rounded-t-lg"
       role="presentation"
       onClick={handleClick}
     >

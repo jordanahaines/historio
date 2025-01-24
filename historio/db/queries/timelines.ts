@@ -1,5 +1,5 @@
-import { and, eq, inArray, isNotNull } from "drizzle-orm"
-import _ from "lodash"
+import { and, desc, eq, inArray, isNotNull } from "drizzle-orm"
+import _, { create } from "lodash"
 
 import { books, SelectBook } from "../schema/book"
 import { insights } from "../schema/insight"
@@ -15,21 +15,43 @@ import {
   ZoomLevel,
 } from "@/types/timeline"
 
+type createTimelineParams = {
+  books: SelectBook[]
+  timelineTitle?: string
+  timelineID?: string // Existing timeline to add books to
+}
+
 /**
  * Helper function to create a new timeline, given a list of books
  * @param books
  */
-export async function createTimeline(
-  books: SelectBook[],
-  timelineTitle?: string,
-): Promise<SelectTimeline> {
-  const title =
-    timelineTitle || "Timeline for: " + _.map(books, "title").join(", ")
-  const description = title
-  const [newTimeline] = await db
-    .insert(timelines)
-    .values({ title, description })
-    .returning()
+export async function createTimeline({
+  books,
+  timelineTitle,
+  timelineID,
+}: createTimelineParams): Promise<SelectTimeline> {
+  console.log("Creating Timeline")
+  let newTimeline: SelectTimeline
+  if (timelineID === undefined) {
+    const title =
+      timelineTitle || "Timeline for: " + _.map(books, "title").join(", ")
+    const description = title
+    console.log("Creating timeline", { title, description })
+    const [createdTimeline] = await db
+      .insert(timelines)
+      .values({ title, description })
+      .returning()
+    newTimeline = createdTimeline
+  } else {
+    const fetchTimeline = await db
+      .select()
+      .from(timelines)
+      .where(eq(timelines.id, timelineID))
+      .limit(1)
+    newTimeline = fetchTimeline[0]
+  }
+
+  if (books.length === 0) return newTimeline
 
   // Create our timelinebooks
   const insertTimelineBooks = books.map((b, index) => {
@@ -50,6 +72,8 @@ export async function createTimeline(
       default_end: defaultEnd,
     }
   })
+  console.log("Inserting")
+  console.log(JSON.stringify(insertTimelineBooks))
   await db.insert(timelineBooks).values(insertTimelineBooks)
 
   return newTimeline
@@ -134,9 +158,12 @@ export async function fetchTimelineAndBooks(
   return [timeline, flattenedBooks]
 }
 
+export type BookSummary = Pick<SelectBook, "title" | "author" | "image_url">
+
 export type TimelineSummary = {
   timeline: SelectTimeline
   eventDates: Date[]
+  books: BookSummary[]
 }
 
 export async function fetchTimelinesSummary(
@@ -156,6 +183,16 @@ export async function fetchTimelinesSummary(
       and(eq(timelineBooks.timeline_id, timelineID), isNotNull(insights.date)),
     )
 
+  const booksForTimeline = await db
+    .select({
+      title: books.title,
+      author: books.author,
+      image_url: books.image_url,
+    })
+    .from(timelineBooks)
+    .innerJoin(books, eq(timelineBooks.book_id, books.id))
+    .where(eq(timelineBooks.timeline_id, timelineID))
+
   const eventDates = _.filter(
     _.map(dates, (d) => parseDate(d.d as string).date),
     (d) => d !== undefined,
@@ -164,6 +201,7 @@ export async function fetchTimelinesSummary(
   return {
     timeline: timeline[0],
     eventDates,
+    books: booksForTimeline,
   }
 }
 

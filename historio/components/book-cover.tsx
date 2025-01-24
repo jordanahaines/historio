@@ -22,7 +22,7 @@ export default function BookCover({
 }) {
   const source = src || `${BASE_URL}${id}.jpeg`
   return (
-    <div className="bookCover">
+    <div className="book-cover">
       <Image
         alt={`${title} by ${author}`}
         className={customClass}

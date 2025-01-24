@@ -13,27 +13,12 @@ import _ from "lodash"
 
 config({ path: "local.env" })
 
-import readline from "node:readline"
-
 const RESEARCHERS = {
   significant: significantEventResearcherConfig,
   minor: minorEventResearcherConfig,
 }
 type ResearcherKeys = keyof typeof RESEARCHERS
 const PARALLELISM = 10
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-})
-
-export async function promptForInput(question: string): Promise<string> {
-  return new Promise((resolve) => {
-    rl.question(question, (answer) => {
-      resolve(answer)
-    })
-  })
-}
 
 async function getBooksWithFewestInsights(researcherKey: string) {
   // 10 books with the fewest insights for event processor we picked

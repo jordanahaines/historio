@@ -1,5 +1,5 @@
 import { and, desc, eq, inArray, isNotNull } from "drizzle-orm"
-import _, { create } from "lodash"
+import _, { create, filter } from "lodash"
 
 import { books, SelectBook } from "../schema/book"
 import { insights } from "../schema/insight"
@@ -84,6 +84,7 @@ export async function createTimeline({
  */
 export async function fetchTimelineAndBooks(
   timelineID: string,
+  filterEvents: boolean = true,
 ): Promise<[SelectTimeline, FrontendTimelineBook[]]> {
   const [timeline] = await db
     .select()
@@ -111,12 +112,25 @@ export async function fetchTimelineAndBooks(
     (t) => t !== null,
   )
 
-  const tinsights = await db
+  const doFilterEvents =
+    filterEvents && timeline.start_year && timeline.end_year
+
+  let tinsights = await db
     .select()
     .from(insights)
     .where(
       and(inArray(insights.book_id, bookIDs), eq(insights.archived, false)),
     )
+
+  if (doFilterEvents) {
+    const startYear = Number(timeline.start_year)
+    const endYear = Number(timeline.end_year)
+    tinsights = _.filter(tinsights, (i) => {
+      const dte = parseDate(i.date as string).date
+      if (dte === undefined) return false
+      return dte.getFullYear() >= startYear && dte.getFullYear() <= endYear
+    })
+  }
 
   const keyedInsights = _.groupBy(tinsights, "book_id")
 
@@ -168,13 +182,15 @@ export type TimelineSummary = {
 
 export async function fetchTimelinesSummary(
   timelineID: string,
+  filterEvents: boolean = true,
 ): Promise<TimelineSummary> {
-  const timeline = await db
+  const timelineResponse = await db
     .select()
     .from(timelines)
     .where(eq(timelines.id, timelineID))
     .limit(1)
-  if (timeline.length === 0) throw new Error("Timeline not found")
+  if (timelineResponse.length === 0) throw new Error("Timeline not found")
+  const timeline = timelineResponse[0]
   const dates = await db
     .select({ d: insights.date })
     .from(insights)
@@ -195,11 +211,31 @@ export async function fetchTimelinesSummary(
 
   const eventDates = _.filter(
     _.map(dates, (d) => parseDate(d.d as string).date),
-    (d) => d !== undefined,
-  )
+    (d) => {
+      if (d === undefined) return false
+      const dte = d as Date
+
+      // Fitler for dates timeline is bound by
+      if (
+        filterEvents &&
+        timeline.start_year &&
+        dte.getFullYear() < Number(timeline.start_year)
+      ) {
+        return false
+      }
+      if (
+        filterEvents &&
+        timeline.end_year &&
+        dte.getFullYear() > Number(timeline.end_year)
+      ) {
+        return false
+      }
+      return true
+    },
+  ) as Date[]
 
   return {
-    timeline: timeline[0],
+    timeline: timeline,
     eventDates,
     books: booksForTimeline,
   }

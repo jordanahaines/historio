@@ -9,7 +9,7 @@ export default async function Page() {
   return (
     <div className="demoTimelinesPage">
       <div className="mast">
-        <h1 className="text-6xl font-serif w-full">
+        <h1 className="w-full font-serif text-6xl">
           Library <span className="opacity-40">\\</span>
           &nbsp;Demo Timelines
         </h1>

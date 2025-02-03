@@ -36,7 +36,7 @@ export const Navbar = () => {
             color="white"
             href="/library/demo-timelines"
           >
-            Demo
+            Demo Timelines
           </NextLink>
         </NavbarItem>
       </NavbarContent>

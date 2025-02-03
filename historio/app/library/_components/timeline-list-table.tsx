@@ -18,8 +18,8 @@ import { FaArrowRight } from "react-icons/fa6"
 
 export const cols = [
   { name: "books", title: "Books" },
-  { name: "title", title: "Title" },
-  { name: "minimap", title: "Timeline" },
+  { name: "title", title: "Timeline Title" },
+  { name: "minimap", title: "Insights", align: "center" },
   { name: "actions", title: "" },
 ]
 
@@ -75,7 +75,9 @@ export default function TimelineListTable({
       <Table isStriped>
         <TableHeader columns={cols}>
           {cols.map((c) => (
-            <TableColumn key={c.name}>{c.title}</TableColumn>
+            <TableColumn align={c.align ?? "start"} key={c.name}>
+              {c.title}
+            </TableColumn>
           ))}
         </TableHeader>
         <TableBody items={timelines}>

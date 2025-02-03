@@ -81,7 +81,7 @@ export default function EventDensityMap(properties: EventDensityMapProps) {
     }
     const startDate = add(start, { days: index * bucketSize })
     const endDate = add(startDate, { days: bucketSize })
-    const formatString = showMonths ? "MM yyyy" : "yyyy"
+    const formatString = showMonths ? "MMM yyyy" : "yyyy"
     return (
       <Tooltip
         key={index}

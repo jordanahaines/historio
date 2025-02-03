@@ -4,7 +4,7 @@ import { createTimeline } from "@/db/queries/timelines"
 import { books } from "@/db/schema/book"
 import { timelineBooks } from "@/db/schema/timeline"
 import { config } from "dotenv"
-import { eq } from "drizzle-orm"
+import { eq, inArray } from "drizzle-orm"
 import _ from "lodash"
 import { promptForInput } from "./utils"
 config({ path: "local.env" })
@@ -71,6 +71,46 @@ async function doCreateFromTimePeriod() {
   }
 }
 
-console.log("start")
-// doCreateFromTimePeriod()
-doCreateTimeline()
+async function createFromSpecificBooks() {
+  const bookIDs: string[] = []
+  let bookIDInput = ""
+
+  while (bookIDs.length === 0 || bookIDInput !== "") {
+    bookIDInput = await promptForInput("Book ID? blank to stop")
+    if (bookIDInput !== "") {
+      bookIDs.push(bookIDInput)
+    }
+  }
+
+  const name = await promptForInput("Timeline Name?")
+  const createWithBooks = await db
+    .select()
+    .from(books)
+    .where(inArray(books.id, bookIDs))
+  const tl = await createTimeline({
+    books: createWithBooks,
+    timelineTitle: name,
+  })
+  console.log(
+    `Created timeline ${tl.title}. URL: http://localhost:3000/timeline/${tl.id}`,
+  )
+}
+
+console.log("1: Create from specific books")
+console.log("2: Create from time period")
+console.log("3: Create from single book")
+
+async function start() {
+  const choice = await promptForInput("What do you want to do?")
+  // eslint-disable-next-line unicorn/prefer-switch
+  if (choice === "1") {
+    createFromSpecificBooks()
+  } else if (choice === "2") {
+    doCreateFromTimePeriod()
+  } else if (choice === "3") {
+    doCreateTimeline()
+  } else {
+    console.log("Invalid choice")
+  }
+}
+start()

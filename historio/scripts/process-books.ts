@@ -10,6 +10,7 @@ import { significantEventResearcherConfig } from "@/lib/researchers/significant-
 import { config } from "dotenv"
 import { arrayContains, asc, count, eq, not } from "drizzle-orm"
 import _ from "lodash"
+import { promptForInput } from "./utils"
 
 config({ path: "local.env" })
 

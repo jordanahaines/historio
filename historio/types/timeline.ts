@@ -21,6 +21,7 @@ export type GroupedInsights = {
 export type FrontendTimelineBook = {
   timeline_book_id: string
   book_id: string
+  image_url: string
   title: string
   author: string
   color: string | undefined

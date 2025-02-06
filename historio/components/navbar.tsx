@@ -34,9 +34,9 @@ export const Navbar = () => {
           <NextLink
             className="text-2xl underline decoration-green-500 decoration-4 underline-offset-4"
             color="white"
-            href="/"
+            href="/library/demo-timelines"
           >
-            Demo
+            Demo Timelines
           </NextLink>
         </NavbarItem>
       </NavbarContent>

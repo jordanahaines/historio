@@ -104,12 +104,13 @@ export default function TimelineContainer({
   return (
     <>
       <div
-        className={`relative z-20 border-4 !border-b-8 ${border} mt-10 flex  min-h-40 w-full rounded-t-lg bg-white`}
+        className={`relative z-20 border-4 !border-b-8 ${border} mt-10 flex  min-h-40 w-full rounded-t-lg bg-white actual-timeline-outer`}
       >
         <BookCover
           author={book.author}
           customClass="rounded-tl"
           id={book.book_id}
+          src={book.image_url}
           title={book.title}
         />
         <ActualTimeline bookDetails={book} />

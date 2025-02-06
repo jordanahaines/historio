@@ -1,0 +1,18 @@
+.book-covers-container {
+  width: 360px;
+  .book-cover {
+    flex-grow: 0;
+    flex-shrink: 0;
+    img {
+      height: 90px !important;
+    }
+  }
+}
+.library-minimap-container {
+  width: 25vw;
+  padding-right: 30px;
+  padding-left: 30px;
+  .event-density-map {
+    height: 75px;
+  }
+}

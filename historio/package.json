@@ -28,6 +28,7 @@
     "@nextui-org/tooltip": "^2.2.5",
     "@react-aria/ssr": "3.9.4",
     "@react-aria/visually-hidden": "3.8.12",
+    "cheerio": "^1.0.0",
     "clsx": "2.1.1",
     "csv-parse": "^5.6.0",
     "date-fns": "^4.1.0",

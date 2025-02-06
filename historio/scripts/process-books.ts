@@ -1,4 +1,4 @@
-//  npx tsx scripts/scriptProcessBook.ts
+//  npx tsx scripts/process-books.ts
 import { db } from "@/db"
 import { books, SelectBook } from "@/db/schema/book"
 import { insights } from "@/db/schema/insight"
@@ -10,10 +10,9 @@ import { significantEventResearcherConfig } from "@/lib/researchers/significant-
 import { config } from "dotenv"
 import { arrayContains, asc, count, eq, not } from "drizzle-orm"
 import _ from "lodash"
+import { promptForInput } from "./utils"
 
 config({ path: "local.env" })
-
-import readline from "node:readline"
 
 const RESEARCHERS = {
   significant: significantEventResearcherConfig,
@@ -21,19 +20,6 @@ const RESEARCHERS = {
 }
 type ResearcherKeys = keyof typeof RESEARCHERS
 const PARALLELISM = 10
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-})
-
-async function promptForInput(question: string): Promise<string> {
-  return new Promise((resolve) => {
-    rl.question(question, (answer) => {
-      resolve(answer)
-    })
-  })
-}
 
 async function getBooksWithFewestInsights(researcherKey: string) {
   // 10 books with the fewest insights for event processor we picked
@@ -161,7 +147,7 @@ async function start() {
     .select({ c: count(insights.id) })
     .from(insights)
     .where(eq(insights.archived, false))
-  console.log(`Total insights: ${insightCount[0].c}`)
+  console.log(`Total insights (active): ${insightCount[0].c}`)
   console.log("1: Choose Books")
   console.log("2: Process to Goal")
   const choice = await promptForInput("What do you want to do?")
@@ -175,4 +161,5 @@ async function start() {
   }
 }
 
-await start()
+// eslint-disable-next-line unicorn/prefer-top-level-await
+start()

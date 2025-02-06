@@ -1,4 +1,4 @@
-import TimelineCoordinator from "../components/timeline-coordinator"
+import TimelineCoordinator from "../_components/timeline-coordinator"
 
 import { fetchTimelineAndBooks } from "@/db/queries/timelines"
 

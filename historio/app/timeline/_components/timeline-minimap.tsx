@@ -48,7 +48,7 @@ export default function TimelineMinimap({ events }: TimelineMinimapProps) {
   const end = _.max(timelineContext.books.map((b) => b.end))
 
   return (
-    <div className="timeline-minimap p fixed bottom-0 left-4 rounded-t-lg border-4 border-zinc-300 transition-transform hover:bottom-1 hover:scale-110">
+    <div className="timeline-minimap p fixed bottom-0 left-4 rounded-t-lg border-4 border-zinc-300 transition-transform hover:bottom-1 hover:scale-110 bg-white">
       <EventDensityMap
         end={end}
         events={events}

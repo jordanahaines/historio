@@ -1,6 +1,7 @@
 import {
   boolean,
   integer,
+  numeric,
   pgTable,
   timestamp,
   uuid,
@@ -16,6 +17,9 @@ export const timelines = pgTable("timelines", {
   description: varchar("description"),
   published: boolean("published").default(false),
   published_at: timestamp("published_at"),
+  is_demo: boolean("is_demo").default(false),
+  start_year: numeric("start_year"),
+  end_year: numeric("end_year"),
 })
 
 export type InsertTimeline = typeof timelines.$inferInsert

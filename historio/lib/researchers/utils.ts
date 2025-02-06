@@ -53,7 +53,6 @@ export function parseDate(
       // If year is BC, we just return year
       if (dateObject.getFullYear() < 0)
         return { date: undefined, year: dateObject.getFullYear() }
-      console.log({ dateObject, dateString, format })
       return { date: dateObject, year: dateObject.getFullYear() }
     }
   }
@@ -65,6 +64,9 @@ export const generateGenericPrompt: PromptGeneratorFunction = (
   existingInsights?: SelectInsight[],
 ) => {
   let message = `Title: ${book.title}\nAuthor: ${book.author}`
+  if (book.description) {
+    message += `\nDescription: ${book.description}`
+  }
   if (existingInsights?.length) {
     message += "\n\n Do not include these events in your results:"
     for (const e of _.map(existingInsights, "name")) message += `\n- ${e}`

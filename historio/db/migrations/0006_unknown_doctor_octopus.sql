@@ -1,0 +1,1 @@
+ALTER TABLE "timeline_books" ADD COLUMN "is_demo" boolean DEFAULT false;

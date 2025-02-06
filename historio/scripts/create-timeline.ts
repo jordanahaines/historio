@@ -113,4 +113,5 @@ async function start() {
     console.log("Invalid choice")
   }
 }
+// eslint-disable-next-line unicorn/prefer-top-level-await
 start()

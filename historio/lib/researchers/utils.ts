@@ -53,7 +53,6 @@ export function parseDate(
       // If year is BC, we just return year
       if (dateObject.getFullYear() < 0)
         return { date: undefined, year: dateObject.getFullYear() }
-      // console.log({ dateObject, dateString, format })
       return { date: dateObject, year: dateObject.getFullYear() }
     }
   }

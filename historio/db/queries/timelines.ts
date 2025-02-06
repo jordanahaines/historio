@@ -1,5 +1,5 @@
-import { and, desc, eq, inArray, isNotNull } from "drizzle-orm"
-import _, { create, filter } from "lodash"
+import { and, eq, inArray, isNotNull } from "drizzle-orm"
+import _ from "lodash"
 
 import { books, SelectBook } from "../schema/book"
 import { insights } from "../schema/insight"
@@ -142,7 +142,6 @@ export async function fetchTimelineAndBooks(
     )
     if (color) usedColors.add(color)
     const bookInsights = t.tb.book_id ? keyedInsights[t.tb.book_id] : []
-    console.log(`Grouping for: ${t.title}`)
     const [groupedInsights, hasEarlier, hasLater] = GroupInsights(bookInsights)
     const insightKeys = _.keys(groupedInsights).filter((k) => !!k)
     const start = parseDate(_.min(insightKeys) as string).date as Date

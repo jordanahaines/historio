@@ -142,6 +142,7 @@ export async function fetchTimelineAndBooks(
     )
     if (color) usedColors.add(color)
     const bookInsights = t.tb.book_id ? keyedInsights[t.tb.book_id] : []
+    console.log(`Grouping for: ${t.title}`)
     const [groupedInsights, hasEarlier, hasLater] = GroupInsights(bookInsights)
     const insightKeys = _.keys(groupedInsights).filter((k) => !!k)
     const start = parseDate(_.min(insightKeys) as string).date as Date

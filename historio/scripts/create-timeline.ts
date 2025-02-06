@@ -97,7 +97,7 @@ async function createFromSpecificBooks() {
 }
 
 console.log("1: Create from specific books")
-console.log("2: Create from time period")
+console.log("2: Create from time period (including existing timeline)")
 console.log("3: Create from single book")
 
 async function start() {

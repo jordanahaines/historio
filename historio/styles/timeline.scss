@@ -70,7 +70,6 @@
   }
 }
 .timelineTitle {
-  width: 360px;
   flex-grow: 0;
   flex-shrink: 0;
 }
@@ -105,13 +104,19 @@
 }
 .timeline-outer-container {
   padding-bottom: 80px;
+  width: 100%;
 }
-.timeline-minimap {
-  position: fixed;
+.timeline-footer {
   height: 50px;
   z-index: 21;
-  width: 75%;
-  left: 12.5%;
+  width: 90%;
+  left: 5%;
+  bottom: 0;
+  box-shadow: 0 -2px 11px 3px #00000038;
+  .event-map-container {
+    width: 75%;
+    height: 100%;
+  }
   .event-density-map {
     height: 50px;
   }

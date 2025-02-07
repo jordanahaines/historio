@@ -158,6 +158,7 @@ export default function TimelineDisplaySettings() {
         color="primary"
         endContent={<MdOutlineDisplaySettings />}
         onPress={onOpen}
+        size="sm"
       >
         Timeline Display Settings
       </Button>

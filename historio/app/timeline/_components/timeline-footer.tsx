@@ -7,12 +7,20 @@ import {
 } from "../context-timeline"
 
 import EventDensityMap from "@/components/event-density-map"
+import { Button } from "@nextui-org/button"
+import { Link } from "@nextui-org/link"
+import TimelineDisplaySettings from "./drawer-timeline-display-settings"
+import { FaArrowLeft } from "react-icons/fa6"
 
 export type TimelineMinimapProps = {
   events: Date[]
+  isDemo?: boolean
 }
 
-export default function TimelineMinimap({ events }: TimelineMinimapProps) {
+export default function TimelineFooter({
+  events,
+  isDemo = false,
+}: TimelineMinimapProps) {
   const { timelineContext, updateTimelineContext } = useTimelineContext()
 
   // Pan all timelines that overlap this date to this date
@@ -48,15 +56,29 @@ export default function TimelineMinimap({ events }: TimelineMinimapProps) {
   const end = _.max(timelineContext.books.map((b) => b.end))
 
   return (
-    <div className="timeline-minimap p fixed bottom-0 left-4 rounded-t-lg border-4 border-zinc-300 transition-transform hover:bottom-1 hover:scale-110 bg-white">
-      <EventDensityMap
-        end={end}
-        events={events}
-        start={start}
-        viewports={viewports}
-        onHoverViewport={handleHover}
-        onPress={handlePress}
-      />
+    <div className="timeline-footer px-2 fixed items-center flex justify-between rounded-t-lg border-4 border-zinc-300 bg-white transition-transform hover:scale-105">
+      <Button
+        as={Link}
+        size="sm"
+        color="primary"
+        href={isDemo ? "/library/demo-timelines" : "/library/timelines/"}
+      >
+        <FaArrowLeft />
+        {isDemo ? "Demo Timelines" : "Timeline Library"}
+      </Button>
+      <div className="bg-white event-map-container">
+        <EventDensityMap
+          end={end}
+          events={events}
+          start={start}
+          viewports={viewports}
+          onHoverViewport={handleHover}
+          onPress={handlePress}
+        />
+      </div>
+      <div>
+        <TimelineDisplaySettings />
+      </div>
     </div>
   )
 }

@@ -10,7 +10,7 @@ import {
   useTimelineContext,
 } from "../context-timeline"
 
-import TimelineOverlapBar from "./timeline-overlap-bars"
+import TimelineOverlapBar from "./timeline-overlap-bar"
 
 import { FrontendTimelineBook } from "@/types/timeline"
 
@@ -188,7 +188,6 @@ export default function ActualTimeline({
 
   /** Update context to indicate a book has been highlighted */
   const handleHighlight = (id: string, highlighted: boolean) => {
-    console.log("Handle highlight", { id, highlighted })
     if (!updateTimelineContext) return
     updateTimelineContext({
       type: TimelineDispatchActionType.updateBook,

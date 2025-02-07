@@ -14,7 +14,7 @@ import { TimelineContextProvider } from "../context-timeline"
 
 import TimelineContainer from "./timeline-container"
 import TimelinePageTitle from "./timeline-title"
-import TimelineMinimap from "./timeline-minimap"
+import TimelineFooter from "./timeline-footer"
 
 import { SelectTimeline } from "@/db/schema/timeline"
 import { FrontendTimelineBook } from "@/types/timeline"
@@ -27,9 +27,7 @@ export default function TimelineCoordinator({
   timeline: SelectTimeline
 }) {
   // Extract all dated events to pass to minimap
-  const eventCount = _.sum(
-    timelineBooks.flatMap((b) => b.insights.length),
-  )
+  const eventCount = _.sum(timelineBooks.flatMap((b) => b.insights.length))
 
   // Dates for all of our events
   const events = useMemo(() => {
@@ -48,7 +46,7 @@ export default function TimelineCoordinator({
         {timelineBooks.map((book) => (
           <TimelineContainer key={book.book_id} book={book} />
         ))}
-        <TimelineMinimap events={events} />
+        <TimelineFooter isDemo={!!timeline.is_demo} events={events} />
       </div>
     </TimelineContextProvider>
   )

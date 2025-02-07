@@ -79,6 +79,14 @@ const historioContextReducer = (
         ...newState.books[bookIndex],
         ...update.payload,
       }
+      if (update.payload.highlighted) {
+        _.each(newState.books, (b, i) => {
+          if (i !== bookIndex) {
+            newState.books[i].highlighted = false
+          }
+        })
+      }
+      console.log("Has Highlighted?", _.some(newState.books, "highlighted"))
       break
     }
     case TimelineDispatchActionType.updateSettings: {

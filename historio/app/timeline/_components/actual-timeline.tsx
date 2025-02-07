@@ -142,7 +142,7 @@ export default function ActualTimeline({
     updateTimelineContext({
       type: TimelineDispatchActionType.updateBook,
       payload: {
-        ...bookContext,
+        bookID: bookDetails.book_id,
         currentStart: start.toISOString(),
         currentEnd: end.toISOString(),
       },
@@ -151,6 +151,7 @@ export default function ActualTimeline({
   }, [
     timelineReference,
     yearDisplay,
+    bookContext,
     // TODO: Should this actually be a useCallback? What if we add more properties to bookContext then need to account for them here
     // Should we just create a new updateContext method just to change start/end?
     bookContext?.currentColor,
@@ -165,7 +166,8 @@ export default function ActualTimeline({
   // Also do this on zoom so minimap updates
   useEffect(() => {
     handleScroll()
-  }, [bookContext?.currentZoom, handleScroll])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookContext?.currentZoom])
 
   // React to scroll events from context
   useEffect(() => {
@@ -185,16 +187,14 @@ export default function ActualTimeline({
   }, [timelineContext.scrollTo, bookDetails.start, bookDetails.end])
 
   /** Update context to indicate a book has been highlighted */
-  const handleHighlight = useCallback(
-    (id: string, highlighted: boolean) => {
-      if (!updateTimelineContext) return
-      updateTimelineContext({
-        type: TimelineDispatchActionType.updateBook,
-        payload: { bookID: id, highlighted },
-      })
-    },
-    [updateTimelineContext],
-  )
+  const handleHighlight = (id: string, highlighted: boolean) => {
+    console.log("Handle highlight", { id, highlighted })
+    if (!updateTimelineContext) return
+    updateTimelineContext({
+      type: TimelineDispatchActionType.updateBook,
+      payload: { bookID: id, highlighted },
+    })
+  }
 
   // Used to render overlap bars
   const otherBooks = timelineContext.books.filter(

@@ -104,7 +104,7 @@ export default function TimelineContainer({
   return (
     <>
       <div
-        className={`relative z-20 border-4 !border-b-8 ${border} mt-10 flex  min-h-40 w-full rounded-t-lg bg-white actual-timeline-outer`}
+        className={`relative z-20 border-4 !border-b-8 ${border} mt-6 flex  min-h-40 w-full rounded-t-lg bg-white actual-timeline-outer`}
       >
         <BookCover
           author={book.author}
@@ -117,18 +117,40 @@ export default function TimelineContainer({
       </div>
       <div className="flex w-full">
         <div
-          className={`${bg} tab-author relative ml-8 flex w-1/5 items-center justify-between px-2 pb-2 text-white`}
+          className={`timeline-tab text-white w-1/4 flex justify-between rounded-b-lg px-3 pb-2 pt-1 ${bg}`}
         >
-          <div className={`tab-diagonal left z-0 ${bg}`} />
-          <div className="flex grow flex-col justify-center">
+          <div>
             <p className="font-title text-bold z-10">{displayTitle}</p>
             <p className="z-10 text-xs">by {byline}</p>
           </div>
-          <div className="flex w-1/5 justify-end" />
-          <div className={`tab-diagonal z-0 ${bg} right`} />
+          <div>
+            <Tooltip content="Zoom in (show more events)">
+              <Button
+                isIconOnly
+                className="border-0 text-white"
+                isDisabled={bookContext.currentZoom >= MAX_ZOOM}
+                variant="ghost"
+                onPress={() => handleZoom(bookContext.currentZoom + 1)}
+              >
+                <FaCirclePlus size={20} />
+              </Button>
+            </Tooltip>
+            <Tooltip content="Zoom out (show fewer events)">
+              <Button
+                isIconOnly
+                className="border-0 text-white"
+                isDisabled={bookContext.currentZoom <= MIN_ZOOM}
+                variant="ghost"
+                onPress={() => handleZoom(bookContext.currentZoom - 1)}
+              >
+                <FaCircleMinus size={20} />
+              </Button>
+            </Tooltip>
+          </div>
         </div>
-        <div className="flex w-1/2 justify-center" />
-        <div className="flex w-1/4 grow items-center justify-between rounded-b-lg border-4 !border-t-0 border-zinc-300 bg-white px-4 py-2">
+
+        {/* <div className="flex w-1/2 justify-center" /> */}
+        {/* <div className="flex w-1/4 grow items-center justify-between rounded-b-lg border-4 !border-t-0 border-zinc-300 bg-white px-4 py-2">
           <div className="flex justify-start gap-2">
             <Tooltip content={`${book.insights.length} insights for this book`}>
               <Chip
@@ -151,30 +173,9 @@ export default function TimelineContainer({
           </div>
           <div className="flex items-center justify-end">
             <div className="vertical-rule h-3/4 w-1 bg-zinc-200" />
-            <Tooltip content="Zoom in (show more events)">
-              <Button
-                isIconOnly
-                className="border-0"
-                isDisabled={bookContext.currentZoom >= MAX_ZOOM}
-                variant="ghost"
-                onPress={() => handleZoom(bookContext.currentZoom + 1)}
-              >
-                <FaCirclePlus size={20} />
-              </Button>
-            </Tooltip>
-            <Tooltip content="Zoom out (show fewer events)">
-              <Button
-                isIconOnly
-                className="border-0"
-                isDisabled={bookContext.currentZoom <= MIN_ZOOM}
-                variant="ghost"
-                onPress={() => handleZoom(bookContext.currentZoom - 1)}
-              >
-                <FaCircleMinus size={20} />
-              </Button>
-            </Tooltip>
+            
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   )

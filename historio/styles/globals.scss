@@ -45,7 +45,7 @@ main.container {
   .event-bubble {
     width: 16px;
     height: 16px;
-    opacity: 0.7;
+    opacity: 0.8;
     position: relative;
     z-index: 22;
     background: hsl(
@@ -55,5 +55,20 @@ main.container {
     &:hover {
       opacity: 1;
     }
+  }
+}
+.event-density-map.white {
+  .event-bubble {
+    background: white;
+  }
+  .line {
+    background: white;
+    opacity: 0.4;
+  }
+  p {
+    color: white;
+  }
+  .timeline-viewport {
+    border-width: 0.5px;
   }
 }

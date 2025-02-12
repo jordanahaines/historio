@@ -18,6 +18,7 @@ export type EventDensityMapProps = {
   viewports?: DensityMapViewport[]
   onPress?: (ts: Date) => void
   onHoverViewport?: (hovered: boolean, viewportIndex: number) => void
+  white?: boolean
 }
 
 const NUM_BUCKETS = 25 // Number of distinct bubbles to show
@@ -79,6 +80,7 @@ export default function EventDensityMap(properties: EventDensityMapProps) {
     const style = {
       transform: `scale(${scale}%)`,
     }
+    const cls = "event-bubble rounded-full"
     const startDate = add(start, { days: index * bucketSize })
     const endDate = add(startDate, { days: bucketSize })
     const formatString = showMonths ? "MMM yyyy" : "yyyy"
@@ -92,7 +94,7 @@ export default function EventDensityMap(properties: EventDensityMapProps) {
           </span>
         }
       >
-        <div className="event-bubble rounded-full" style={style} />
+        <div className={cls} style={style} />
       </Tooltip>
     )
   }
@@ -149,7 +151,9 @@ export default function EventDensityMap(properties: EventDensityMapProps) {
 
   return (
     <div
-      className="event-density-map relative flex w-full items-center justify-center rounded-t-lg"
+      className={`event-density-map relative flex w-full items-center justify-center rounded-t-lg ${
+        properties.white ? "white" : ""
+      }`}
       role="presentation"
       onClick={handleClick}
     >

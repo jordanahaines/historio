@@ -155,7 +155,8 @@ export default function TimelineDisplaySettings() {
   return (
     <>
       <Button
-        color="primary"
+        variant="ghost"
+        className="text-white hover:bg-white"
         endContent={<MdOutlineDisplaySettings />}
         onPress={onOpen}
         size="sm"

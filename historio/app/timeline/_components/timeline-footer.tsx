@@ -56,17 +56,18 @@ export default function TimelineFooter({
   const end = _.max(timelineContext.books.map((b) => b.end))
 
   return (
-    <div className="timeline-footer px-2 fixed items-center flex justify-between rounded-t-lg border-4 border-zinc-300 bg-white transition-transform hover:scale-105">
+    <div className="timeline-footer bg-slate-950 px-2 fixed items-center flex justify-around">
       <Button
         as={Link}
         size="sm"
-        color="primary"
+        variant="ghost"
+        className="text-white hover:bg-white"
         href={isDemo ? "/library/demo-timelines" : "/library/timelines/"}
       >
         <FaArrowLeft />
         {isDemo ? "Demo Timelines" : "Timeline Library"}
       </Button>
-      <div className="bg-white event-map-container">
+      <div className="event-map-container">
         <EventDensityMap
           end={end}
           events={events}
@@ -74,6 +75,7 @@ export default function TimelineFooter({
           viewports={viewports}
           onHoverViewport={handleHover}
           onPress={handlePress}
+          white
         />
       </div>
       <div>

@@ -104,7 +104,7 @@ export default function TimelineContainer({
   return (
     <>
       <div
-        className={`relative z-20 border-4 !border-b-8 ${border} mt-6 flex  min-h-40 w-full rounded-t-lg bg-white actual-timeline-outer`}
+        className={`relative z-20 border-4 ${border} actual-timeline-outer mt-6  flex min-h-40 w-full rounded-t-lg rounded-br-lg bg-white`}
       >
         <BookCover
           author={book.author}
@@ -117,7 +117,7 @@ export default function TimelineContainer({
       </div>
       <div className="flex w-full">
         <div
-          className={`timeline-tab text-white w-1/4 flex justify-between rounded-b-lg px-3 pb-2 pt-1 ${bg}`}
+          className={`timeline-tab text-white w-2/5 flex justify-between rounded-b-lg px-3 pb-2 pt-1 ${bg}`}
         >
           <div>
             <p className="font-title text-bold z-10">{displayTitle}</p>

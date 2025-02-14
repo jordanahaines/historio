@@ -38,6 +38,9 @@ export default function ActualTimeline({
     timelineContext.books,
     (b) => b.bookID === bookDetails.book_id,
   )
+  const displayBars = timelineContext.settings.showOverlapBars
+  const displayDots = timelineContext.settings.showOverlapDots
+  const barSize = timelineContext.settings.barSize
 
   const timelineReference = useRef<HTMLDivElement>(null)
   const numberInsights =
@@ -195,6 +198,24 @@ export default function ActualTimeline({
     })
   }
 
+  // Renders bars, either in small or large format
+  const renderBars = () => {
+    if (!displayBars) return
+    return (
+      <div className={`timelineBars ${barSize}`} style={{ width: totalWidth }}>
+        {otherBooks.map((b) => (
+          <TimelineOverlapBar
+            key={b.bookID}
+            barBookID={b.bookID}
+            parentEndDate={bookDetails.end}
+            parentStartDate={bookDetails.start}
+            onHover={(h) => handleHighlight(b.bookID, h)}
+          />
+        ))}
+      </div>
+    )
+  }
+
   // Used to render overlap bars
   const otherBooks = timelineContext.books.filter(
     (b) => b.bookID !== bookDetails.book_id,
@@ -212,17 +233,7 @@ export default function ActualTimeline({
         onScroll={handleScroll}
       >
         <div className="timelineInner">
-          <div className="timelineBars" style={{ width: totalWidth }}>
-            {otherBooks.map((b) => (
-              <TimelineOverlapBar
-                key={b.bookID}
-                barBookID={b.bookID}
-                parentEndDate={bookDetails.end}
-                parentStartDate={bookDetails.start}
-                onHover={(h) => handleHighlight(b.bookID, h)}
-              />
-            ))}
-          </div>
+          {renderBars()}
           <div className="timelineContents flex items-center px-2">
             {orderedInsights.map((oi, index) =>
               renderBucket(oi[1], oi[0], index),

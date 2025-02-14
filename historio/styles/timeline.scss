@@ -51,6 +51,18 @@
       opacity: 0.51;
     }
   }
+  &.sm {
+    height: 50px;
+    bottom: 25px;
+    .timelineBar {
+      height: 4px;
+      margin-bottom: 1px;
+      opacity: 0.4;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
 }
 .timelineContents {
   z-index: 2;

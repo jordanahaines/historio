@@ -19,7 +19,6 @@ export enum TimelineDispatchActionType {
 export enum TimelineBarsMode {
   fullBook = "full",
   currentView = "current",
-  hidden = "hidden",
 }
 
 export type TimelineContextBook = {
@@ -36,7 +35,10 @@ export type TimelineContextBook = {
 
 export type TimelineContextSettings = {
   showMiniMap: boolean
+  showOverlapBars: boolean
+  showOverlapDots: boolean
   barsMode: TimelineBarsMode
+  barSize: "sm" | "lg"
 }
 
 export type TimelineDispatchAction =
@@ -107,7 +109,13 @@ type TimelinexContextProviderProperties = {
 }
 
 const baseContext: HistorioTimelineContext = {
-  settings: { showMiniMap: true, barsMode: TimelineBarsMode.fullBook },
+  settings: {
+    showMiniMap: true,
+    barsMode: TimelineBarsMode.fullBook,
+    showOverlapBars: true,
+    showOverlapDots: true,
+    barSize: "sm",
+  },
   scrollTo: undefined,
   books: [],
 }
@@ -122,7 +130,13 @@ export function TimelineContextProvider({
   children,
 }: TimelinexContextProviderProperties) {
   const initialContext: HistorioTimelineContext = {
-    settings: { showMiniMap: true, barsMode: TimelineBarsMode.fullBook },
+    settings: {
+      showMiniMap: true,
+      barsMode: TimelineBarsMode.fullBook,
+      showOverlapBars: true,
+      showOverlapDots: true,
+      barSize: "sm",
+    },
     scrollTo: undefined,
     books: books.map((b) => ({
       bookID: b.book_id,

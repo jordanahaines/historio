@@ -6,6 +6,7 @@
 
 import { Button } from "@nextui-org/button"
 import {
+  Checkbox,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -26,6 +27,7 @@ import { MdOutlineDisplaySettings } from "react-icons/md"
 import {
   TimelineBarsMode,
   TimelineContextBook,
+  TimelineContextSettings,
   TimelineDispatchActionType,
   useTimelineContext,
 } from "../context-timeline"
@@ -107,45 +109,46 @@ export default function TimelineDisplaySettings() {
     )
   }
 
-  const handleChangeBarMode = useCallback(
-    (value: TimelineBarsMode) => {
+  const handleChangeSettings = useCallback(
+    (value: Partial<TimelineContextSettings>) => {
       if (!updateTimelineContext) return
       updateTimelineContext({
         type: TimelineDispatchActionType.updateSettings,
-        payload: { barsMode: value },
+        payload: value,
       })
     },
     [updateTimelineContext],
   )
 
   const renderBarsMode = () => {
+    if (!timelineContext.settings.showOverlapBars) return
     return (
       <div className="py-4">
+        <p>
+          Your timelines include overlap bars. What time period should those
+          bars represent?
+        </p>
         <RadioGroup
           color="primary"
-          label="Overlap Bars Mode"
+          className="py-2"
           value={timelineContext.settings.barsMode}
           onChange={(e) =>
-            handleChangeBarMode(e.target.value as TimelineBarsMode)
+            handleChangeSettings({
+              barsMode: e.target.value as TimelineBarsMode,
+            })
           }
         >
           <Radio
-            description="Overlap bars represent the full duration of other timelines"
+            description="Overlap bars represent the full duration of other timelines. As you scroll, bars remain static."
             value={TimelineBarsMode.fullBook}
           >
-            Full Timeline
+            Full Time Period of Book
           </Radio>
           <Radio
-            description="Overlap bars represent the current view of other timelines"
+            description="Overlap bars represent the current view of other timelines. As you scroll, bars move."
             value={TimelineBarsMode.currentView}
           >
-            Current View Only
-          </Radio>
-          <Radio
-            description="Hide overlap bars"
-            value={TimelineBarsMode.hidden}
-          >
-            Hide Bars
+            Current Timespan from Book&apos; Timeline
           </Radio>
         </RadioGroup>
       </div>
@@ -163,7 +166,7 @@ export default function TimelineDisplaySettings() {
       >
         Timeline Display Settings
       </Button>
-      <Drawer isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Drawer size="xl" isOpen={isOpen} onOpenChange={onOpenChange}>
         <DrawerContent>
           <DrawerHeader>Timeline Display Settings</DrawerHeader>
           <DrawerBody>
@@ -175,12 +178,48 @@ export default function TimelineDisplaySettings() {
               {timelineContext.books.map((b) => renderBookSelect(b))}
             </div>
             <div className="mt-2 border-t-3 border-t-zinc-500 pt-4">
-              <h3 className="text-center font-serif font-bold">Overlap Bars</h3>
-              <p className="help text-center">
-                The background of each timeline has colored bars to visualize
-                overlap with other timelines. Hover over one of these bars to
-                highlight the associated timeline
+              <h3 className="text-center font-serif font-bold">Book Overlap</h3>
+              <p className="text-center">
+                There are two ways Historio can visualize how books overlap with
+                each other:
+                <br />
+                <ul className="mt-2">
+                  <li>
+                    <b>Dots</b>&nbsp; that represent events from <i>other</i>{" "}
+                    books on each timeline.
+                  </li>
+
+                  <li>
+                    <b>Bars</b>&nbsp; that represent the time span of{" "}
+                    <i>other</i> books on each timeline.
+                  </li>
+                </ul>
               </p>
+              <h4 className="mt-7 text-center font-serif text-sm font-bold">
+                Configure Book Overlap Settings:
+              </h4>
+              <div className="py-1">
+                <Checkbox
+                  onValueChange={(e) =>
+                    handleChangeSettings({ showOverlapDots: e })
+                  }
+                  isSelected={timelineContext.settings.showOverlapDots}
+                >
+                  Show dots representing <i>other</i> books&apos; events on each
+                  timeline
+                </Checkbox>
+              </div>
+              <div className="py-1">
+                <Checkbox
+                  onValueChange={(e) =>
+                    handleChangeSettings({ showOverlapBars: e })
+                  }
+                  isSelected={timelineContext.settings.showOverlapBars}
+                >
+                  Show bars representing time period of <i>other</i> books on
+                  each timeline
+                </Checkbox>
+              </div>
               {renderBarsMode()}
             </div>
           </DrawerBody>
